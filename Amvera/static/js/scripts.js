@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 let tg = window.Telegram.WebApp;
 
         let fBtn = document.getElementsByClassName("f-btn")[0]
@@ -23,5 +22,3 @@ let tg = window.Telegram.WebApp;
 
             tg.sendData(JSON.stringify(data));
         });
-=======
->>>>>>> 502c4cc23536aab0ccad7613aa904b9fd8d56807
