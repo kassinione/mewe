@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ url_for('static', filename='js/styles.css') }}">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <title>MeWe</title>
 </head>
 <body>
