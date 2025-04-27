@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeWe - вместе интереснее</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -20,7 +19,6 @@
         <input type="text" placeholder="Введите текст" class="text-inp">
         <button class="btn s-btn">Отправить</button>
     </form>
-    <script src="{{ url_for('static',filename='js/jquery-3.3.1.min.js') }}"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
 </body>

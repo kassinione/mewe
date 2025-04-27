@@ -2,12 +2,10 @@ meta:
   environment: python
   toolchain:
     name: pip
-    version: "3.12"
+    version: 3.11
 build:
   requirementsPath: requirements.txt
 run:
   scriptName: app.py
-  command: null
   persistenceMount: /data
-  containerPort: "80"
-  servicePort: "80"
+  containerPort: 80
