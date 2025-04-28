@@ -14,9 +14,9 @@
         <button class="btn f-btn">Тест отправки данных</button>
     </div>
     <form class="test-form">    
-        <input type="text" placeholder="Введите заголовок" class="title-inp">
+        <input type="text" placeholder="Введите название" class="title-inp">
         <input type="text" placeholder="Введите описание" class="desc-inp">
-        <input type="text" placeholder="Введите текст" class="text-inp">
+        <input type="text" placeholder="Введите количество участников" class="text-inp">
         <button class="btn s-btn">Отправить</button>
     </form>
 
