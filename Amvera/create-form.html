@@ -1,0 +1,40 @@
+<form class="create-form" id="event-form">
+    <h1>Создание мероприятия</h1>
+
+    <label>Категория 
+        <select name="category">
+            <option>пример 1</option>
+            <option>пример 2</option>
+            <option>пример 3</option>
+        </select>
+    </label>
+
+    <label>Место
+        <input type="text" name="place" placeholder="">
+    </label>
+
+    <label>Название
+        <input type="text" name="title" placeholder="">
+    </label>
+
+    <div class="compact-row">
+        <label>Дата
+            <input type="date" name="date">
+        </label>
+        <label>Время
+            <input type="time" name="time">
+        </label>
+        <label>Кол-во чел.
+            <div class="input-with-icon">
+                <input type="number" name="participants" placeholder="Число">
+                <img src="static/numbers-10.png" class="icon">
+            </div>
+        </label>
+    </div>
+
+    <label>Описание
+        <textarea name="description"></textarea>
+    </label>
+
+    <button class="btn s-btn">СОЗДАТЬ</button>
+</form>

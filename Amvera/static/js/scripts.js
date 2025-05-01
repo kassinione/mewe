@@ -1,11 +1,23 @@
 let tg = window.Telegram.WebApp;
 
-let fBtn = document.getElementsByClassName("f-btn")[0]
+let searchBtn = document.getElementsByClassName("search-btn")[0]
+let eventBtn = document.getElementsByClassName("event-btn")[0]
+let lastBtn = document.getElementsByClassName("last-btn")[0]
 let sBtn = document.getElementsByClassName("s-btn")[0]
 
-fBtn.addEventListener("click", () => {
+searchBtn.addEventListener("click", () => {
+    document.getElementsByClassName("create-form")[0].style.display = "none";
+    document.getElementsByClassName("Main")[0].style.display = "flex";
+});
+
+eventBtn.addEventListener("click", () => {
     document.getElementsByClassName("Main")[0].style.display = "none";
-    document.getElementsByClassName("test-form")[0].style.display = "block";
+    document.getElementsByClassName("create-form")[0].style.display = "flex";
+});
+
+lastBtn.addEventListener("click", () => {
+    document.getElementsByClassName("create-form")[0].style.display = "none";
+    document.getElementsByClassName("Main")[0].style.display = "flex";
 });
 
 sBtn.addEventListener("click", () => {
