@@ -8,17 +8,19 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.enums.content_type import ContentType
 from aiogram.filters import CommandStart
 from aiogram.enums.parse_mode import ParseMode
+from dotenv import load_dotenv
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
-bot = Bot(os.getenv("TOKEN"))
+bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def start(message: types.Message):
-    webAppInfo = types.WebAppInfo(url="your-webapp-url")
+    webAppInfo = types.WebAppInfo(url="https://mewe-kassinione.amvera.io")
     builder = ReplyKeyboardBuilder()
-    builder.add(types.KeyboardButton(text='Отправить данные', web_app=webAppInfo))
+    builder.add(types.KeyboardButton(text='Открыть приложение', web_app=webAppInfo))
     
     await message.answer(text='Привет!', reply_markup=builder.as_markup())
 

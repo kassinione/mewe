@@ -1,0 +1,143 @@
+.new-event-btn {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: #eee;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: #535353;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    color: #5c5b5b;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.create-form {
+    display: none;
+    flex-direction: column;
+    padding: 25px;
+    gap: 15px;
+    width: 100%;
+    max-width: 375px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.create-form h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.create-form label {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-weight: bold;
+    font-size: 14px;
+    gap: 5px;
+}
+
+.create-form input,
+.create-form select,
+.create-form textarea {
+    padding: 10px;
+    border: 2px solid #535353;
+    border-radius: 5px;
+    background: rgb(212, 212, 212);
+    color: black;
+    outline: none;
+    font-size: 14px;
+    width: 100%;
+}
+
+.create-form textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+}
+
+.create-form .compact-row {
+    display: flex ;
+    gap: 10px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.create-form .compact-row label {
+    flex: 1 1 30%;
+    min-width: 80px;
+}
+
+.create-form input[type="date"],
+.create-form input[type="time"],
+.create-form input[type="number"] {
+    height: 40px; /* Установи одинаковую высоту */
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input[name="participants"]::placeholder {
+    color: black;
+    opacity: 1;
+}
+
+/* Контейнер с иконкой внутри */
+.create-form .input-with-icon {
+    position: relative;
+}
+
+
+.create-form .input-with-icon input {
+    padding-right: 35px; /* место под иконку */
+}
+
+.create-form .input-with-icon .icon {
+    position: absolute;
+    height: 18px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 18px;
+    color: #333;
+}
+
+.s-btn {
+    background: black;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 20px;
+}
+
+/* Адаптивность для маленьких экранов */
+@media screen and (max-width: 400px) {
+    .create-form {
+        padding: 15px;
+    }
+
+    .create-form h1 {
+        font-size: 20px;
+    }
+
+    .create-form .row {
+        flex-direction: column;
+    }
+
+    .create-form .row label {
+        width: 100%;
+    }
+
+    .submit-btn {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
