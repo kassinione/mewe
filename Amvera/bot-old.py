@@ -17,7 +17,7 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
 
 async def set_menu(app):
     webapp_button = MenuButtonWebApp(
-        text="Launch MeWe",
+        text="Launch MyApp",
         web_app=WebAppInfo(url=WEBAPP_URL)
     )
     # Устанавливаем WebApp-кнопку в меню для всех чатов
@@ -35,9 +35,5 @@ def main():
     app.add_handler(CommandHandler("start", start_command))
     app.run_polling()
 
-
-if __name__ == '__main__':
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler('start', start_command))
-    print('Бот запущен...')
-    app.run_polling()
+if __name__ == "__main__":
+    main()
