@@ -1,30 +1,31 @@
 import os
 from dotenv import load_dotenv
 from telegram import MenuButtonWebApp, WebAppInfo
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Application
 
-# Загружаем .env
+# Загружаем .env переменные
 load_dotenv()
 
-TOKEN      = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv("BOT_TOKEN")
 WEBAPP_URL = os.getenv("WEBAPP_URL")
 
 if not TOKEN or not WEBAPP_URL:
     raise RuntimeError("Не заданы BOT_TOKEN или WEBAPP_URL в .env")
 
+# Обработчик команды /start
 async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Нажмите кнопку в меню 👇")
 
-async def set_menu(app):
+# Установка Web App кнопки в меню
+async def set_menu(app: Application):
     webapp_button = MenuButtonWebApp(
         text="Launch MeWe",
         web_app=WebAppInfo(url=WEBAPP_URL)
     )
-    # Устанавливаем WebApp-кнопку в меню для всех чатов
     await app.bot.set_chat_menu_button(menu_button=webapp_button)
 
+# Основная функция
 def main():
-    # post_init нужно вызывать на билдере до build()
     app = (
         ApplicationBuilder()
         .token(TOKEN)
@@ -33,11 +34,10 @@ def main():
     )
 
     app.add_handler(CommandHandler("start", start_command))
+
+    print("Бот запущен...")
     app.run_polling()
 
-
+# Точка входа
 if __name__ == '__main__':
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler('start', start_command))
-    print('Бот запущен...')
-    app.run_polling()
+    main()
