@@ -10,7 +10,7 @@
 <body>
 <div class="wrapper">
     <div class="main">
-        <img id="logo-png" src="static/icons/bot.png" alt="bot_png">
+        <img id="logo-png" src="static/icons/logo.png" alt="logo_png">
     </div>
     <?php include 'footer.html'; ?>
 </div>
