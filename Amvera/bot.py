@@ -22,7 +22,7 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     ]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "Welcome to MeWe 🎉🎉🎉",
+        "Welcome to MeWe! 🎉🎉🎉",
         reply_markup=reply_markup
     )
 
