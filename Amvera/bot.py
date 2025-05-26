@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
-from telegram import MenuButtonWebApp, WebAppInfo
+from telegram import MenuButtonWebApp, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Application
 
-# Загружаем .env переменные
+# .env переменные
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
@@ -14,7 +14,17 @@ if not TOKEN or not WEBAPP_URL:
 
 # Обработчик команды /start
 async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Нажмите кнопку в меню 👇")
+    keyboard = [[
+        InlineKeyboardButton(
+            text="Launch MeWe",
+            web_app=WebAppInfo(url=WEBAPP_URL)
+        )
+    ]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(
+        "Welcome to MeWe! 🎉🎉🎉",
+        reply_markup=reply_markup
+    )
 
 # Установка Web App кнопки в меню
 async def set_menu(app: Application):
