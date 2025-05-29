@@ -6,7 +6,7 @@
 
 html, body {
     height: 100%;
-    background: none;
+    background: black;
     font-family: sans-serif;
 }
 
@@ -35,7 +35,7 @@ html, body {
 #logo-png {
     display: block;
     margin: auto;
-    width: 75vw;
+    width: 25vw;
     max-width: 90vw;
     height: auto;
     max-height: 60vh;
