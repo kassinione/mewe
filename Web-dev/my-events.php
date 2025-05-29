@@ -13,8 +13,8 @@
     <div class="main">
         <button class="new-event-btn">+</button>
     </div>
-    <?php include 'create-form.html'; ?>
-    <?php include 'footer.html'; ?>
+    <?php include 'partials/create-form.php'; ?>
+    <?php include 'partials/footer.html'; ?>
 </div>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="static/js/scripts.js"></script>

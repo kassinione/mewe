@@ -85,7 +85,7 @@
     ?>
 </div>
         
-        <?php include 'footer.html'; ?>
+        <?php include 'partials/footer.html'; ?>
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
