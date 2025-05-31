@@ -53,6 +53,7 @@
         <label>Описание
             <textarea name="description"></textarea>
         </label>
+        <div class="required-note">все поля обязательны для заполнения</div>
 
         <button class="btn s-btn" type="submit">СОЗДАТЬ</button>
     </form>
@@ -61,7 +62,28 @@
 
     <?php include 'partials/footer.html'; ?>
 </div>
-
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('event-form');
+    form.addEventListener('submit', function(e) {
+        let valid = true;
+        form.querySelectorAll('[required]').forEach(el => {
+            if (!el.value) {
+                el.classList.add('invalid');
+                valid = false;
+            } else {
+                el.classList.remove('invalid');
+            }
+        });
+        if (!valid) e.preventDefault();
+    });
+    form.querySelectorAll('[required]').forEach(el => {
+        el.addEventListener('input', function() {
+            if (el.value) el.classList.remove('invalid');
+        });
+    });
+});
+</script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="static/js/my-events.js"></script>
 <script src="static/js/create-event.js"></script>
