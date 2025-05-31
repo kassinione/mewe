@@ -35,7 +35,8 @@ html, body {
 #logo-png {
     display: block;
     margin: auto;
-    width: 25vw;
+    margin-top: 230px; 
+    width: 56vw;
     max-width: 90vw;
     height: auto;
     max-height: 60vh;
@@ -55,6 +56,44 @@ html, body {
     cursor: pointer;
     color: #000;
     background: rgb(212, 212, 212);
+}
+/* иконка поиска */
+
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    gap: 10px;
+}
+.search-input {
+    padding: 18px 24px;
+    border: 2px solid #ccc;
+    border-radius: 32px;
+    font-size: 22px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 320px;
+    background: #f8f8f8;
+}
+.search-input:focus {
+    border-color: #007bff;
+}
+.search-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    opacity: 0.7;
+    border-radius: 50%;
+    background: transparent;
+    transition: box-shadow 0.2s, opacity 0.2s, background 0.2s;
+    box-shadow: none;
+    padding: 6px;
+}
+.search-icon.active {
+    opacity: 1;
+    background: #e3f0ff;
+    box-shadow: 0 0 0 4px #007bff55, 0 0 12px #007bff;
 }
 
 @media screen and (max-width: 400px) {
