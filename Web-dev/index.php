@@ -11,8 +11,13 @@
 <div class="wrapper">
     <div class="main">
         <div class="search-bar-container">
+            <div class="search-icon-left">
+                <img src="static/icons/search.png" alt="Поиск">
+            </div>
             <input type="text" class="search-input" id="searchInput" placeholder="Поиск...">
-            <img src="static/icons/search.png" alt="Поиск" class="search-icon" id="searchIcon">
+            <div class="search-icon-right">
+                <img src="static/icons/categories.png" alt="Категории">
+            </div>
         </div>
         <img id="logo-png" src="static/icons/logo.png" alt="logo_png">
     </div>
