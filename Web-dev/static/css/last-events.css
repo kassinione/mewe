@@ -4,7 +4,7 @@
 .events-container {
     max-width: 840px; 
     margin: 0 auto;
-    padding: 0 20px 40px;
+    padding: 55px 20px 40px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     gap: 24px;
@@ -129,7 +129,7 @@
 @media (max-width: 768px) {
     .events-container {
         grid-template-columns: 1fr;
-        padding: 0 16px 30px;
+        padding: 45px 16px 30px;
     }
 
     .event-card {
