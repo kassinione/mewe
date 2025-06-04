@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link href="static/css/common.css" rel="stylesheet">
+    <link href="static/css/last-events.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Прошедшие мероприятия | MeWe</title>
