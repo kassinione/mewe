@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // через 3 секунды начинаем скрывать (opacity: 1→0)
     setTimeout(() => {
       msgBox.classList.remove('show');
-    }, 3000);
+    }, 2000);
   }
 
   form.addEventListener('submit', async e => {
@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         form.style.display = "none";
         document.getElementsByClassName("main")[0].style.display = "flex";
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
       } else {
         showToast('Ошибка: ' + result.message, 'error');
       }
