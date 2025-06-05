@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . '/config/db.php';
+
+// Получаем список категорий для фильтра
+$categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -7,14 +13,11 @@
     <title><?php echo isset($title) ? $title : 'MeWe'; ?></title>
     <link href="static/css/main.css" rel="stylesheet" />
     <link href="static/css/footer.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 <div class="wrapper">
     <div class="main">
-        <div id="eventsContainer" class="events-container">
-            <!-- Здесь будут динамически появляться карточки мероприятий -->
-        </div>
-
         <div class="search-bar-container" style="display: flex; align-items: center; gap: 8px;">
             <div class="search-icon-left">
                 <img src="static/icons/search.png" alt="Поиск" />
@@ -25,6 +28,11 @@
                 <span>Категории</span>
             </div>
         </div>
+        <div id="eventsContainer" class="events-container">
+            <!-- Здесь будут динамически появляться карточки мероприятий -->
+        </div>
+
+        
         <img id="logo-png" src="static/icons/logo.png" alt="logo_png" style="margin-top: 40px;" />
     </div>
 
@@ -112,12 +120,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (search) params.append('search', search);
         if (categoryId) params.append('category', categoryId);
 
-        fetch('/api/events.php?' + params.toString())
-            .then(res => res.json())
-            .then(data => renderEvents(data))
-            .catch(() => {
-                eventsContainer.innerHTML = '<p class="error">Ошибка загрузки мероприятий</p>';
-            });
+        fetch('api/events.php?' + params.toString(), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                renderEvents(data.data.events);
+            } else {
+                throw new Error(data.error || 'Unknown error');
+            }
+        })
+        .catch(error => {
+            eventsContainer.innerHTML = `<p class="error">Ошибка загрузки мероприятий: ${error.message}</p>`;
+        });
     }
 
     // Отрисовка карточек мероприятий
@@ -130,12 +149,26 @@ document.addEventListener('DOMContentLoaded', () => {
         eventsContainer.innerHTML = events.map(event => `
             <div class="event-card" tabindex="0">
                 <div class="event-header">
-                    <span class="event-category">${event.category_name}</span>
-                    <span class="event-date">${new Date(event.event_date).toLocaleDateString('ru-RU')}</span>
+                    <span class="event-category">
+                        <i class="fas fa-${event.category_icon}"></i>
+                        ${event.category_name}
+                    </span>
                 </div>
                 <h3>${event.title}</h3>
+                <p>${event.description}</p>
                 <div class="event-meta">
-                    <span>Место: ${event.place}</span>
+                    <div class="event-date">
+                        <i class="far fa-calendar"></i>
+                        ${event.formatted_date}
+                    </div>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${event.location}
+                    </div>
+                </div>
+                <div class="event-time-until">
+                    <i class="far fa-clock"></i>
+                    ${event.time_until}
                 </div>
             </div>
         `).join('');
