@@ -15,6 +15,7 @@
         <button class="new-event-btn">+</button>
     </div>
     <form class="create-form" id="event-form" method="POST" action="handlers/create-event.php">
+        <div class="close-btn" id="close-form">&times;</div>
         <h1>Создание мероприятия</h1>
 
         <label>Категория 
@@ -46,7 +47,7 @@
             </label>
             <label>Кол-во чел.
                 <div class="input-with-icon">
-                    <input type="number" name="participants" placeholder="Число" min="1">
+                    <input type="number" name="participants" placeholder="" min="1">
                 </div>
             </label>
         </div>

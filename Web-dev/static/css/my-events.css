@@ -16,14 +16,17 @@
 }
 
 .create-form {
-    display: none;
+    display: flex;
     flex-direction: column;
-    padding: 25px;
-    gap: 15px;
+    padding: 30px;
+    gap: 18px;
     width: 100%;
-    max-width: 375px;
-    margin: 0 auto;
-    box-sizing: border-box;
+    max-width: 400px;
+    margin: 30px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.4s ease-in-out;
 }
 
 .create-form h1 {
@@ -108,7 +111,7 @@ input[name="participants"]::placeholder {
 }
 
 .s-btn {
-    background: black;
+    background: rgb(0, 0, 0);
     color: white;
     font-weight: bold;
     font-size: 18px;
@@ -172,5 +175,129 @@ input[name="participants"]::placeholder {
     .submit-btn {
         font-size: 16px;
         padding: 12px;
+    }
+}
+
+
+/* Форма создания мероприятия */
+.create-form {
+    display: none;
+    flex-direction: column;
+    padding: 30px;
+    gap: 18px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.create-form h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #222;
+}
+
+
+/* Поля ввода */
+.create-form input,
+.create-form select,
+.create-form textarea {
+    background: #f2f2f7;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    padding: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.create-form input:focus,
+.create-form select:focus,
+.create-form textarea:focus {
+    border-color: #4c91af;
+    outline: none;
+}
+
+/* Кнопка отправки */
+.s-btn {
+    color: #fff;
+    padding: 16px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.s-btn:hover {
+    background: linear-gradient(90deg, #2f2f2f, #000);
+    transform: translateY(-2px);
+}
+
+/* Сообщение формы */
+.form-message {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Инвалидные поля */
+.invalid {
+    border-color: #dc3545 !important;
+    background-color: #ffe6e6 !important;
+}
+
+/* Подсказка о заполнении */
+.required-note {
+    font-size: 12px;
+    color: #888;
+    margin-top: -8px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #dc3545;
+}
+
+.create-form {
+    position: relative; /* чтобы крестик позиционировался внутри */
+    /* остальное уже есть */
+}
+
+/* Адаптивность */
+@media screen and (max-width: 400px) {
+    .create-form {
+        padding: 20px;
+    }
+
+    .create-form h1 {
+        font-size: 22px;
+    }
+
+    .s-btn {
+        font-size: 16px;
+        padding: 14px;
     }
 }
