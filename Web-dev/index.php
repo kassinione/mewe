@@ -147,28 +147,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         eventsContainer.innerHTML = events.map(event => `
-            <div class="event-card" tabindex="0">
+            <div class="event-card" data-event-id="${event.id}">
                 <div class="event-header">
-                    <span class="event-category">
-                        <i class="fas fa-${event.category_icon}"></i>
+                    <div class="event-category">
+                        <i class="fas ${event.category_icon}"></i>
                         ${event.category_name}
-                    </span>
-                </div>
-                <h3>${event.title}</h3>
-                <p>${event.description}</p>
-                <div class="event-meta">
+                    </div>
                     <div class="event-date">
-                        <i class="far fa-calendar"></i>
                         ${event.formatted_date}
                     </div>
-                    <div class="event-location">
-                        <i class="fas fa-map-marker-alt"></i>
+                </div>
+                
+                <h3 class="event-title">${event.title}</h3>
+                
+                <div class="event-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt icon"></i>
                         ${event.location}
                     </div>
-                </div>
-                <div class="event-time-until">
-                    <i class="far fa-clock"></i>
-                    ${event.time_until}
+                    <div class="meta-item">
+                        <i class="fas fa-users icon"></i>
+                        ${event.registered_count} / ${event.max_participants} участников
+                    </div>
                 </div>
             </div>
         `).join('');
