@@ -73,7 +73,8 @@ try {
     $per_page = isset($_GET['per_page']) ? max(1, (int)$_GET['per_page']) : 10;
 
     // Базовый SQL запрос
-    $sql = "SELECT e.*, c.name as category_name, c.icon as category_icon 
+    $sql = "SELECT e.*, c.name as category_name, c.icon as category_icon,
+            (SELECT COUNT(*) FROM event_registrations WHERE event_id = e.id) as registered_count
             FROM events e 
             LEFT JOIN categories c ON e.category_id = c.id 
             WHERE e.event_date >= CURDATE()";
@@ -81,9 +82,15 @@ try {
 
     // Добавляем условия поиска
     if ($search) {
-        $sql .= " AND (e.title LIKE ? OR e.description LIKE ?)";
-        $params[] = "%$search%";
-        $params[] = "%$search%";
+        $sql .= " AND (
+            e.title LIKE ? OR 
+            e.description LIKE ? OR 
+            e.location LIKE ?
+        )";
+        $search_param = "%$search%";
+        $params[] = $search_param;
+        $params[] = $search_param;
+        $params[] = $search_param;
     }
 
     // Фильтр по категории
@@ -95,7 +102,11 @@ try {
     // Получаем общее количество событий
     $count_sql = "SELECT COUNT(*) FROM events e WHERE e.event_date >= CURDATE()";
     if ($search) {
-        $count_sql .= " AND (e.title LIKE ? OR e.description LIKE ?)";
+        $count_sql .= " AND (
+            e.title LIKE ? OR 
+            e.description LIKE ? OR 
+            e.location LIKE ?
+        )";
     }
     if ($category > 0) {
         $count_sql .= " AND e.category_id = ?";
