@@ -1,10 +1,10 @@
 meta:
   environment: python
   toolchain:
-    name: pip
-    version: 3.11
+    name: poetry
+    version: 2.1.4
 build:
-  requirementsPath: requirements.txt
+  requirementsPath: pyproject.toml
 run:
   scriptName: app.py
   persistenceMount: /data
