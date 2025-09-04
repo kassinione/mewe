@@ -47,7 +47,7 @@ def main():
 
     print("Бот запущен...")
     app.run_polling()
-
+    
 # Точка входа
 if __name__ == '__main__':
     main()
