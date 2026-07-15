@@ -44,8 +44,6 @@ def main():
     )
 
     app.add_handler(CommandHandler("start", start_command))
-
-    print("Бот запущен...")
     app.run_polling()
     
 # Точка входа

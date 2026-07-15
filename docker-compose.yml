@@ -1,0 +1,18 @@
+services:
+  bot:
+    build: .
+    container_name: bot
+    restart: unless-stopped
+    command: ["python3", "bot.py"]
+    env_file:
+      - .env
+
+  web:
+    build: .
+    container_name: web
+    restart: unless-stopped
+    command: ["python3", "run.py"]
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
