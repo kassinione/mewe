@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($title) ? $title : 'MeWe'; ?></title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="static/js/theme.js"></script>
     <link href="static/css/common.css" rel="stylesheet">
     <link href="static/css/main.css" rel="stylesheet">
     <link href="static/css/my-events.css" rel="stylesheet">
@@ -11,6 +13,7 @@
 </head>
 <body>
 <div class="wrapper">
+    <img id="logo-png" src="static/icons/logo.png" alt="logo_png" />
     <div class="main">
         <button class="new-event-btn">+</button>
     </div>
@@ -40,10 +43,10 @@
 
         <div class="compact-row">
             <label>Дата
-                <input type="date" name="date" required>
+                <input type="date" name="date" id="event-date" required min="<?php echo date('Y-m-d'); ?>">
             </label>
             <label>Время
-                <input type="time" name="time" required>
+                <input type="time" name="time" id="event-time" required>
             </label>
             <label>Кол-во чел.
                 <div class="input-with-icon">
@@ -53,7 +56,7 @@
         </div>
 
         <label>Описание
-            <textarea name="description"></textarea>
+            <textarea name="description" required></textarea>
         </label>
         <div class="required-note">все поля обязательны для заполнения</div>
 

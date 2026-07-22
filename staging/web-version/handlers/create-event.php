@@ -15,6 +15,11 @@ $time = $_POST['time'] ?? '';
 
 $eventDateTime = date('Y-m-d H:i:s', strtotime("$date $time"));
 
+if (strtotime($eventDateTime) <= time()) {
+    echo json_encode(['success' => false, 'message' => 'Дата и время мероприятия должны быть в будущем']);
+    exit;
+}
+
 try {
     $stmt = $pdo->prepare("
         INSERT INTO events (title, location, description, category_id, max_participants, event_date)

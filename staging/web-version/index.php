@@ -7,10 +7,12 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <link href="static/css/common.css" rel="stylesheet">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?php echo isset($title) ? $title : 'MeWe'; ?></title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="static/js/theme.js"></script>
+    <link href="static/css/common.css" rel="stylesheet">
     <link href="static/css/main.css" rel="stylesheet" />
     <link href="static/css/footer.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -33,7 +35,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
 
         
-        <img id="logo-png" src="static/icons/logo.png" alt="logo_png" style="margin-top: 40px;" />
+        <img id="logo-png" src="static/icons/logo.png" alt="logo_png" />
     </div>
 
     <?php include 'partials/footer.html'; ?>
@@ -69,7 +71,14 @@ $categories = $stmt->fetchAll();
     </div>
 </div>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Модальное окно детального просмотра мероприятия -->
+<div class="categories-modal" id="eventDetailModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="eventDetailTitle">
+    <div class="modal-overlay" id="eventDetailOverlay" tabindex="-1"></div>
+    <div class="modal-content">
+        <button class="modal-close" id="eventDetailClose" aria-label="Закрыть">&times;</button>
+        <div id="eventDetailBody"></div>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -80,7 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const eventsContainer = document.getElementById('eventsContainer');
 
+    const eventDetailModal = document.getElementById('eventDetailModal');
+    const eventDetailClose = document.getElementById('eventDetailClose');
+    const eventDetailOverlay = document.getElementById('eventDetailOverlay');
+    const eventDetailBody = document.getElementById('eventDetailBody');
+
     let selectedCategoryId = '';
+    let currentEvents = [];
 
     function openModal() {
         categoriesModal.classList.add('active');
@@ -97,6 +112,39 @@ document.addEventListener('DOMContentLoaded', () => {
         categoriesTab.focus();
     }
 
+    function openEventDetail(event) {
+        eventDetailBody.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-right: 32px; margin-bottom: 16px;">
+                <div class="event-category">
+                    <i class="fas ${event.category_icon}"></i>
+                    ${event.category_name}
+                </div>
+                <div class="event-date">${event.formatted_date}</div>
+            </div>
+            <h2 id="eventDetailTitle" style="margin: 0 0 14px; font-size: 20px;">${event.title}</h2>
+            <div class="event-meta" style="padding: 0 0 16px;">
+                <div class="meta-item">
+                    <i class="fas fa-map-marker-alt icon"></i>
+                    ${event.location}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-users icon"></i>
+                    ${event.registered_count} / ${event.max_participants} участников
+                </div>
+            </div>
+            <p style="color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                ${event.description ? event.description : 'Описание не указано'}
+            </p>
+        `;
+        eventDetailModal.classList.add('active');
+        eventDetailModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeEventDetail() {
+        eventDetailModal.classList.remove('active');
+        eventDetailModal.setAttribute('aria-hidden', 'true');
+    }
+
     categoriesTab.addEventListener('click', openModal);
     categoriesTab.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -108,9 +156,15 @@ document.addEventListener('DOMContentLoaded', () => {
     modalClose.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
 
+    eventDetailClose.addEventListener('click', closeEventDetail);
+    eventDetailOverlay.addEventListener('click', closeEventDetail);
+
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && categoriesModal.classList.contains('active')) {
             closeModal();
+        }
+        if (e.key === 'Escape' && eventDetailModal.classList.contains('active')) {
+            closeEventDetail();
         }
     });
 
@@ -141,13 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Отрисовка карточек мероприятий
     function renderEvents(events) {
+        currentEvents = events;
+
         if (!events.length) {
             eventsContainer.innerHTML = '<p class="no-events">Мероприятия не найдены</p>';
             return;
         }
 
         eventsContainer.innerHTML = events.map(event => `
-            <div class="event-card" data-event-id="${event.id}">
+            <div class="event-card" data-event-id="${event.id}" tabindex="0">
                 <div class="event-header">
                     <div class="event-category">
                         <i class="fas ${event.category_icon}"></i>
@@ -173,6 +229,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
     }
+
+    // Клик по карточке — открыть детальный просмотр
+    eventsContainer.addEventListener('click', e => {
+        const card = e.target.closest('.event-card');
+        if (!card) return;
+        const eventId = card.getAttribute('data-event-id');
+        const event = currentEvents.find(ev => String(ev.id) === eventId);
+        if (event) openEventDetail(event);
+    });
 
     // Поиск с debounce
     let debounceTimeout;
