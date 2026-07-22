@@ -1,0 +1,4 @@
+- Server-side validation of create event form fields (only client-side validation now)
+- User table in db, user auth with telegram
+- User event history
+

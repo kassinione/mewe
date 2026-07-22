@@ -1,29 +1,72 @@
-/* Общие стили для всего проекта */
+:root {
+  --fefu-blue: #3B63AB;
+  --fefu-red: #BC2940;
 
-/* Обёртка */
-.wrapper {
-  padding-top: 20px; 
-  padding-bottom: 60px;
-  min-height: 100vh;
-  background-color: #f5f5f7;
+  --bg-page: #F7F9FC;
+  --bg-card: #FFFFFF;
+  --bg-card-header: #FFFFFF;
+  --bg-accent-soft: #E7ECF6;
+
+  --text-primary: #1C1C1E;
+  --text-secondary: #636366;
+  --text-muted: #8E8E93;
+  --text-on-accent: #FFFFFF;
+
+  --border: #E5E5EA;
+  --accent: var(--fefu-blue);
+  --danger: var(--fefu-red);
+
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Хедер */
+[data-theme="dark"] {
+  --bg-page: #1C1C1E;
+  --bg-card: #2C2C2E;
+  --bg-card-header: #3A3A3C;
+  --bg-accent-soft: #26314D;
+
+  --text-primary: #F2F2F7;
+  --text-secondary: #AEAEB2;
+  --text-muted: #8E8E93;
+  --text-on-accent: #FFFFFF;
+
+  --border: #3A3A3C;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+}
+
+.wrapper {
+  position: relative;
+  z-index: 2;
+  padding-top: 20px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
 .header-plate {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 64px;
-  background: #ffffff;
-  border-bottom: 1px solid #d2d2d7;
-  color: #1d1d1f;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
   padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 14px;
   letter-spacing: 0.3px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 1100;
   user-select: none;
 }
@@ -31,65 +74,100 @@
 .header-plate h1,
 .header-plate h2 {
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* Сообщения об ошибках */
 .no-events,
 .error {
   grid-column: 1 / -1;
   text-align: center;
   padding: 48px 24px;
-  color: #8e8e93;
+  color: var(--text-muted);
   font-size: 17px;
   font-weight: 500;
 }
 
 .error {
-  color: #ff453a;
+  color: var(--danger);
 }
 
-/* Адаптивность общих элементов */
 @media (max-width: 768px) {
   .header-plate {
       height: 56px;
       padding: 0 16px;
       font-size: 14px;
   }
-  
+
   .wrapper {
       padding-top: 20px;
   }
 }
 
-/* Поисковая панель */
 .search-bar-container {
   display: flex;
   align-items: center;
   gap: 8px;
   position: relative;
+  z-index: 2;
+  background: var(--bg-card);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  margin: 0 20px 20px;
 }
 
-/* Вкладка "Категории" */
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 4px 0;
+  font-size: 16px;
+  font-family: var(--font-main);
+  color: var(--text-primary);
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-icon-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+}
+
+.search-icon-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .categories-tab {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #e0e0eb;
+  background-color: var(--bg-accent-soft);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 13px;
-  font-weight: 600;
-  color: #636366;
+  font-weight: 700;
+  color: var(--accent);
   cursor: pointer;
   user-select: none;
-  position: relative;
   transition: background-color 0.2s ease;
 }
 
 .categories-tab:hover,
 .categories-tab.active {
-  background-color: #c7c7d9;
+  background-color: var(--accent);
+  color: var(--text-on-accent);
 }
 
 .categories-icon {
@@ -97,7 +175,11 @@
   height: 16px;
 }
 
-/* Модальное окно категорий */
+[data-theme="dark"] .search-icon-left img,
+[data-theme="dark"] .categories-icon {
+  filter: invert(1);
+}
+
 .categories-modal {
   opacity: 0;
   pointer-events: none;
@@ -118,18 +200,15 @@
   pointer-events: auto;
 }
 
-/* Контент модального окна */
 .modal-content {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   max-width: 900px;
   width: 100%;
   padding: 24px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   position: relative;
 }
 
-/* Кнопка закрытия */
 .modal-close {
   position: absolute;
   top: 16px;
@@ -138,113 +217,114 @@
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: #8e8e93;
+  color: var(--text-muted);
   transition: color 0.2s ease;
 }
 
 .modal-close:hover {
-  color: #ff453a;
+  color: var(--danger);
 }
 
-/* Заголовок модалки */
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 24px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 24px;
-  color: #1c1c1e;
+  color: var(--text-primary);
 }
 
-/* Контейнер карточек категорий — переиспользуем стили событий */
 .events-container {
+  position: relative;
+  z-index: 2;
   max-width: 840px;
   margin: 0 auto;
   padding: 0 20px 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 24px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  font-family: var(--font-main);
 }
 
-/* Карточка категории (копия стилей event-card) */
 .event-card {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
 }
 
 .event-card:hover,
 .event-card:focus-within {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+  border-color: var(--accent);
   outline: none;
 }
 
-/* Шапка карточки */
 .event-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 24px;
-  background-color: #f2f2f7;
-  border-bottom: 1px solid #e5e5ea;
+  padding: 14px 20px;
+  background-color: var(--bg-card-header);
+  border-bottom: 1px solid var(--border);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
 }
 
 .event-category {
-  background-color: #e0e0eb;
-  padding: 6px 14px;
+  background-color: var(--bg-accent-soft);
+  padding: 5px 12px;
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #636366;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .event-date {
-  font-size: 13px;
-  color: #8e8e93;
+  font-size: 12px;
+  color: var(--text-muted);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
-/* Основное содержимое карточки */
-.event-card h3 {
+.event-card h3,
+.event-title {
   margin: 0;
-  padding: 20px 24px 14px;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1c1c1e;
+  padding: 16px 20px 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
   line-height: 1.3;
 }
 
 .event-meta {
-  padding: 0 24px 20px;
+  padding: 0 20px 18px;
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
 }
 
-.event-meta span {
-  font-size: 15px;
-  color: #3a3a3c;
+.event-meta span,
+.meta-item {
+  font-size: 14px;
+  color: var(--text-secondary);
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-/* Адаптивность для модалки и карточек */
+.meta-item .icon {
+  color: var(--accent);
+}
+
 @media (max-width: 768px) {
   .categories-modal {
     padding: 20px 10px;
@@ -255,21 +335,26 @@
     padding: 0 16px 30px;
   }
 
+  .search-bar-container {
+    margin: 0 16px 16px;
+  }
+
   .event-card {
     border-radius: 14px;
   }
 
   .event-header {
-    padding: 14px 16px;
+    padding: 12px 16px;
   }
 
-  .event-card h3 {
-    font-size: 18px;
-    padding: 16px 16px 12px;
+  .event-card h3,
+  .event-title {
+    font-size: 17px;
+    padding: 14px 16px 10px;
   }
 
   .event-meta {
-    padding: 0 16px 16px;
+    padding: 0 16px 14px;
     gap: 10px;
   }
 }

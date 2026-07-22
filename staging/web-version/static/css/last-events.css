@@ -1,107 +1,19 @@
-/* Стили, специфичные для страницы прошедших мероприятий */
-
-/* Контейнер событий */
 .events-container {
-    max-width: 840px; 
-    margin: 0 auto;
-    padding: 55px 20px 40px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 24px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    padding-top: 80px;
 }
 
-/* Карточка события */
-.event-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
-    cursor: default;
-}
-
-.event-card:hover,
-.event-card:focus-within {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
-    outline: none;
-}
-
-/* Шапка карточки */
-.event-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 24px;
-    background-color: #f2f2f7;
-    border-bottom: 1px solid #e5e5ea;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-}
-
-.event-category {
-    background-color: #e0e0eb;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #636366;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.event-date {
-    font-size: 13px;
-    color: #8e8e93;
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-}
-
-/* Основное содержимое */
-.event-card h3 {
-    margin: 0;
-    padding: 20px 24px 14px;
-    font-size: 20px;
-    font-weight: 600;
-    color: #1c1c1e;
-    line-height: 1.3;
-}
-
-.event-meta {
-    padding: 0 24px 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    align-items: center;
-}
-
-.event-meta span {
-    font-size: 15px;
-    color: #3a3a3c;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Рейтинг */
 .rating-section {
-    padding: 16px 24px;
-    border-top: 1px solid #e5e5ea;
-    background-color: #fafafa;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    background-color: var(--bg-page);
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
 }
 
 .rating-section p {
     margin: 0 0 10px 0;
-    font-size: 15px;
-    color: #6e6e73;
+    font-size: 14px;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -112,8 +24,8 @@
 
 .star {
     cursor: pointer;
-    font-size: 24px;
-    color: #d1d1d6;
+    font-size: 22px;
+    color: var(--border);
     transition: color 0.2s ease, transform 0.2s ease;
     line-height: 1;
     user-select: none;
@@ -121,33 +33,13 @@
 
 .star.active,
 .star:hover {
-    color: #ff9f0a; 
+    color: #ff9f0a;
     transform: scale(1.15);
 }
 
-/* Адаптивность для last-events */
 @media (max-width: 768px) {
     .events-container {
-        grid-template-columns: 1fr;
-        padding: 45px 16px 30px;
-    }
-
-    .event-card {
-        border-radius: 14px;
-    }
-
-    .event-header {
-        padding: 14px 16px;
-    }
-
-    .event-card h3 {
-        font-size: 18px;
-        padding: 16px 16px 12px;
-    }
-
-    .event-meta {
-        padding: 0 16px 16px;
-        gap: 10px;
+        padding-top: 70px;
     }
 
     .rating-section {
@@ -155,6 +47,6 @@
     }
 
     .star {
-        font-size: 22px;
+        font-size: 20px;
     }
 }

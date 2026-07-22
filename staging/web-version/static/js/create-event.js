@@ -16,6 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+
+    const dateVal = document.getElementById('event-date').value;
+    const timeVal = document.getElementById('event-time').value;
+    const eventDateTime = new Date(`${dateVal}T${timeVal}`);
+
+    if (eventDateTime <= new Date()) {
+      showToast('Дата и время мероприятия должны быть в будущем', 'error');
+      return;
+    }
+
     const data = new FormData(form);
 
     try {
