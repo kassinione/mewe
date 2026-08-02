@@ -8,9 +8,11 @@ authors = [
 readme = "README.md"
 requires-python = "==3.12.*"
 dependencies = [
-    "dotenv (>=0.9.9,<0.10.0)",
     "python-telegram-bot (>=22.3,<23.0)",
     "flask (>=3.1.2,<4.0.0)",
     "aiogram (==3.10.0)",
     "flask-sqlalchemy>=3.1.1",
+    "pymysql>=1.2.0",
+    "python-dotenv>=1.2.2",
+    "flask-cors>=6.0.5",
 ]
