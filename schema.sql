@@ -19,36 +19,6 @@ CREATE TABLE events (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- CREATE TABLE event_registrations (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     event_id INT NOT NULL,
---     user_id VARCHAR(255) DEFAULT NULL,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- ai slope?
-
--- CREATE TABLE users_to_events (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     user_id INT NOT NULL,
---     event_id INT NOT NULL,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
---     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
---  uncomment after creating users table
-
--- CREATE TABLE event_ratings (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     event_id INT NOT NULL,
---     user_id VARCHAR(255) DEFAULT NULL,
---     rating TINYINT NOT NULL,
---     rated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     UNIQUE KEY unique_user_rating (event_id, user_id),
---     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
---  uncomment after creating users table
-
 INSERT INTO categories (name, icon) VALUES
 ('Музыка', 'fa-music'),
 ('Спорт', 'fa-futbol'),
