@@ -1,72 +1,51 @@
-<?php
-require_once __DIR__ . '/config/db.php';
+{% extends "base.html" %}
 
-// Получаем список категорий для фильтра
-$categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
-?>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php echo isset($title) ? $title : 'MeWe'; ?></title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="static/js/theme.js"></script>
-    <link href="static/css/common.css" rel="stylesheet">
-    <link href="static/css/main.css" rel="stylesheet" />
-    <link href="static/css/footer.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-<div class="wrapper">
-    <div class="main">
-        <div class="search-bar-container" style="display: flex; align-items: center; gap: 8px;">
-            <div class="search-icon-left">
-                <img src="static/icons/search.png" alt="Поиск" />
-            </div>
-            <input type="text" class="search-input" id="searchInput" placeholder="Поиск..." aria-label="Поиск мероприятий" />
-            <div class="categories-tab" id="categoriesTab" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Выбор категории">
-                <img src="static/icons/categories.png" alt="Категории" class="categories-icon" />
-                <span>Категории</span>
-            </div>
-        </div>
-        <div id="eventsContainer" class="events-container">
-            <!-- Здесь будут динамически появляться карточки мероприятий -->
-        </div>
+{% block title %}MeWe{% endblock %}
 
-        
-        <img id="logo-png" src="static/icons/logo.png" alt="logo_png" />
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="main">
+    <div class="search-bar-container" style="display: flex; align-items: center; gap: 8px;">
+        <div class="search-icon-left">
+            <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Поиск" />
+        </div>
+        <input type="text" class="search-input" id="searchInput" placeholder="Поиск..." aria-label="Поиск мероприятий" />
+        <div class="categories-tab" id="categoriesTab" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Выбор категории">
+            <img src="{{ url_for('static', filename='icons/categories.png') }}" alt="Категории" class="categories-icon" />
+            <span>Категории</span>
+        </div>
     </div>
-
-    <?php include 'partials/footer.html'; ?>
+    <div id="eventsContainer" class="events-container">
+        <!-- Здесь будут динамически появляться карточки мероприятий -->
+    </div>
 </div>
 
 <!-- Модальное окно категорий -->
-<?php
-require_once 'config/db.php';
-$stmt = $pdo->query("SELECT id, name, icon FROM categories ORDER BY name");
-$categories = $stmt->fetchAll();
-?>
 <div class="categories-modal" id="categoriesModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-overlay" id="modalOverlay" tabindex="-1"></div>
     <div class="modal-content">
         <button class="modal-close" id="modalClose" aria-label="Закрыть">&times;</button>
         <h2 id="modalTitle">Категории</h2>
         <div class="events-container categories-container">
-            <?php foreach ($categories as $category): ?>
-                <div class="event-card" tabindex="0" data-category-id="<?= $category['id'] ?>" data-category-name="<?= htmlspecialchars($category['name']) ?>">
-                    <div class="event-header">
-                        <span class="event-category">
-                            <?= $category['icon'] ? htmlspecialchars($category['icon']) : '🔹' ?>
-                            <?= htmlspecialchars($category['name']) ?>
-                        </span>
-                    </div>
-                    <h3><?= htmlspecialchars($category['name']) ?></h3>
-                    <div class="event-meta">
-                        <!-- Можно добавить описание категории, если нужно -->
-                    </div>
+            {% for category in categories %}
+            <div class="event-card" tabindex="0" data-category-id="{{ category.id }}" data-category-name="{{ category.name }}">
+                <div class="event-header">
+                    <span class="event-category">
+                        {% if category.icon %}
+                            <i class="fas {{ category.icon }}"></i>
+                        {% else %}
+                            🔹
+                        {% endif %}
+                        {{ category.name }}
+                    </span>
                 </div>
-            <?php endforeach; ?>
+                <h3>{{ category.name }}</h3>
+                <div class="event-meta"></div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -79,7 +58,9 @@ $categories = $stmt->fetchAll();
         <div id="eventDetailBody"></div>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const categoriesTab = document.getElementById('categoriesTab');
@@ -168,17 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Загрузка мероприятий с сервера
     function loadEvents(search = '', categoryId = '') {
         const params = new URLSearchParams();
         if (search) params.append('search', search);
         if (categoryId) params.append('category', categoryId);
 
-        fetch('api/events.php?' + params.toString(), {
+        fetch('{{ url_for("events.get_events") }}?' + params.toString(), {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         })
         .then(res => res.json())
         .then(data => {
@@ -193,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Отрисовка карточек мероприятий
     function renderEvents(events) {
         currentEvents = events;
 
@@ -213,9 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${event.formatted_date}
                     </div>
                 </div>
-                
                 <h3 class="event-title">${event.title}</h3>
-                
                 <div class="event-meta">
                     <div class="meta-item">
                         <i class="fas fa-map-marker-alt icon"></i>
@@ -230,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    // Клик по карточке — открыть детальный просмотр
     eventsContainer.addEventListener('click', e => {
         const card = e.target.closest('.event-card');
         if (!card) return;
@@ -239,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event) openEventDetail(event);
     });
 
-    // Поиск с debounce
     let debounceTimeout;
     searchInput.addEventListener('input', () => {
         clearTimeout(debounceTimeout);
@@ -248,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
 
-    // Обработка выбора категории из модального окна
     categoriesModal.querySelectorAll('.event-card').forEach(card => {
         card.addEventListener('click', () => {
             selectedCategoryId = card.getAttribute('data-category-id');
@@ -257,10 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Загрузка всех мероприятий при загрузке страницы
     loadEvents();
 });
 </script>
-
-</body>
-</html>
+{% endblock %}

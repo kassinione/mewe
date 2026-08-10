@@ -3,12 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const msgBox = document.getElementById('form-message');
 
   function showToast(message, type = '') {
-    // подготовка текста и типа
     msgBox.textContent = message;
     msgBox.className = 'form-message show';
     if (type) msgBox.classList.add(type);
 
-    // через 3 секунды начинаем скрывать (opacity: 1→0)
     setTimeout(() => {
       msgBox.classList.remove('show');
     }, 2000);
@@ -26,10 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const data = new FormData(form);
+    const payload = {
+      title: form.title.value.trim(),
+      location: form.location.value.trim(),
+      description: form.description.value.trim(),
+      category: Number(form.category.value),
+      max_participants: Number(form.participants.value),
+      event_date: `${dateVal}T${timeVal}:00`
+    };
 
     try {
-      const res    = await fetch(form.action, { method: 'POST', body: data });
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
       const result = await res.json();
 
       if (result.success) {
@@ -41,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           location.reload();
         }, 2000);
       } else {
-        showToast('Ошибка: ' + result.message, 'error');
+        showToast('Ошибка: ' + result.error, 'error');
       }
     } catch (err) {
       console.error(err);

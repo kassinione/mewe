@@ -1,10 +1,20 @@
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, render_template, jsonify, request, abort
 from datetime import datetime
 from sqlalchemy import or_
-from ..models import Event
+from ..models import Event, Category
 
 
 events_bp = Blueprint("events", __name__)
+
+@events_bp.route("/")
+def render_events_page():
+    categories = Category.query.with_entities(Category.id, Category.name, Category.icon).all()
+
+    return render_template(
+        "events.html", 
+        title="MeWe", 
+        categories=categories
+    )
 
 @events_bp.route("/api/events")
 def get_events():
@@ -15,7 +25,6 @@ def get_events():
 
     if page < 1: 
         abort(400, description="page must be >= 1")
-
     if per_page < 1 or per_page > 100: 
         abort(400, description="per_page must be between 1 and 100")
 
@@ -54,4 +63,4 @@ def get_events():
                 "last_page": -(-total // per_page)
             }
         }
-    })
+    }), 200

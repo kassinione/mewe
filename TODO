@@ -1,5 +1,4 @@
-- Server-side create event form fields validation (only client-side validation now)
 - User telegram auth 
 - User event history
 - Event rating system 
-- Event model @property 
+- Event model @property  
