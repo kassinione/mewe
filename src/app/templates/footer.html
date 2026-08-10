@@ -2,13 +2,18 @@
     <nav class="footer-nav">
         <ul class="nav-list">
             <li class="nav-item">
-                <a class="search-btn"><img src="static/icons/search.png" alt="Search"></a>
+                <a class="search-btn" href="{{ url_for('events.render_events_page') }}"><img src="{{ url_for('static', filename='icons/search.png') }}" alt="Search"></a>
             </li>
             <li class="nav-item">
-                <a class="event-btn"><img src="static/icons/new_event.png" alt="Event"></a>
+                <a class="event-btn" href="{{ url_for('my_events.render_my_event_page') }}"><img src="{{ url_for('static', filename='icons/new_event.png') }}" alt="Event"></a>
             </li>
             <li class="nav-item">
-                <a class="last-btn"><img src="static/icons/last.png" alt="Last"></a>
+                <a class="profile-btn" href="{{ url_for('profile.render_profile_page') }}" aria-label="Профиль">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+                        <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </a>
             </li>
         </ul>
     </nav>

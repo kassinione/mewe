@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Создание мероприятия{% endblock %}
+
+{% block content %}
+<div class="main">
+    <button class="new-event-btn">+</button>
+</div>
+<form class="create-form" id="event-form" method="POST" action="{{ url_for('my_events.create_event') }}">
+    <div class="close-btn" id="close-form">&times;</div>
+    <h1>Создание мероприятия</h1>
+
+    <label>Категория
+        <select name="category">
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label>Место
+        <input type="text" name="location" required>
+    </label>
+
+    <label>Название
+        <input type="text" name="title" required>
+    </label>
+
+    <div class="compact-row">
+        <label>Дата
+            <input type="date" name="date" id="event-date" required min="{{ today }}">
+        </label>
+        <label>Время
+            <input type="time" name="time" id="event-time" required>
+        </label>
+        <label>Кол-во чел.
+            <div class="input-with-icon">
+                <input type="number" name="participants" placeholder="" min="2">
+            </div>
+        </label>
+    </div>
+
+    <label>Описание
+        <textarea name="description" required></textarea>
+    </label>
+    <div class="required-note">все поля обязательны для заполнения</div>
+
+    <button class="btn s-btn" type="submit">СОЗДАТЬ</button>
+</form>
+
+<div id="form-message" class="form-message"></div>
+{% endblock %}
+
+{% block extra_head %}
+<link href="{{ url_for('static', filename='css/my-events.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('event-form');
+    form.addEventListener('submit', function(e) {
+        let valid = true;
+        form.querySelectorAll('[required]').forEach(el => {
+            if (!el.value) {
+                el.classList.add('invalid');
+                valid = false;
+            } else {
+                el.classList.remove('invalid');
+            }
+        });
+        if (!valid) e.preventDefault();
+    });
+    form.querySelectorAll('[required]').forEach(el => {
+        el.addEventListener('input', function() {
+            if (el.value) el.classList.remove('invalid');
+        });
+    });
+});
+</script>
+<script src="{{ url_for('static', filename='js/my-events.js') }}"></script>
+<script src="{{ url_for('static', filename='js/create-event.js') }}"></script>
+{% endblock %}

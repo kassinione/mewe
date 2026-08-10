@@ -11,6 +11,8 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
 
+    app.json.ensure_ascii = False  # type: ignore
+
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
         "DATABASE_URL",
         "mysql+pymysql://root:@localhost/mewe_app"
@@ -22,11 +24,14 @@ def create_app():
     register_error_handlers(app)
 
     CORS(app)
-    
-    from .routes.main import main
-    app.register_blueprint(main)  
 
     from .routes.events import events_bp
     app.register_blueprint(events_bp)
+
+    from .routes.my_events import my_events_bp
+    app.register_blueprint(my_events_bp)
+
+    from .routes.profile import profile_bp
+    app.register_blueprint(profile_bp)
 
     return app
