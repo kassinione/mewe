@@ -1,87 +1,87 @@
 # MeWe
 
-Telegram Mini App для поиска и организации активностей студентов ДВФУ. Платформа позволяет создавать события, находить единомышленников и управлять участием в мероприятиях — прямо внутри Telegram, без установки отдельного приложения.
+A Telegram Mini App for discovering and organizing student activities at Far Eastern Federal University (FEFU). The platform lets students create events, find like-minded people, and manage participation — all without leaving Telegram.
 
-## Идея проекта
+## The Idea
 
-Студенческая жизнь полна разрозненных активностей — совместные пробежки, тематические встречи, культурные события — но узнать о них и собрать компанию часто сложнее, чем кажется. MeWe решает эту проблему: любой студент может за минуту создать мероприятие, а другие — найти его через поиск или фильтр по категориям и присоединиться.
+Student life is full of scattered activities — group runs, themed meetups, cultural events — but finding out about them and gathering a crowd is often harder than it should be. MeWe solves this: any student can create an event in under a minute, and others can find it through search or category filters and join in.
 
-## Возможности
+## Features
 
-- 📅 **Создание мероприятий** — название, описание, место, дата и время, категория, лимит участников
-- 🔍 **Поиск и фильтрация** — по названию, описанию, месту проведения и категории, с живым обновлением результатов
-- 🎨 **Адаптация под тему Telegram** — интерфейс автоматически подстраивается под светлую и тёмную тему клиента
-- 🏛️ **Фирменный стиль ДВФУ** — визуальное оформление построено на официальной цветовой палитре университета
+- 📅 **Event creation** — title, description, location, date and time, category, participant limit
+- 🔍 **Search and filtering** — by title, description, location, and category, with live results
+- 🎨 **Telegram theme adaptation** — the UI automatically follows the client's light/dark theme
+- 🏛️ **FEFU brand identity** — visual design built on the university's official color palette
 
-## Технологический стек
+## Tech Stack
 
 **Backend**
-- Python 3.12, [Flask](https://flask.palletsprojects.com/) с архитектурой Application Factory и Blueprints
+- Python 3.12, [Flask](https://flask.palletsprojects.com/) with an Application Factory and Blueprints architecture
 - SQLAlchemy (ORM) + MySQL
-- [Alembic](https://alembic.sqlalchemy.org/) — версионируемые миграции схемы базы данных
-- [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) — бот, запускающий Mini App
+- [Alembic](https://alembic.sqlalchemy.org/) — versioned database schema migrations
+- [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) — the bot that launches the Mini App
 
 **Frontend**
-- Jinja2-шаблоны с наследованием (`base.html`)
-- Ванильный JavaScript, без сборщиков и фреймворков
-- CSS-переменные для тем и фирменной палитры
+- Jinja2 templates with inheritance (`base.html`)
+- Vanilla JavaScript, no build tools or frameworks
+- CSS custom properties for theming and brand palette
 
-**Инфраструктура**
-- [uv](https://docs.astral.sh/uv/) — управление зависимостями и виртуальным окружением
-- Docker + Docker Compose — три сервиса: `web`, `bot`, `db` (MySQL) с healthcheck-проверкой готовности базы
+**Infrastructure**
+- [uv](https://docs.astral.sh/uv/) — dependency and virtual environment management
+- Docker + Docker Compose — three services: `web`, `bot`, `db` (MySQL) with a healthcheck-based readiness check
 
-## Архитектура
+## Architecture
 
 ```
-├── bot.py              # Telegram-бот — команда /start, кнопка запуска Mini App
-├── run.py              # точка входа Flask-приложения
+├── bot.py              # Telegram bot — /start command, Mini App launch button
+├── run.py              # Flask application entry point
 ├── docker-compose.yml
 ├── Dockerfile
 ├── alembic.ini
-├── migrations/          # история миграций схемы базы данных
+├── migrations/          # database schema migration history
 └── src/app/
-    ├── extensions.py    # инициализация SQLAlchemy
-    ├── models.py        # ORM-модели: Category, Event
-    ├── errors.py        # централизованная обработка ошибок (JSON-ответы)
+    ├── extensions.py    # SQLAlchemy initialization
+    ├── models.py        # ORM models: Category, Event
+    ├── errors.py        # centralized error handling (JSON responses)
     ├── routes/          # Blueprints: events, my_events, profile
-    ├── templates/        # Jinja2-шаблоны с наследованием от base.html
-    └── static/           # CSS, JS, иконки, шрифты
+    ├── templates/        # Jinja2 templates inheriting from base.html
+    └── static/           # CSS, JS, icons, fonts
 ```
 
-## Быстрый старт
+## Getting Started
 
-Создайте `.env` в корне проекта:
+Create a `.env` file in the project root:
 ```
-BOT_TOKEN=токен_от_BotFather
-WEBAPP_URL=https://адрес_вашего_веб-сервиса
-DB_PASSWORD=пароль_пользователя_бд
-DB_ROOT_PASSWORD=пароль_root_бд
+BOT_TOKEN=your_botfather_token
+WEBAPP_URL=https://your-web-service-address
+DB_PASSWORD=database_user_password
+DB_ROOT_PASSWORD=database_root_password
 ```
 
-**Через Docker Compose:**
+**With Docker Compose:**
 ```bash
-docker compose up -d db                          # поднять базу данных
-docker compose run --rm web alembic upgrade head  # применить миграции
-docker compose up -d --build                      # поднять bot и web
+docker compose up -d db                          # start the database
+docker compose run --rm web alembic upgrade head  # apply migrations
+docker compose up -d --build                      # start bot and web
 ```
 
-**Локально, без Docker (потребуется MySQL, например через XAMPP):**
+**Locally, without Docker (requires MySQL, e.g. via XAMPP):**
 ```bash
 uv sync
 uv run alembic upgrade head
-uv run python run.py    # веб-сервер на http://localhost:8000
-uv run python bot.py    # телеграм-бот
+uv run python run.py    # web server at http://localhost:8000
+uv run python bot.py    # telegram bot
 ```
 
-## Статус проекта
+## Project Status
 
-Миграция с PHP-прототипа на Flask завершена. Приложение полностью контейнеризировано и проверено end-to-end: три сервиса (`web`, `bot`, `db`) поднимаются через Docker Compose, схема базы данных версионируется через Alembic-миграции.
+The migration from a PHP prototype to Flask is complete. The application is fully containerized and verified end-to-end: all three services (`web`, `bot`, `db`) run through Docker Compose, and the database schema is versioned via Alembic migrations.
 
-В разработке:
-- Полноценная регистрация на мероприятия (модель `Registration`)
-- Система оценок прошедших мероприятий (модель `Rating`)
-- HTTPS-инфраструктура для запуска Mini App на реальных устройствах
+In progress:
+- Full event registration flow (`Registration` model)
+- Post-event rating system (`Rating` model)
+- HTTPS infrastructure for running the Mini App on real devices
 
-## Автор
+## Author
 
-Лев Федоренко — [GitHub](https://github.com/kassinione)
+Lev Fedorenko — [GitHub](https://github.com/kassinione)
