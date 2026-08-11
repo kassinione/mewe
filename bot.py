@@ -3,20 +3,19 @@ from dotenv import load_dotenv
 from telegram import MenuButtonWebApp, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Application
 
-# .env переменные
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
 WEBAPP_URL = os.getenv("WEBAPP_URL")
 
 if not TOKEN or not WEBAPP_URL:
-    raise RuntimeError("Не заданы BOT_TOKEN или WEBAPP_URL в .env")
+    raise RuntimeError("Missing BOT_TOKEN or WEBAPP_URL in env file")
 
-# Обработчик команды /start
+# /start
 async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[
         InlineKeyboardButton(
-            text="Launch MeWe",
+            text="Open",
             web_app=WebAppInfo(url=WEBAPP_URL)
         )
     ]]
@@ -26,15 +25,14 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=reply_markup
     )
 
-# Установка Web App кнопки в меню
+# menu button
 async def set_menu(app: Application):
     webapp_button = MenuButtonWebApp(
-        text="Launch MeWe",
+        text="Open",
         web_app=WebAppInfo(url=WEBAPP_URL)
     )
     await app.bot.set_chat_menu_button(menu_button=webapp_button)
 
-# Основная функция
 def main():
     app = (
         ApplicationBuilder()
@@ -46,6 +44,5 @@ def main():
     app.add_handler(CommandHandler("start", start_command))
     app.run_polling()
     
-# Точка входа
 if __name__ == '__main__':
     main()

@@ -1,4 +1,21 @@
 services:
+  db:
+    image: mysql:8.4
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mewe_app
+      MYSQL_USER: mewe
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   bot:
     build: .
     container_name: bot
@@ -6,6 +23,11 @@ services:
     command: ["python3", "bot.py"]
     env_file:
       - .env
+    environment:
+      DATABASE_URL: mysql+pymysql://mewe:${DB_PASSWORD}@db/mewe_app
+    depends_on:
+      db:
+        condition: service_healthy
 
   web:
     build: .
@@ -14,5 +36,13 @@ services:
     command: ["python3", "run.py"]
     env_file:
       - .env
+    environment:
+      DATABASE_URL: mysql+pymysql://mewe:${DB_PASSWORD}@db/mewe_app
     ports:
       - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
