@@ -60,7 +60,7 @@ DB_ROOT_PASSWORD=database_root_password
 
 **With Docker Compose:**
 ```bash
-docker compose up -d db                          # start the database
+docker compose up -d db                           # start the database
 docker compose run --rm web alembic upgrade head  # apply migrations
 docker compose up -d --build                      # start bot and web
 ```
