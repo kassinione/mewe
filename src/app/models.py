@@ -17,10 +17,10 @@ class Event(db.Model):
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
     location = db.Column(db.String(255), nullable=False)
-    category_id = db.Column(db.ForeignKey("categories.id"))
-    max_participants = db.Column(db.Integer, default=0)
+    category_id = db.Column(db.ForeignKey("categories.id", ondelete="SET NULL"))
+    max_participants = db.Column(db.Integer, default=2)
     event_date = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     category = db.relationship("Category", back_populates="events")
 
     def to_dict(self):
