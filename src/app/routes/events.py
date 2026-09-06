@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, jsonify, request, abort
 from datetime import datetime
+
+from flask import Blueprint, render_template, jsonify, request, abort
 from sqlalchemy import or_
+
 from ..models import Event, Category
 
-
 events_bp = Blueprint("events", __name__)
+
 
 @events_bp.route("/")
 def render_events_page():
@@ -15,6 +17,7 @@ def render_events_page():
         title="MeWe", 
         categories=categories
     )
+
 
 @events_bp.route("/api/events")
 def get_events():

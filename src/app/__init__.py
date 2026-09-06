@@ -1,7 +1,9 @@
 import os
+
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
+
 from .extensions import db
 from .errors import register_error_handlers
 
@@ -24,6 +26,9 @@ def create_app():
     register_error_handlers(app)
 
     CORS(app)
+
+    from .routes.auth import auth_bp
+    app.register_blueprint(auth_bp)
 
     from .routes.events import events_bp
     app.register_blueprint(events_bp)

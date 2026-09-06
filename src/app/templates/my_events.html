@@ -48,7 +48,6 @@
     <button class="btn s-btn" type="submit">СОЗДАТЬ</button>
 </form>
 
-<div id="form-message" class="form-message"></div>
 {% endblock %}
 
 {% block extra_head %}
@@ -79,5 +78,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script src="{{ url_for('static', filename='js/my-events.js') }}"></script>
-<script src="{{ url_for('static', filename='js/create-event.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/create-event.js') }}"></script>
 {% endblock %}

@@ -11,6 +11,10 @@ def register_error_handlers(app):
     def bad_request(error):
         return jsonify({"success": False, "error": error.description}), 400
 
+    @app.errorhandler(401)
+    def unauthorized(error):
+        return jsonify({"success": False, "error": error.description}), 401
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({"success": False, "error": "resource not found"}), 404
