@@ -1,16 +1,8 @@
+import { showToast } from "./toast.js";
+
+
 document.addEventListener('DOMContentLoaded', () => {
-  const form   = document.getElementById('event-form');
-  const msgBox = document.getElementById('form-message');
-
-  function showToast(message, type = '') {
-    msgBox.textContent = message;
-    msgBox.className = 'form-message show';
-    if (type) msgBox.classList.add(type);
-
-    setTimeout(() => {
-      msgBox.classList.remove('show');
-    }, 2000);
-  }
+  const form = document.getElementById('event-form');
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -34,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const res = await fetch(form.action, {
+      const response = await fetch(form.action, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const result = await res.json();
+      const result = await response.json();
 
       if (result.success) {
         showToast('Мероприятие создано!', 'success');
@@ -50,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
           location.reload();
         }, 2000);
       } else {
+        console.error(result.error);
         showToast('Ошибка: ' + result.error, 'error');
       }
     } catch (err) {

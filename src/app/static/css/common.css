@@ -2,6 +2,8 @@
   --fefu-blue: #3B63AB;
   --fefu-red: #BC2940;
 
+  --boostrap-success: #28a745;
+
   --bg-page: #F7F9FC;
   --bg-card: #FFFFFF;
   --bg-card-header: #FFFFFF;
@@ -13,8 +15,9 @@
   --text-on-accent: #FFFFFF;
 
   --border: #E5E5EA;
-  --accent: var(--fefu-blue);
-  --danger: var(--fefu-red);
+  --accent:  var(--fefu-blue);
+  --success: var(--boostrap-success);
+  --danger:  var(--fefu-red);
 
   --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }

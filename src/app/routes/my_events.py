@@ -1,12 +1,16 @@
-from flask import Blueprint, render_template, jsonify, request, abort
 from datetime import datetime, date
+
+from flask import Blueprint, render_template, jsonify, request, abort, session
+
+from ..service.auth import login_required
 from ..extensions import db
 from ..models import Category, Event
 
-
 my_events_bp = Blueprint("my_events", __name__)
 
+
 @my_events_bp.route("/my_events")
+@login_required
 def render_my_event_page():
     categories = Category.query.with_entities(Category.id, Category.name).all()
 
@@ -17,22 +21,24 @@ def render_my_event_page():
         today=date.today().isoformat()
     )
 
-@my_events_bp.route("/my_events", methods=["POST"])
-def create_event():
-    data = request.get_json(silent=True)
 
-    if data is None:
+@my_events_bp.route("/my_events", methods=["POST"])
+@login_required
+def create_event():
+    body = request.get_json(silent=True)
+
+    if body is None:
         abort(400, description="invalid JSON body")
 
-    title = data.get("title", "").strip()
-    location = data.get("location", "").strip()
-    description = data.get("description", "").strip()
-    category_id = data.get("category")
+    title = body.get("title", "").strip()
+    location = body.get("location", "").strip()
+    description = body.get("description", "").strip()
+    category_id = body.get("category")
     try:
-        max_participants = int(data.get("max_participants", 1))
+        max_participants = int(body.get("max_participants", 1))
     except (ValueError, TypeError):
         abort(400, description="max_participants must be a number")
-    event_date_str = data.get("event_date")
+    event_date_str = body.get("event_date")
     
     if not title:
         abort(400, description="title is required")
@@ -59,7 +65,8 @@ def create_event():
         description=description,
         category_id=category_id,
         max_participants=max_participants,
-        event_date=event_date
+        event_date=event_date,
+        creator_id=session["user_id"], # требует тестов
     )
 
     db.session.add(new_event)
