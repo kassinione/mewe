@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from telegram import MenuButtonWebApp, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Application
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, Application, filters
 
 load_dotenv()
 
@@ -23,7 +23,7 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     ]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "Welcome to MeWe! 🎉🎉🎉",
+        "Добро пожаловать в MeWe! 🎉",
         reply_markup=reply_markup
     )
 
@@ -37,6 +37,11 @@ async def set_menu(app: Application):
     await app.bot.set_chat_menu_button(menu_button=webapp_button)
 
 
+# hint
+async def fallback_hint(update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Чтобы открыть MeWe, отправь /start 😊")
+
+
 def main():
     app = (
         ApplicationBuilder()
@@ -46,6 +51,7 @@ def main():
     )
 
     app.add_handler(CommandHandler("start", start_command))
+    app.add_handler(MessageHandler(~filters.COMMAND, fallback_hint))
     app.run_polling()
     
 if __name__ == '__main__':
