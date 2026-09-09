@@ -17,7 +17,7 @@ if not BOT_TOKEN or not WEBAPP_URL:
 async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[
         InlineKeyboardButton(
-            text="",
+            text="Открыть",
             web_app=WebAppInfo(url=WEBAPP_URL)
         )
     ]]
