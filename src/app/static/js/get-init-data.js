@@ -25,3 +25,5 @@ async function authUser() {
         showToast('Сетевая ошибка при попытке аутентификации.', 'error');
     }
 }
+
+authUser();
