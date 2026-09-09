@@ -17,7 +17,7 @@ if not BOT_TOKEN or not WEBAPP_URL:
 async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[
         InlineKeyboardButton(
-            text="Open",
+            text="",
             web_app=WebAppInfo(url=WEBAPP_URL)
         )
     ]]
@@ -39,7 +39,7 @@ async def set_menu(app: Application):
 
 # hint
 async def fallback_hint(update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Чтобы открыть MeWe, отправь /start 😊")
+    await update.message.reply_text("Открой MeWe командой /start 😊")
 
 
 def main():
