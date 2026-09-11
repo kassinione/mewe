@@ -52,6 +52,13 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     animation: fadeIn 0.3s ease-out;
+    box-sizing: border-box;
+}
+
+.create-form *,
+.create-form *::before,
+.create-form *::after {
+    box-sizing: border-box;
 }
 
 .create-form h1 {
@@ -112,8 +119,8 @@
 }
 
 .create-form .compact-row label {
-    flex: 1 1 30%;
-    min-width: 80px;
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .create-form input[type="date"],
@@ -186,7 +193,8 @@
 @media screen and (max-width: 400px) {
     .create-form {
         padding: 20px;
-        margin: 16px;
+        margin: 16px auto;
+        width: calc(100% - 32px);
     }
 
     .create-form h1 {
