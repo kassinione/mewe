@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Мероприятие создано!', 'success');
         form.reset();
         form.style.display = "none";
-        document.getElementsByClassName("main")[0].style.display = "flex";
+        document.getElementsByClassName("create-hero")[0].style.display = "flex";
         setTimeout(() => {
           location.reload();
         }, 2000);
