@@ -1,4 +1,4 @@
-.main {
+.create-hero {
     min-height: 60vh;
     display: flex;
     align-items: center;
@@ -9,7 +9,7 @@
 
 .new-event-btn {
     position: fixed;
-    bottom: 80px;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     right: 20px;
     background-color: var(--accent);
     width: 60px;
