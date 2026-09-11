@@ -31,7 +31,7 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
 # menu button
 async def set_menu(app: Application):
     webapp_button = MenuButtonWebApp(
-        text="Open",
+        text="Открыть",
         web_app=WebAppInfo(url=WEBAPP_URL)
     )
     await app.bot.set_chat_menu_button(menu_button=webapp_button)
