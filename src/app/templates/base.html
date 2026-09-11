@@ -2,9 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{% block title %}MeWe{% endblock %}</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="{{ url_for('static', filename='js/telegram-init.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/get-init-data.js') }}"></script>
     <!-- <script src="{{ url_for('static', filename='js/theme.js') }}"></script> -->
     <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet">

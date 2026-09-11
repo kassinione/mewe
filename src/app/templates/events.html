@@ -7,20 +7,18 @@
 {% endblock %}
 
 {% block content %}
-<div class="main">
-    <div class="search-bar-container" style="display: flex; align-items: center; gap: 8px;">
-        <div class="search-icon-left">
-            <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Поиск" />
-        </div>
-        <input type="text" class="search-input" id="searchInput" placeholder="Поиск..." aria-label="Поиск мероприятий" />
-        <div class="categories-tab" id="categoriesTab" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Выбор категории">
-            <img src="{{ url_for('static', filename='icons/categories.png') }}" alt="Категории" class="categories-icon" />
-            <span>Категории</span>
-        </div>
+<div class="search-bar-container" style="display: flex; align-items: center; gap: 8px;">
+    <div class="search-icon-left">
+        <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Поиск" />
     </div>
-    <div id="eventsContainer" class="events-container">
-        <!-- Здесь будут динамически появляться карточки мероприятий -->
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск..." aria-label="Поиск мероприятий" />
+    <div class="categories-tab" id="categoriesTab" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Выбор категории">
+        <img src="{{ url_for('static', filename='icons/categories.png') }}" alt="Категории" class="categories-icon" />
+        <span>Категории</span>
     </div>
+</div>
+<div id="eventsContainer" class="events-container">
+    <!-- Здесь будут динамически появляться карточки мероприятий -->
 </div>
 
 <!-- Модальное окно категорий -->
