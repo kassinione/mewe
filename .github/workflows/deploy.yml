@@ -13,7 +13,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /mewe
+            cd ./mewe
             git pull
             docker compose build
             docker compose run --rm web alembic upgrade head
