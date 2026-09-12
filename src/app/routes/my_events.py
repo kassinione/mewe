@@ -1,10 +1,10 @@
-from datetime import datetime, date
+from datetime import date, datetime
 
-from flask import Blueprint, render_template, jsonify, request, abort, session
+from flask import Blueprint, abort, jsonify, render_template, request, session
 
-from ..service.auth import login_required
 from ..extensions import db
 from ..models import Category, Event
+from ..service.auth import login_required
 
 my_events_bp = Blueprint("my_events", __name__)
 
@@ -15,10 +15,10 @@ def render_my_event_page():
     categories = Category.query.with_entities(Category.id, Category.name).all()
 
     return render_template(
-        "my_events.html", 
+        "my_events.html",
         title="Your own event with MeWe",
         categories=categories,
-        today=date.today().isoformat()
+        today=date.today().isoformat()  # noqa: DTZ011
     )
 
 
@@ -39,7 +39,7 @@ def create_event():
     except (ValueError, TypeError):
         abort(400, description="max_participants must be a number")
     event_date_str = body.get("event_date")
-    
+
     if not title:
         abort(400, description="title is required")
     if not location:
@@ -56,17 +56,17 @@ def create_event():
         event_date = datetime.fromisoformat(event_date_str)
     except ValueError:
         abort(400, description="invalid event_date format")
-    if event_date <= datetime.utcnow():
+    if event_date <= datetime.utcnow():  # noqa: DTZ003
         abort(400, description="invalid event_date value")
 
-    new_event = Event( 
-        title=title,
-        location=location,
-        description=description,
-        category_id=category_id,
-        max_participants=max_participants,
-        event_date=event_date,
-        creator_id=session["user_id"], # требует тестов
+    new_event = Event(
+        title=title,  # pyright: ignore[reportCallIssue]
+        location=location,  # pyright: ignore[reportCallIssue]
+        description=description,  # pyright: ignore[reportCallIssue]
+        category_id=category_id,  # pyright: ignore[reportCallIssue]
+        max_participants=max_participants,  # pyright: ignore[reportCallIssue]
+        event_date=event_date,  # pyright: ignore[reportCallIssue]
+        creator_id=session["user_id"], # pyright: ignore[reportCallIssue]
     )
 
     db.session.add(new_event)

@@ -1,8 +1,20 @@
 import os
 
 from dotenv import load_dotenv
-from telegram import MenuButtonWebApp, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, Application, filters
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    MenuButtonWebApp,
+    WebAppInfo,
+)
+from telegram.ext import (
+    Application,
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes,
+    MessageHandler,
+    filters,
+)
 
 load_dotenv()
 
@@ -18,7 +30,7 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[
         InlineKeyboardButton(
             text="Открыть",
-            web_app=WebAppInfo(url=WEBAPP_URL)
+            web_app=WebAppInfo(url=WEBAPP_URL)  # pyright: ignore[reportArgumentType]
         )
     ]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -32,7 +44,7 @@ async def start_command(update, context: ContextTypes.DEFAULT_TYPE):
 async def set_menu(app: Application):
     webapp_button = MenuButtonWebApp(
         text="Открыть",
-        web_app=WebAppInfo(url=WEBAPP_URL)
+        web_app=WebAppInfo(url=WEBAPP_URL)  # pyright: ignore[reportArgumentType]
     )
     await app.bot.set_chat_menu_button(menu_button=webapp_button)
 
@@ -45,7 +57,7 @@ async def fallback_hint(update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = (
         ApplicationBuilder()
-        .token(BOT_TOKEN)
+        .token(BOT_TOKEN)  # pyright: ignore[reportArgumentType]
         .post_init(set_menu)
         .build()
     )

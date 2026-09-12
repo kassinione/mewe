@@ -1,11 +1,11 @@
-import json
-import hmac
 import hashlib
+import hmac
+import json
 import time
-from urllib.parse import parse_qsl
 from functools import wraps
+from urllib.parse import parse_qsl
 
-from flask import session, abort
+from flask import abort, session
 
 MAX_AGE_SECONDS = 86400  # 24 часа
 

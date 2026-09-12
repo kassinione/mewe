@@ -1,5 +1,5 @@
-from werkzeug.exceptions import HTTPException
 from flask import jsonify
+from werkzeug.exceptions import HTTPException
 
 
 def register_error_handlers(app):

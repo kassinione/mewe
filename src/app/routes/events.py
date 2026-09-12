@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from flask import Blueprint, render_template, jsonify, request, abort
+from flask import Blueprint, abort, jsonify, render_template, request
 from sqlalchemy import or_
 
-from ..models import Event, Category
+from ..models import Category, Event
 
 events_bp = Blueprint("events", __name__)
 
@@ -13,8 +13,8 @@ def render_events_page():
     categories = Category.query.with_entities(Category.id, Category.name, Category.icon).all()
 
     return render_template(
-        "events.html", 
-        title="MeWe", 
+        "events.html",
+        title="MeWe",
         categories=categories
     )
 
@@ -26,12 +26,12 @@ def get_events():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 15, type=int)
 
-    if page < 1: 
+    if page < 1:
         abort(400, description="page must be >= 1")
-    if per_page < 1 or per_page > 100: 
+    if per_page < 1 or per_page > 100:
         abort(400, description="per_page must be between 1 and 100")
 
-    query = Event.query.filter(Event.event_date >= datetime.utcnow())
+    query = Event.query.filter(Event.event_date >= datetime.utcnow())  # noqa: DTZ003
 
     if search:
         query = query.filter(
@@ -54,7 +54,7 @@ def get_events():
         .limit(per_page)
         .all()
     )
-        
+
     return jsonify({
         "success": True,
         "data": {
