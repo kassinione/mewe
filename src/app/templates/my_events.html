@@ -3,6 +3,10 @@
 {% block title %}Создание мероприятия{% endblock %}
 
 {% block content %}
+<div id="my-events-page" data-events-url="{{ url_for('my_events.get_my_events') }}">
+<div id="eventsContainer" class="events-container">
+    <!-- Здесь будут динамически появляться карточки мероприятий -->
+</div>
 <div class="create-hero">
     <button class="new-event-btn">+</button>
 </div>
@@ -47,7 +51,7 @@
 
     <button class="btn s-btn" type="submit">СОЗДАТЬ</button>
 </form>
-
+</div>
 {% endblock %}
 
 {% block extra_head %}
@@ -55,6 +59,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/my-events.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/my-events.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/create-event.js') }}"></script>
 {% endblock %}

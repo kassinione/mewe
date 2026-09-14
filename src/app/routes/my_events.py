@@ -21,6 +21,23 @@ def render_my_event_page():
         today=date.today().isoformat()  # noqa: DTZ011
     )
 
+@my_events_bp.route("/api/my-events")
+@login_required
+def get_my_events():
+    events = (
+        Event.query
+        .filter(Event.creator_id == session["user_id"])
+        .order_by(Event.event_date.asc())
+        .all()
+    )
+
+    return jsonify({
+        "success": True,
+        "data": {
+            "events": [e.to_dict() for e in events]
+        }
+    }), 200
+
 
 @my_events_bp.route("/my_events", methods=["POST"])
 @login_required

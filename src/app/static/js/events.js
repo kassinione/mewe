@@ -1,3 +1,5 @@
+import { fetchEvents } from './events-api.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('events-page');
   const categoriesTab = document.getElementById('categoriesTab');
@@ -146,29 +148,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadEvents(search = '', categoryId = '') {
-    const url = new URL(page.dataset.eventsUrl, window.location.origin);
-    if (search) url.searchParams.set('search', search);
-    if (categoryId) url.searchParams.set('category', categoryId);
-
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: { Accept: 'application/json' }
-      });
-      const data = await response.json();
+      const data = await fetchEvents(
+        page.dataset.eventsUrl,
+        search,
+        categoryId
+      );
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Unknown error');
-      }
-      renderEvents(data.data.events);
+      renderEvents(data.events);
     } catch (error) {
       eventsContainer.replaceChildren();
+
       const message = document.createElement('p');
       message.className = 'error';
       message.textContent = `Ошибка загрузки мероприятий: ${error.message}`;
       eventsContainer.append(message);
     }
   }
+
 
   categoriesTab.addEventListener('click', openCategoriesModal);
   categoriesTab.addEventListener('keydown', event => {

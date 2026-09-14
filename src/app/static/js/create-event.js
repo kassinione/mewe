@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const result = await response.json();
+      const data = await response.json();
 
-      if (result.success) {
+      if (data.success) {
         showToast('Мероприятие создано!', 'success');
         form.reset();
         form.style.display = "none";
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
           location.reload();
         }, 2000);
       } else {
-        console.error(result.error);
-        showToast('Ошибка: ' + result.error, 'error');
+        console.error(data.error);
+        showToast('Ошибка: ' + data.error, 'error');
       }
     } catch (err) {
       console.error(err);
