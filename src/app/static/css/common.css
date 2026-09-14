@@ -319,6 +319,30 @@ html, body {
   align-items: center;
 }
 
+.event-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-right: 32px;
+  margin-bottom: 16px;
+}
+
+.event-detail-title {
+  margin: 0 0 14px;
+  font-size: 20px;
+}
+
+.event-detail-meta {
+  padding: 0 0 16px;
+}
+
+.event-detail-description {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
 .event-meta span,
 .meta-item {
   font-size: 14px;

@@ -55,28 +55,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('event-form');
-    form.addEventListener('submit', function(e) {
-        let valid = true;
-        form.querySelectorAll('[required]').forEach(el => {
-            if (!el.value) {
-                el.classList.add('invalid');
-                valid = false;
-            } else {
-                el.classList.remove('invalid');
-            }
-        });
-        if (!valid) e.preventDefault();
-    });
-    form.querySelectorAll('[required]').forEach(el => {
-        el.addEventListener('input', function() {
-            if (el.value) el.classList.remove('invalid');
-        });
-    });
-});
-</script>
 <script src="{{ url_for('static', filename='js/my-events.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/create-event.js') }}"></script>
 {% endblock %}

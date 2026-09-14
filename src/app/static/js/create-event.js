@@ -4,8 +4,25 @@ import { showToast } from "./toast.js";
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('event-form');
 
+  form.querySelectorAll('[required]').forEach(field => {
+    field.addEventListener('input', () => {
+      field.classList.toggle('invalid', !field.value);
+    });
+  });
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
+
+    const requiredFieldsValid = [...form.querySelectorAll('[required]')]
+      .every(field => {
+        const valid = Boolean(field.value);
+        field.classList.toggle('invalid', !valid);
+        return valid;
+      });
+
+    if (!requiredFieldsValid) {
+      return;
+    }
 
     const dateVal = document.getElementById('event-date').value;
     const timeVal = document.getElementById('event-time').value;
