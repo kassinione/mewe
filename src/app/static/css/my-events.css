@@ -8,6 +8,18 @@
     z-index: 2;
 }
 
+.my-events-page.form-open::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+body:has(.my-events-page.form-open) footer {
+    z-index: 1;
+}
+
 .new-event-btn {
     position: fixed;
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
@@ -42,7 +54,7 @@
 .create-form {
     display: none;
     position: fixed;
-    top: 50%;
+    top: calc(50% - 30px);
     left: 50%;
     z-index: 1600;
     flex-direction: column;

@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let callCreateFormBtn = document.getElementsByClassName("new-event-btn")[0]
 
 callCreateFormBtn.addEventListener("click", () => {
+    document.getElementById("my-events-page").classList.add("form-open");
     document.getElementsByClassName("create-hero")[0].style.display = "none";
     document.getElementsByClassName("create-form")[0].style.display = "flex";
 });
@@ -172,6 +173,7 @@ callCreateFormBtn.addEventListener("click", () => {
 let closeCreateFormBtn = document.getElementsByClassName("close-btn")[0]
 
 closeCreateFormBtn.addEventListener("click", () => {
+    document.getElementById("my-events-page").classList.remove("form-open");
     document.getElementsByClassName("create-form")[0].style.display = "none";
     document.getElementsByClassName("create-hero")[0].style.display = "flex";
 });
