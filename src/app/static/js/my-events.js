@@ -1,6 +1,6 @@
 import { fetchEvents } from './events-api.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('my-events-page');
   const eventsContainer = document.getElementById('eventsContainer');
 
@@ -66,15 +66,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  try {
-    const data = await fetchEvents(page.dataset.eventsUrl);
-    renderMyEvents(data.events);
-  } catch (error) {
-    const message = document.createElement('p');
-    message.className = 'error';
-    message.textContent = `Ошибка загрузки мероприятий: ${error.message}`;
-    eventsContainer.replaceChildren(message);
+  async function loadMyEvents() {
+    try {
+      const data = await fetchEvents(page.dataset.eventsUrl);
+      renderMyEvents(data.events);
+    } catch (error) {
+      const message = document.createElement('p');
+      message.className = 'error';
+      message.textContent = `Ошибка загрузки мероприятий: ${error.message}`;
+      eventsContainer.replaceChildren(message);
+    }
   }
+
+  loadMyEvents();
 });
 
 let callCreateFormBtn = document.getElementsByClassName("new-event-btn")[0]
