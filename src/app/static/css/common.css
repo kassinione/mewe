@@ -36,6 +36,20 @@
   --border: #3A3A3C;
 }
 
+#logo-png {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  width: 42vw;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -55,6 +69,55 @@ html, body {
   padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   min-height: var(--tg-viewport-stable-height, 100vh);
   color: var(--text-primary);
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  margin-top: 24px;
+  height: 48px;
+  padding: 0 24px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-main);
+  cursor: pointer;
+  color: var(--text-on-accent);
+  background: var(--accent);
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 250px;
+  padding: 12px 20px;
+  background-color: var(--text-primary);
+  color: var(--bg-card);
+  border-radius: 8px;
+  text-align: center;
+  font-family: var(--font-main);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast.success {
+  background-color: var(--success);
+}
+
+.toast.error {
+  background-color: var(--danger);
+}
+
+.toast.info {
+  background-color: var(--accent);
 }
 
 .header-plate {
@@ -104,6 +167,12 @@ html, body {
 
   .wrapper {
       padding-top: 20px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .btn {
+    width: 90%;
   }
 }
 
