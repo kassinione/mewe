@@ -1,4 +1,5 @@
 import { fetchEvents } from './events-api.js';
+import { createEventCard, createIcon, createMetaItem } from './event-card.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('my-events-page');
@@ -8,19 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const eventDetailOverlay = document.getElementById('eventDetailOverlay');
   const eventDetailBody = document.getElementById('eventDetailBody');
   let currentEvents = [];
-
-  function createIcon(className) {
-    const icon = document.createElement('i');
-    icon.className = className;
-    return icon;
-  }
-
-  function createMetaItem(iconClass, text) {
-    const item = document.createElement('div');
-    item.className = 'meta-item';
-    item.append(createIcon(`fas ${iconClass} icon`), document.createTextNode(text));
-    return item;
-  }
 
   function setModalState(modal, isOpen) {
     modal.classList.toggle('active', isOpen);
@@ -89,42 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     events.forEach(event => {
-      const card = document.createElement('div');
-      card.className = 'event-card';
-      card.dataset.eventId = event.id;
-      card.tabIndex = 0;
-
-      const header = document.createElement('div');
-      header.className = 'event-header';
-
-      const category = document.createElement('div');
-      category.className = 'event-category';
-      category.append(
-        createIcon(`fas ${event.category_icon}`),
-        document.createTextNode(event.category_name)
-      );
-
-      const date = document.createElement('div');
-      date.className = 'event-date';
-      date.textContent = event.formatted_date;
-      header.append(category, date);
-
-      const title = document.createElement('h3');
-      title.className = 'event-title';
-      title.textContent = event.title;
-
-      const meta = document.createElement('div');
-      meta.className = 'event-meta';
-      meta.append(
-        createMetaItem('fa-map-marker-alt', event.location),
-        createMetaItem(
-          'fa-users',
-          `${event.registered_count || 0} / ${event.max_participants} участников`
-        )
-      );
-
-      card.append(header, title, meta);
-      eventsContainer.append(card);
+      eventsContainer.append(createEventCard(event));
     });
   }
 
@@ -162,25 +115,26 @@ document.addEventListener('DOMContentLoaded', () => {
   loadMyEvents();
 });
 
-let callCreateFormBtn = document.getElementsByClassName("new-event-btn")[0]
-let formOverlay = document.getElementById("form-overlay")
+const myEventsPage = document.getElementById("my-events-page");
+const callCreateFormBtn = document.getElementsByClassName("new-event-btn")[0];
+const formOverlay = document.getElementById("form-overlay");
+const createHero = document.getElementsByClassName("create-hero")[0];
+const createForm = document.getElementsByClassName("create-form")[0];
+const closeCreateFormBtn = document.getElementsByClassName("close-btn")[0];
 
 callCreateFormBtn.addEventListener("click", () => {
-    document.getElementById("my-events-page").classList.add("form-open");
+    myEventsPage.classList.add("form-open");
     formOverlay.setAttribute("aria-hidden", "false");
-    document.getElementsByClassName("create-hero")[0].style.display = "none";
-    document.getElementsByClassName("create-form")[0].style.display = "flex";
+    createHero.style.display = "none";
+    createForm.style.display = "flex";
 });
 
-let closeCreateFormBtn = document.getElementsByClassName("close-btn")[0]
-
-closeCreateFormBtn.addEventListener("click", () => {
-    document.getElementById("my-events-page").classList.remove("form-open");
+function closeCreateForm() {
+    myEventsPage.classList.remove("form-open");
     formOverlay.setAttribute("aria-hidden", "true");
-    document.getElementsByClassName("create-form")[0].style.display = "none";
-    document.getElementsByClassName("create-hero")[0].style.display = "flex";
-});
+    createForm.style.display = "none";
+    createHero.style.display = "flex";
+}
 
-formOverlay.addEventListener("click", () => {
-    closeCreateFormBtn.click();
-});
+closeCreateFormBtn.addEventListener("click", closeCreateForm);
+formOverlay.addEventListener("click", closeCreateForm);
