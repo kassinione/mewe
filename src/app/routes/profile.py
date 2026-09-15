@@ -10,5 +10,5 @@ profile_bp = Blueprint("profile", __name__)
 def render_profile_page():
     return render_template(
         "profile.html",
-        title="MeWe profile"
+        title="MeWe"
     )

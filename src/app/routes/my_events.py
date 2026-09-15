@@ -16,7 +16,7 @@ def render_my_event_page():
 
     return render_template(
         "my_events.html",
-        title="Your own event with MeWe",
+        title="MeWe",
         categories=categories,
         today=date.today().isoformat()  # noqa: DTZ011
     )
