@@ -132,6 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
   modalOverlay.addEventListener('click', closeCategoriesModal);
   eventDetailClose.addEventListener('click', closeEventDetail);
   eventDetailOverlay.addEventListener('click', closeEventDetail);
+  categoriesModal.addEventListener('click', event => {
+    if (event.target === categoriesModal) closeCategoriesModal();
+  });
+  eventDetailModal.addEventListener('click', event => {
+    if (event.target === eventDetailModal) closeEventDetail();
+  });
 
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;

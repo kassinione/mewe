@@ -291,6 +291,12 @@ html, body {
   animation: modalFadeIn 0.3s ease-out;
 }
 
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
 .modal-content {
   background: var(--bg-card);
   border-radius: 16px;
@@ -298,6 +304,7 @@ html, body {
   width: 100%;
   padding: 24px;
   position: relative;
+  z-index: 1;
 }
 
 .modal-close {
@@ -324,6 +331,7 @@ html, body {
   stroke: currentColor;
   stroke-width: 2.5;
   stroke-linecap: round;
+  transform: translateY(1px);
 }
 
 .modal-close:hover {

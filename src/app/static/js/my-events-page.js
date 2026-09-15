@@ -93,6 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   eventDetailClose.addEventListener('click', closeEventDetail);
   eventDetailOverlay.addEventListener('click', closeEventDetail);
+  eventDetailModal.addEventListener('click', event => {
+    if (event.target === eventDetailModal) closeEventDetail();
+  });
 
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && eventDetailModal.classList.contains('active')) {
