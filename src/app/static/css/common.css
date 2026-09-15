@@ -52,6 +52,7 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -301,11 +302,17 @@ html, body {
 
 .modal-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   font-size: 28px;
+  line-height: 1;
   cursor: pointer;
   color: var(--text-muted);
   transition: color 0.2s ease;
@@ -343,7 +350,6 @@ html, body {
   flex-direction: column;
   transition: transform 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .event-card:hover,
@@ -456,7 +462,9 @@ html, body {
 }
 
 #eventDetailModal .event-detail-description {
-  padding: 0 20px 20px;
+  margin: 0;
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--border);
 }
 
 .event-meta span,
