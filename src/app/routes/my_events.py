@@ -27,7 +27,7 @@ def get_my_events():
     events = (
         Event.query
         .filter(Event.creator_id == session["user_id"])
-        .order_by(Event.event_date.asc())
+        .order_by(Event.event_date.desc())
         .all()
     )
 
