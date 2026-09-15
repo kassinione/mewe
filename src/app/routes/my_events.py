@@ -39,7 +39,7 @@ def get_my_events():
     }), 200
 
 
-@my_events_bp.route("/my_events", methods=["POST"])
+@my_events_bp.route("/api/my-events", methods=["POST"])
 @login_required
 def create_event():
     body = request.get_json(silent=True)
