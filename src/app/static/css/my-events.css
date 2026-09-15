@@ -16,10 +16,6 @@
     background: rgba(0, 0, 0, 0.4);
 }
 
-body:has(.my-events-page.form-open) footer {
-    z-index: 1;
-}
-
 .new-event-btn {
     position: fixed;
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
@@ -32,12 +28,16 @@ body:has(.my-events-page.form-open) footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 32px;
-    line-height: 1;
-    padding-bottom: 5px;
+    padding: 0;
     color: var(--text-on-accent);
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(59, 99, 171, 0.3);
+}
+
+.new-event-btn svg {
+    width: 32px;
+    height: 32px;
+    display: block;
 }
 
 @keyframes fadeIn {
@@ -150,11 +150,16 @@ body:has(.my-events-page.form-open) footer {
 .create-form .input-with-icon {
     position: relative;
 }
-
 .create-form .input-with-icon input[type="number"] {
-    -moz-appearance: textfield;
+    -moz-appearance: textfield; /* Firefox: убирает спиннеры */
+    appearance: textfield;      /* стандартное свойство, для совместимости вперёд */
 }
 
+.create-form .input-with-icon input[type="number"]::-webkit-outer-spin-button,
+.create-form .input-with-icon input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;   /* Chrome/Safari/Edge: убирает спиннеры */
+    margin: 0;
+}
 .create-form .input-with-icon input[type="number"]::-webkit-outer-spin-button,
 .create-form .input-with-icon input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;

@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.success) {
         showToast('Мероприятие создано!', 'success');
         form.reset();
+        document.getElementById('my-events-page').classList.remove('form-open');
         form.style.display = "none";
         document.getElementsByClassName("create-hero")[0].style.display = "flex";
         setTimeout(() => {
