@@ -302,8 +302,8 @@ html, body {
 
 .modal-close {
   position: absolute;
-  top: 8px;
-  right: 12px;
+  top: 12px;
+  right: 16px;
   width: 32px;
   height: 32px;
   display: flex;
@@ -311,11 +311,19 @@ html, body {
   justify-content: center;
   background: transparent;
   border: none;
-  font-size: 28px;
-  line-height: 1;
   cursor: pointer;
   color: var(--text-muted);
   transition: color 0.2s ease;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
 }
 
 .modal-close:hover {

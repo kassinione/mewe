@@ -14,9 +14,12 @@
         </svg>
     </button>
 </div>
-<div class="form-overlay" id="form-overlay" aria-hidden="true"></div>
 <form class="create-form" id="event-form" method="POST" action="{{ url_for('my_events.create_event') }}">
-    <div class="close-btn" id="close-form">&times;</div>
+    <button class="close-btn" id="close-form" type="button" aria-label="Закрыть">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6 6L18 18M18 6L6 18"></path>
+        </svg>
+    </button>
     <h1>Создание мероприятия</h1>
 
     <label>Категория
@@ -58,10 +61,15 @@
 </form>
 </div>
 
+<div class="form-overlay" id="form-overlay" aria-hidden="true"></div>
 <div class="categories-modal" id="eventDetailModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="eventDetailTitle">
     <div class="modal-overlay" id="eventDetailOverlay" tabindex="-1"></div>
     <div class="modal-content">
-        <button class="modal-close" id="eventDetailClose" aria-label="Закрыть">&times;</button>
+        <button class="modal-close" id="eventDetailClose" type="button" aria-label="Закрыть">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 6L18 18M18 6L6 18"></path>
+            </svg>
+        </button>
         <div id="eventDetailBody"></div>
     </div>
 </div>

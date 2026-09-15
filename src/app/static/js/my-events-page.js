@@ -121,20 +121,31 @@ const formOverlay = document.getElementById("form-overlay");
 const createHero = document.getElementsByClassName("create-hero")[0];
 const createForm = document.getElementsByClassName("create-form")[0];
 const closeCreateFormBtn = document.getElementsByClassName("close-btn")[0];
+let closeFormTimeout;
 
 callCreateFormBtn.addEventListener("click", () => {
+    clearTimeout(closeFormTimeout);
     myEventsPage.classList.add("form-open");
+    createForm.classList.remove("form-closing");
     formOverlay.setAttribute("aria-hidden", "false");
+    formOverlay.classList.add("form-open");
     createHero.style.display = "none";
     createForm.style.display = "flex";
 });
 
 function closeCreateForm() {
-    myEventsPage.classList.remove("form-open");
+    if (!myEventsPage.classList.contains("form-open")) return;
+    createForm.classList.add("form-closing");
+    formOverlay.classList.remove("form-open");
     formOverlay.setAttribute("aria-hidden", "true");
-    createForm.style.display = "none";
-    createHero.style.display = "flex";
+    closeFormTimeout = setTimeout(() => {
+        myEventsPage.classList.remove("form-open");
+        createForm.classList.remove("form-closing");
+        createForm.style.display = "none";
+        createHero.style.display = "flex";
+    }, 300);
 }
 
 closeCreateFormBtn.addEventListener("click", closeCreateForm);
 formOverlay.addEventListener("click", closeCreateForm);
+document.addEventListener("close-create-form", closeCreateForm);
