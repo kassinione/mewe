@@ -331,7 +331,10 @@ html, body {
   stroke: currentColor;
   stroke-width: 2.5;
   stroke-linecap: round;
-  transform: translateY(1px);
+}
+
+#eventDetailModal .modal-close {
+  top: 8px;
 }
 
 .modal-close:hover {
