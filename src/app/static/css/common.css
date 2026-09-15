@@ -349,6 +349,25 @@ html, body {
   color: var(--text-primary);
 }
 
+#categoriesModal .modal-content {
+  max-width: 400px;
+  max-height: calc(100vh - 32px);
+  padding: 24px 0 0;
+  overflow: hidden;
+}
+
+#categoriesModal .modal-content h2 {
+  padding: 0 24px;
+}
+
+#categoriesModal .categories-container {
+  max-width: none;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding: 0 20px 24px;
+  z-index: auto;
+}
+
 .events-container {
   position: relative;
   z-index: 2;
