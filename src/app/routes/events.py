@@ -1,9 +1,9 @@
-from datetime import datetime
 
-from flask import Blueprint, abort, jsonify, render_template, request
-from sqlalchemy import or_
+from flask import Blueprint, jsonify, render_template, request
 
-from ..models import Category, Event
+from ..models import Category
+from ..serializers.event_serializer import serialize_event
+from ..service.event_service import get_public_events
 
 events_bp = Blueprint("events", __name__)
 
@@ -26,44 +26,19 @@ def get_events():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 15, type=int)
 
-    if page < 1:
-        abort(400, description="page must be >= 1")
-    if per_page < 1 or per_page > 100:
-        abort(400, description="per_page must be between 1 and 100")
+    events, total = get_public_events(search, category_id, page, per_page)
 
-    query = Event.query.filter(Event.event_date >= datetime.utcnow())  # noqa: DTZ003
-
-    if search:
-        query = query.filter(
-            or_(
-                Event.title.ilike(f"%{search}%"),
-                Event.description.ilike(f"%{search}%"),
-                Event.location.ilike(f"%{search}%")
-            )
-        )
-
-    if category_id is not None:
-        query = query.filter(Event.category_id == category_id)
-
-    total = query.count()
-
-    events = (
-        query
-        .order_by(Event.event_date.asc())
-        .offset((page - 1) * per_page)
-        .limit(per_page)
-        .all()
-    )
+    data = {
+        "events": [serialize_event(event) for event in events],
+        "pagination": {
+            "total": total,
+            "per_page": per_page,
+            "current_page": page,
+            "last_page": -(-total // per_page)
+        }
+    }
 
     return jsonify({
         "success": True,
-        "data": {
-            "events": [e.to_dict() for e in events],
-            "pagination": {
-                "total": total,
-                "per_page": per_page,
-                "current_page": page,
-                "last_page": -(-total // per_page)
-            }
-        }
+        "data": data
     }), 200

@@ -26,23 +26,6 @@ class Event(db.Model):
     category = db.relationship("Category", back_populates="events")
 
 
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "location": self.location,
-            "creator_id": self.creator_id,
-            "creator_name": self.creator.first_name if self.creator else None,
-            "category_id": self.category_id,
-            "category_name": self.category.name if self.category else None,
-            "category_icon": self.category.icon if self.category else None,
-            "max_participants": self.max_participants,
-            "event_date": self.event_date.isoformat(),
-            "formatted_date": self.event_date.strftime("%d.%m.%Y %H:%M"),
-        }
-
-
 class User(db.Model):
     __tablename__ = "users"
 
@@ -55,21 +38,3 @@ class User(db.Model):
     last_login_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     events = db.relationship("Event", back_populates="creator")
-
-    def to_dict(self) -> dict:
-        return{
-            "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "username": self.username,
-            "about": self.about,
-        }
-
-    def to_dict_private(self) -> dict:
-        data = self.to_dict()
-        data.update({
-            "telegram_id": self.telegram_id,
-            "last_login_at": self.last_login_at.isoformat() if self.last_login_at else None,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-        })
-        return data

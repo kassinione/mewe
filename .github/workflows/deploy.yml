@@ -1,7 +1,9 @@
 name: Deploy
+
 on:
   push:
-    branches: [main]
+    branches: [refactor/backend-layers]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,8 +17,8 @@ jobs:
           script: |
             set -e
             cd ./mewe
-            git fetch origin main
-            git reset --hard origin/main
+            git fetch origin refactor/backend-layers
+            git reset --hard origin/refactor/backend-layers
             git clean -fd
             docker compose build
             docker compose run --rm web alembic upgrade head
