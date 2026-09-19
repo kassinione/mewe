@@ -17,7 +17,6 @@ jobs:
             cd ./mewe
             git fetch origin main
             git reset --hard origin/main
-            git clean -fd
             docker compose build
             docker compose run --rm web alembic upgrade head
             docker compose up -d
