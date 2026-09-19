@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-from ..service.auth import login_required
+from ..service.auth_service import login_required
 
 profile_bp = Blueprint("profile", __name__)
 

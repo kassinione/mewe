@@ -9,9 +9,15 @@ from .extensions import db
 
 load_dotenv()
 
+
 def create_app():
     app = Flask(__name__)
 
+    bot_token = os.getenv("BOT_TOKEN")
+    if not bot_token:
+        raise RuntimeError("BOT_TOKEN is not configured")
+
+    app.config["BOT_TOKEN"] = bot_token
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config['SESSION_COOKIE_SAMESITE'] = 'None'
     app.config['SESSION_COOKIE_SECURE'] = True
