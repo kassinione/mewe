@@ -1,45 +1,21 @@
-import os
-from datetime import datetime
+from flask import Blueprint, abort, jsonify, request
 
-from flask import Blueprint, abort, jsonify, request, session
-
-from ..extensions import db
-from ..models import User
-from ..service.auth import validate_init_data
+from ..serializers.user_serializer import serialize_private_user
+from ..service.auth_service import auth_or_create_user
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
 @auth_bp.route("/telegram", methods=["POST"])
 def auth_user_data():
-    body = request.get_json(silent=True)
+    payload = request.get_json(silent=True)
 
-    if body is None:
+    if not isinstance(payload, dict):
         abort(400, description="invalid JSON body")
 
-    bot_token = os.getenv("BOT_TOKEN")
-    user_data = validate_init_data(body.get("initData", ""), bot_token)  # pyright: ignore[reportArgumentType]
-
-    if not user_data:
-        abort(401, description="invalid telegram data")
-
-    user = User.query.filter_by(telegram_id=user_data["id"]).first()
-
-    if user is None:
-        user = User(
-            telegram_id=user_data["id"],  # pyright: ignore[reportCallIssue]
-            first_name=user_data.get("first_name", ""),  # pyright: ignore[reportCallIssue]
-            last_name=user_data.get("last_name"),  # pyright: ignore[reportCallIssue]
-            username=user_data.get("username"),  # pyright: ignore[reportCallIssue]
-        )
-        db.session.add(user)
-
-    user.last_login_at = datetime.utcnow()  # noqa: DTZ003
-    db.session.commit()
-
-    session["user_id"] = user.id
+    user = auth_or_create_user(payload)
 
     return jsonify({
         "success": True,
-        "user": user.to_dict_private()
+        "user": serialize_private_user(user)
         }), 200
