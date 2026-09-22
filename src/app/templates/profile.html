@@ -3,7 +3,63 @@
 {% block title %}MeWe{% endblock %}
 
 {% block content %}
-<div class="events-container" style="padding-top: 40px;">
-    <p class="no-events">Раздел в разработке</p>
+<div id="profile-page" class="profile-page" data-about-url="{{ url_for('profile.update_about') }}">
+    <div class="profile-card">
+        <div class="event-header">
+            <div class="event-category">
+                <i class="fas fa-user"></i>Профиль
+            </div>
+            {% if user.created_at %}
+            <div class="event-date">С нами с {{ user.created_at.strftime('%d.%m.%Y') }}</div>
+            {% endif %}
+        </div>
+
+        <div class="profile-identity">
+            <div class="profile-avatar" aria-hidden="true">{{ user.first_name[:1]|upper }}</div>
+            <div class="profile-names">
+                <h2 class="profile-name">{{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}</h2>
+                {% if user.username %}
+                <div class="profile-username">@{{ user.username }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="event-meta">
+            <div class="meta-item">
+                <i class="fas fa-calendar-check icon"></i>Создано мероприятий: {{ user.events|length }}
+            </div>
+            {% if user.last_login_at %}
+            <div class="meta-item">
+                <i class="fas fa-clock icon"></i>Был(а) в сети {{ user.last_login_at.strftime('%d.%m.%Y %H:%M') }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-about">
+            <div class="profile-about-head">
+                <span class="profile-label">О себе</span>
+                <button class="profile-edit-btn" id="aboutEdit" type="button" aria-label="Редактировать описание">
+                    <i class="fas fa-pen"></i>
+                </button>
+            </div>
+            <p class="profile-about-text{% if not user.about %} is-empty{% endif %}" id="aboutText">{{ user.about or 'Расскажите о себе' }}</p>
+
+            <form class="profile-about-form" id="about-form" hidden>
+                <textarea name="about" maxlength="500" placeholder="Расскажите о себе" aria-label="О себе">{{ user.about or '' }}</textarea>
+                <div class="profile-form-actions">
+                    <button class="profile-cancel-btn" id="aboutCancel" type="button">Отмена</button>
+                    <button class="profile-save-btn" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_head %}
+<link href="{{ url_for('static', filename='css/profile.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/profile-page.js') }}"></script>
 {% endblock %}

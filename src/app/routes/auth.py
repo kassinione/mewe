@@ -1,5 +1,6 @@
-from flask import Blueprint, abort, jsonify, request
+from flask import Blueprint, jsonify, request
 
+from ..exceptions import ValidationError
 from ..serializers.user_serializer import serialize_private_user
 from ..service.auth_service import auth_or_create_user
 
@@ -11,7 +12,7 @@ def auth_user_data():
     payload = request.get_json(silent=True)
 
     if not isinstance(payload, dict):
-        abort(400, description="invalid JSON body")
+        raise ValidationError("invalid JSON body")
 
     user = auth_or_create_user(payload)
 

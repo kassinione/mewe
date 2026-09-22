@@ -1,7 +1,8 @@
 from datetime import date
 
-from flask import Blueprint, abort, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request
 
+from ..exceptions import ValidationError
 from ..repositories.category_repository import get_all_categories
 from ..repositories.event_repository import get_by_user
 from ..serializers.event_serializer import serialize_event
@@ -43,7 +44,7 @@ def create_event():
     payload = request.get_json(silent=True)
 
     if not isinstance(payload, dict):
-        abort(400, description="invalid JSON body")
+        raise ValidationError("invalid JSON body")
 
     event = create_event_service(user_id, payload)
 
