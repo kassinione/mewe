@@ -11,11 +11,85 @@ export function createMetaItem(iconClass, text) {
   return item;
 }
 
+// Оставлена для совместимости: может использоваться в модалке деталей.
 export function createOrganizerMetaItem(event) {
   const name = event.creator_name || 'Организатор не указан';
   const username = event.creator_username ? ` (@${event.creator_username})` : '';
 
   return createMetaItem('fa-user', `Организатор: ${name}${username}`);
+}
+
+const DAY_MS = 86400000;
+
+export function formatEventDate(event) {
+  // Нужен сырой ISO в event.event_date. Если бэкенд его не отдаёт — fallback.
+  if (!event.event_date) return event.formatted_date;
+
+  const d = new Date(event.event_date);
+  if (Number.isNaN(d.getTime())) return event.formatted_date;
+
+  const now = new Date();
+  const dayDiff = Math.round(
+    (new Date(d.getFullYear(), d.getMonth(), d.getDate()) -
+      new Date(now.getFullYear(), now.getMonth(), now.getDate())) / DAY_MS
+  );
+
+  const time = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  if (dayDiff === 0) return `Сегодня, ${time}`;
+  if (dayDiff === 1) return `Завтра, ${time}`;
+
+  const opts = { day: 'numeric', month: 'short', weekday: 'short' };
+  if (d.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
+  return `${d.toLocaleDateString('ru-RU', opts)}, ${time}`;
+}
+
+function pluralSpots(n) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `Осталось ${n} место`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `Осталось ${n} места`;
+  return `Осталось ${n} мест`;
+}
+
+export function createParticipantsItem(event) {
+  const registered = event.registered_count || 0;
+  const max = event.max_participants;
+  const left = Math.max(max - registered, 0);
+  const full = left === 0;
+
+  const item = document.createElement('div');
+  item.className = 'event-participants';
+
+  const row = document.createElement('div');
+  row.className = 'meta-item';
+
+  const status = document.createElement('span');
+  status.className = 'participants-status' + (full ? ' full' : '');
+  status.textContent = full ? 'Мест нет' : pluralSpots(left);
+
+  row.append(
+    createIcon('fas fa-users icon'),
+    document.createTextNode(`${registered} / ${max}`),
+    status
+  );
+
+  const bar = document.createElement('div');
+  bar.className = 'participants-bar';
+
+  const fill = document.createElement('div');
+  fill.className = 'participants-bar-fill' + (full ? ' full' : '');
+  fill.style.width = `${max ? Math.min(registered / max, 1) * 100 : 0}%`;
+  bar.append(fill);
+
+  item.append(row, bar);
+  return item;
+}
+
+export function createOrganizerLine(event) {
+  const line = document.createElement('div');
+  line.className = 'event-organizer';
+  line.textContent = `Организатор: ${event.creator_name || 'не указан'}`;
+  return line;
 }
 
 export function createEventCard(event) {
@@ -36,7 +110,7 @@ export function createEventCard(event) {
 
   const date = document.createElement('div');
   date.className = 'event-date';
-  date.textContent = event.formatted_date;
+  date.textContent = formatEventDate(event);
   header.append(category, date);
 
   const title = document.createElement('h3');
@@ -47,13 +121,9 @@ export function createEventCard(event) {
   meta.className = 'event-meta';
   meta.append(
     createMetaItem('fa-map-marker-alt', event.location),
-    createMetaItem(
-      'fa-users',
-      `${event.registered_count || 0} / ${event.max_participants} участников`
-    ),
-    createOrganizerMetaItem(event)
+    createParticipantsItem(event)
   );
 
-  card.append(header, title, meta);
+  card.append(header, title, meta, createOrganizerLine(event));
   return card;
 }

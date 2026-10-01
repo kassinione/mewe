@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, render_template, request
 from ..exceptions import ValidationError
 from ..repositories.category_repository import get_all_categories
 from ..repositories.event_repository import get_by_user
+from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
 from ..serializers.event_serializer import serialize_event
 from ..service.auth_service import get_current_user_id, login_required
 from ..service.event_service import create_event as create_event_service
@@ -21,6 +22,7 @@ def render_my_event_page():
         "my_events.html",
         title="MeWe",
         categories=categories,
+        max_event_participants=MAX_EVENT_PARTICIPANTS,
         today=date.today().isoformat()  # noqa: DTZ011
     )
 

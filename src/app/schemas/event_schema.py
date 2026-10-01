@@ -3,6 +3,8 @@ from typing import Any, TypedDict
 
 from ..exceptions import ValidationError
 
+MAX_EVENT_PARTICIPANTS = 100
+
 
 class CreateEventData(TypedDict):
     title: str
@@ -39,6 +41,10 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
 
     if max_participants < 2:
         raise ValidationError("max_participants must be greater than 1")
+    if max_participants > MAX_EVENT_PARTICIPANTS:
+        raise ValidationError(
+            f"max_participants must be at most {MAX_EVENT_PARTICIPANTS}"
+        )
 
     event_date_value = payload.get("event_date")
 
