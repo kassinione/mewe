@@ -34,6 +34,7 @@ class User(db.Model):
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255))
     username = db.Column(db.String(255))
+    photo_url = db.Column(db.String(2048))
     about = db.Column(db.Text)
     last_login_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, server_default=db.func.now())

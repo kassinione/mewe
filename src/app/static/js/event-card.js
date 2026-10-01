@@ -11,6 +11,13 @@ export function createMetaItem(iconClass, text) {
   return item;
 }
 
+export function createOrganizerMetaItem(event) {
+  const name = event.creator_name || 'Организатор не указан';
+  const username = event.creator_username ? ` (@${event.creator_username})` : '';
+
+  return createMetaItem('fa-user', `Организатор: ${name}${username}`);
+}
+
 export function createEventCard(event) {
   const card = document.createElement('div');
   card.className = 'event-card';
@@ -43,7 +50,8 @@ export function createEventCard(event) {
     createMetaItem(
       'fa-users',
       `${event.registered_count || 0} / ${event.max_participants} участников`
-    )
+    ),
+    createOrganizerMetaItem(event)
   );
 
   card.append(header, title, meta);

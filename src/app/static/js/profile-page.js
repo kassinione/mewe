@@ -2,6 +2,20 @@ import { showToast } from "./toast.js";
 
 const EMPTY_TEXT = 'Расскажите о себе';
 
+const avatarImage = document.querySelector('.profile-avatar-image');
+
+if (avatarImage) {
+  const hideBrokenAvatar = () => {
+    avatarImage.hidden = true;
+  };
+
+  avatarImage.addEventListener('error', hideBrokenAvatar);
+
+  if (avatarImage.complete && avatarImage.naturalWidth === 0) {
+    hideBrokenAvatar();
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('profile-page');
   const text = document.getElementById('aboutText');

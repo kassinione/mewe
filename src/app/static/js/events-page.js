@@ -1,5 +1,10 @@
 import { fetchEvents } from './events-api.js';
-import { createEventCard, createIcon, createMetaItem } from './event-card.js';
+import {
+  createEventCard,
+  createIcon,
+  createMetaItem,
+  createOrganizerMetaItem
+} from './event-card.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('events-page');
@@ -64,7 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
       createMetaItem(
         'fa-users',
         `${event.registered_count} / ${event.max_participants} участников`
-      )
+      ),
+      createOrganizerMetaItem(event)
     );
 
     const description = document.createElement('p');

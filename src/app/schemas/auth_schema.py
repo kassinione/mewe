@@ -3,7 +3,7 @@ import hmac
 import json
 import time
 from typing import NotRequired, TypedDict
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qsl, urlsplit
 
 from ..exceptions import UnauthorizedError
 
@@ -13,7 +13,7 @@ class TelegramUserData(TypedDict):
     first_name: str
     last_name: NotRequired[str]
     username: NotRequired[str]
-
+    photo_url: NotRequired[str]
 
 MAX_AGE_SECONDS = 86400  # 24 hours in seconds
 
@@ -79,5 +79,19 @@ def validate_init_data(init_data: str, bot_token: str) -> TelegramUserData:
     username = user_data.get("username")
     if isinstance(username, str):
         result["username"] = username
+
+    photo_url = user_data.get("photo_url")
+    if isinstance(photo_url, str):
+        try:
+            parsed_photo_url = urlsplit(photo_url)
+        except ValueError:
+            parsed_photo_url = None
+
+        if (
+            parsed_photo_url
+            and parsed_photo_url.scheme == "https"
+            and parsed_photo_url.netloc
+        ):
+            result["photo_url"] = photo_url
 
     return result
