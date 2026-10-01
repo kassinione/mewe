@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 
 from ..models import Event
 
@@ -8,6 +9,10 @@ from ..models import Event
 def get_by_user(user_id: int) -> list[Event]:
     events = (
         Event.query
+        .options(
+            joinedload(Event.creator),  # pyright: ignore[reportArgumentType]
+            joinedload(Event.category),  # pyright: ignore[reportArgumentType]
+        )
         .filter(Event.creator_id == user_id)
         .order_by(Event.event_date.desc())
         .all()
@@ -34,6 +39,10 @@ def find_public_events(search: str, category_id: int | None, page: int, per_page
 
     events = (
         query
+        .options(
+            joinedload(Event.creator),  # pyright: ignore[reportArgumentType]
+            joinedload(Event.category),  # pyright: ignore[reportArgumentType]
+        )
         .order_by(Event.event_date.asc())
         .offset((page - 1) * per_page)
         .limit(per_page)
