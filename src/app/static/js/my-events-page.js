@@ -50,9 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
       createMetaItem(
         'fa-users',
         `${event.registered_count || 0} / ${event.max_participants} участников`
-      ),
-      createOrganizerMetaItem(event)
+      )
     );
+
+    const organizer = createOrganizerMetaItem(event);
+    if (organizer) meta.append(organizer);
 
     const description = document.createElement('p');
     description.className = 'event-detail-description';

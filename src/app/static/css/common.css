@@ -532,13 +532,6 @@ html, body {
 
 .participants-status {
   margin-left: auto;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.participants-status.full {
-  color: var(--danger);
 }
 
 .participants-bar {

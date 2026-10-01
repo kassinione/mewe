@@ -11,12 +11,10 @@ export function createMetaItem(iconClass, text) {
   return item;
 }
 
-// Оставлена для совместимости: может использоваться в модалке деталей.
 export function createOrganizerMetaItem(event) {
-  const name = event.creator_name || 'Организатор не указан';
-  const username = event.creator_username ? ` (@${event.creator_username})` : '';
+  if (!event.creator_username) return null;
 
-  return createMetaItem('fa-user', `Организатор: ${name}${username}`);
+  return createMetaItem('fa-user', `@${event.creator_username}`);
 }
 
 const DAY_MS = 86400000;
@@ -86,9 +84,11 @@ export function createParticipantsItem(event) {
 }
 
 export function createOrganizerLine(event) {
+  if (!event.creator_username) return null;
+
   const line = document.createElement('div');
   line.className = 'event-organizer';
-  line.textContent = `Организатор: ${event.creator_name || 'не указан'}`;
+  line.textContent = `@${event.creator_username}`;
   return line;
 }
 
@@ -124,6 +124,10 @@ export function createEventCard(event) {
     createParticipantsItem(event)
   );
 
-  card.append(header, title, meta, createOrganizerLine(event));
+  card.append(header, title, meta);
+
+  const organizer = createOrganizerLine(event);
+  if (organizer) card.append(organizer);
+
   return card;
 }
