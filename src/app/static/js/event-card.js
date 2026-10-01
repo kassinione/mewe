@@ -11,10 +11,23 @@ export function createMetaItem(iconClass, text) {
   return item;
 }
 
-export function createOrganizerMetaItem(event) {
-  if (!event.creator_username) return null;
+export function createParticipantsCountMetaItem(event) {
+  const item = createMetaItem(
+    'fa-users',
+    `${event.registered_count || 0} / ${event.max_participants} участников`
+  );
+  item.classList.add('event-participants-count');
+  return item;
+}
 
-  return createMetaItem('fa-user', `@${event.creator_username}`);
+export function createOrganizerMetaItem(event) {
+  if (!event.creator_name && !event.creator_username) return null;
+
+  const parts = [event.creator_name, event.creator_username && `@${event.creator_username}`]
+    .filter(Boolean);
+  const item = createMetaItem('fa-user', parts.join(' '));
+  item.classList.add('event-organizer-meta');
+  return item;
 }
 
 const DAY_MS = 86400000;
@@ -44,9 +57,9 @@ export function formatEventDate(event) {
 function pluralSpots(n) {
   const mod10 = n % 10;
   const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return `Осталось ${n} место`;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `Осталось ${n} места`;
-  return `Осталось ${n} мест`;
+  if (mod10 === 1 && mod100 !== 11) return `еще ${n} место`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `еще ${n} места`;
+  return `еще ${n} мест`;
 }
 
 export function createParticipantsItem(event) {
@@ -63,7 +76,7 @@ export function createParticipantsItem(event) {
 
   const status = document.createElement('span');
   status.className = 'participants-status' + (full ? ' full' : '');
-  status.textContent = full ? 'Мест нет' : pluralSpots(left);
+  status.textContent = full ? 'мест нет' : pluralSpots(left);
 
   row.append(
     createIcon('fas fa-users icon'),
@@ -84,11 +97,14 @@ export function createParticipantsItem(event) {
 }
 
 export function createOrganizerLine(event) {
-  if (!event.creator_username) return null;
+  if (!event.creator_name && !event.creator_username) return null;
 
   const line = document.createElement('div');
   line.className = 'event-organizer';
-  line.textContent = `@${event.creator_username}`;
+  line.textContent = [
+    event.creator_name,
+    event.creator_username && `@${event.creator_username}`
+  ].filter(Boolean).join(' ');
   return line;
 }
 
