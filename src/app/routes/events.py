@@ -1,9 +1,13 @@
-
 from flask import Blueprint, jsonify, render_template, request
 
 from ..models import Category
+from ..repositories.participant_repository import get_registered_counts
 from ..serializers.event_serializer import serialize_event
+from ..serializers.participant_serializer import serialize_participant
+from ..service.auth_service import get_current_user_id, login_required
 from ..service.event_service import get_public_events
+from ..service.event_service import join_event as join_event_service
+from ..service.event_service import leave_event as leave_event_service
 
 events_bp = Blueprint("events", __name__)
 
@@ -27,9 +31,13 @@ def get_events():
     per_page = request.args.get("per_page", 15, type=int)
 
     events, total = get_public_events(search, category_id, page, per_page)
+    registered_counts = get_registered_counts([event.id for event in events])
 
     data = {
-        "events": [serialize_event(event) for event in events],
+        "events": [
+            serialize_event(event, registered_counts.get(event.id, 0))
+            for event in events
+        ],
         "pagination": {
             "total": total,
             "per_page": per_page,
@@ -38,7 +46,29 @@ def get_events():
         }
     }
 
-    return jsonify({
-        "success": True,
-        "data": data
-    }), 200
+    return jsonify({"data": data}), 200
+
+
+
+@events_bp.route("/api/events/<int:event_id>/participants", methods=["POST"])
+@login_required
+def join_event(event_id: int):
+    user_id = get_current_user_id()
+    participant, registered_count = join_event_service(user_id, event_id)
+    data = {
+        "participant": serialize_participant(participant),
+        "registered_count": registered_count
+    }
+
+    return jsonify({"data": data}), 201
+
+@events_bp.route("/api/events/<int:event_id>/participants", methods=["DELETE"])
+@login_required
+def leave_event(event_id: int):
+    user_id = get_current_user_id()
+    registered_count = leave_event_service(user_id, event_id)
+    data = {
+        "registered_count": registered_count
+    }
+
+    return jsonify({"data": data}), 200

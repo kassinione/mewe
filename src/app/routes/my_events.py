@@ -4,7 +4,8 @@ from flask import Blueprint, jsonify, render_template, request
 
 from ..exceptions import ValidationError
 from ..repositories.category_repository import get_all_categories
-from ..repositories.event_repository import get_by_user
+from ..repositories.event_repository import get_events_by_user
+from ..repositories.participant_repository import get_registered_counts
 from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
 from ..serializers.event_serializer import serialize_event
 from ..service.auth_service import get_current_user_id, login_required
@@ -29,12 +30,15 @@ def render_my_event_page():
 @my_events_bp.route("/api/my-events")
 @login_required
 def get_my_events():
-    events = get_by_user(get_current_user_id())
+    events = get_events_by_user(get_current_user_id())
+    registered_counts = get_registered_counts([event.id for event in events])
 
     return jsonify({
-        "success": True,
         "data": {
-            "events": [serialize_event(event) for event in events]
+            "events": [
+                serialize_event(event, registered_counts.get(event.id, 0))
+                for event in events
+            ]
         }
     }), 200
 
@@ -51,6 +55,5 @@ def create_event():
     event = create_event_service(user_id, payload)
 
     return jsonify({
-        "success": True,
         "data": serialize_event(event)
     }), 201

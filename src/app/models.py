@@ -37,5 +37,25 @@ class User(db.Model):
     photo_url = db.Column(db.String(2048))
     about = db.Column(db.Text)
     last_login_at = db.Column(db.DateTime)
+    last_event_create_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     events = db.relationship("Event", back_populates="creator")
+
+
+class Participant(db.Model):
+    __tablename__ = "participants"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    event_id = db.Column(db.ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
+    user = db.relationship("User")
+    event = db.relationship("Event")
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "user_id",
+            "event_id",
+            name="unique_user_event"
+        ),
+    )

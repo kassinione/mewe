@@ -59,13 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await response.json();
 
-      if (data.success) {
-        renderAbout(data.about);
+      if (response.ok) {
+        renderAbout(data.data.about);
         setEditing(false);
         showToast('Профиль обновлён', 'success');
       } else {
-        console.error(data.error);
-        showToast('Ошибка: ' + data.error, 'error');
+        const message = data?.error || `HTTP error: ${response.status}`;
+        console.error(message);
+        showToast('Ошибка: ' + message, 'error');
       }
     } catch (err) {
       console.error(err);

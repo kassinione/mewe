@@ -1,7 +1,7 @@
 from ..models import Event
 
 
-def serialize_event(event: Event) -> dict:
+def serialize_event(event: Event, registered_count: int = 0) -> dict:
     creator_name = None
     creator_username = None
 
@@ -25,6 +25,7 @@ def serialize_event(event: Event) -> dict:
         "category_name": event.category.name if event.category else None,
         "category_icon": event.category.icon if event.category else None,
         "max_participants": event.max_participants,
+        "registered_count": registered_count,
         "event_date": event.event_date.isoformat(),
         "formatted_date": event.event_date.strftime("%d.%m.%Y %H:%M"),
     }

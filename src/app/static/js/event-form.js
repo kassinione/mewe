@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok) {
         showToast('Мероприятие создано!', 'success');
         form.reset();
         document.dispatchEvent(new CustomEvent('close-create-form'));
@@ -58,8 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
           location.reload();
         }, 2000);
       } else {
-        console.error(data.error);
-        showToast('Ошибка: ' + data.error, 'error');
+        const message = data?.error || `HTTP error: ${response.status}`;
+        console.error(message);
+        showToast('Ошибка: ' + message, 'error');
       }
     } catch (err) {
       console.error(err);

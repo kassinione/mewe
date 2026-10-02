@@ -22,9 +22,5 @@ export async function fetchEvents(url, search = '', categoryId = '') {
     throw new Error(data?.error || `HTTP error: ${response.status}`);
   }
 
-  if (!data?.success) {
-    throw new Error(data?.error || 'Unknown error');
-  }
-
   return data.data;
 }
