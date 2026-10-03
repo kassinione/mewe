@@ -3,7 +3,8 @@ import {
   createIcon,
   createMetaItem,
   createOrganizerMetaItem,
-  createParticipantsCountMetaItem
+  createParticipantsCountMetaItem,
+  isEventUpcoming
 } from './event-card.js';
 import {
   deleteEvent,
@@ -101,14 +102,16 @@ export function initializeEventDetail({
     currentStatus = status;
     actionContainer.replaceChildren();
     updateRegisteredCount(activeEvent, status.registered_count);
+    const isUpcoming = isEventUpcoming(activeEvent);
 
     if (status.is_creator) {
-      const eventTime = new Date(activeEvent.event_date).getTime();
-      if (Number.isFinite(eventTime) && eventTime > Date.now()) {
+      if (isUpcoming) {
         renderActionButton('Удалить мероприятие', 'event-detail-action-danger', removeEvent);
       }
       return;
     }
+
+    if (!isUpcoming && !status.is_registered) return;
 
     renderActionButton(
       status.is_registered ? 'Отменить запись' : 'Записаться',

@@ -1,5 +1,5 @@
 import { fetchEvents } from './events-api.js';
-import { createEventCard } from './event-card.js';
+import { createEventCard, isEventUpcoming } from './event-card.js';
 import { initializeEventDetail } from './event-detail.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let eventDetail;
 
   function renderEvents(events) {
-    currentEvents = events;
+    currentEvents = events.filter(event => isEventUpcoming(event));
     eventsContainer.replaceChildren();
 
-    if (!events.length) {
+    if (!currentEvents.length) {
       const message = document.createElement('p');
       message.className = 'no-events';
       message.textContent = 'Мероприятия не найдены';
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    events.forEach(event => {
+    currentEvents.forEach(event => {
       eventsContainer.append(createEventCard(event));
     });
   }

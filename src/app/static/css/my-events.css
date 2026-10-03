@@ -17,9 +17,12 @@
 .my-events-section-title {
     max-width: 840px;
     margin: 0 auto 14px;
-    padding: 0 20px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     color: var(--text-primary);
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -33,12 +36,20 @@
 }
 
 .past-events > summary {
-    width: fit-content;
     margin: 4px 0 12px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     color: var(--accent);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
+    list-style-position: inside;
+}
+
+.past-events > summary:hover {
+    border-color: var(--accent);
 }
 
 .past-events-container {

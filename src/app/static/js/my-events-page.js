@@ -1,5 +1,5 @@
 import { fetchEvents } from './events-api.js';
-import { createEventCard } from './event-card.js';
+import { createEventCard, isEventPast } from './event-card.js';
 import { initializeEventDetail } from './event-detail.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,13 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const now = Date.now();
     const upcomingEvents = [];
     const pastEvents = [];
     events.forEach(event => {
-      const eventTime = new Date(event.event_date).getTime();
-      (Number.isFinite(eventTime) && eventTime <= now ? pastEvents : upcomingEvents)
-        .push(event);
+      (isEventPast(event) ? pastEvents : upcomingEvents).push(event);
     });
 
     upcomingEvents.forEach(event => container.append(createEventCard(event)));

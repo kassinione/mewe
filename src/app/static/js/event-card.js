@@ -61,6 +61,18 @@ export function createOrganizerMetaItem(event) {
 
 const DAY_MS = 86400000;
 
+export function isEventUpcoming(event, now = Date.now()) {
+  if (!event.event_date) return false;
+  const eventTime = new Date(event.event_date).getTime();
+  return Number.isFinite(eventTime) && eventTime > now;
+}
+
+export function isEventPast(event, now = Date.now()) {
+  if (!event.event_date) return false;
+  const eventTime = new Date(event.event_date).getTime();
+  return Number.isFinite(eventTime) && eventTime <= now;
+}
+
 export function formatEventDate(event) {
   // Нужен сырой ISO в event.event_date. Если бэкенд его не отдаёт — fallback.
   if (!event.event_date) return event.formatted_date;
