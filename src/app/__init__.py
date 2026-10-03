@@ -27,10 +27,10 @@ def create_app():
 
     app.config["BOT_TOKEN"] = bot_token
     app.config["APP_ORIGIN"] = app_origin
-    app.config['SECRET_KEY'] = cookie_secret_key
-    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
-    app.config['SESSION_COOKIE_SECURE'] = True
-    app.config['SESSION_COOKIE_PARTITIONED'] = True
+    app.config["SECRET_KEY"] = cookie_secret_key
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_PARTITIONED"] = True
 
     app.json.ensure_ascii = False  # type: ignore
 

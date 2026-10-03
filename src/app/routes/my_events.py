@@ -25,6 +25,7 @@ def render_my_event_page():
         today=date.today().isoformat()  # noqa: DTZ011
     )
 
+
 @my_events_bp.route("/api/users/me/events")
 @login_required
 def get_my_events():
