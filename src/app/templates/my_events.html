@@ -7,11 +7,17 @@
      data-events-url="{{ url_for('my_events.get_my_events') }}"
      data-participations-url="{{ url_for('my_events.get_my_participating_events') }}">
 <section class="my-events-section" aria-labelledby="participationsTitle">
-    <h2 id="participationsTitle" class="my-events-section-title">Я участвую</h2>
+    <h2 id="participationsTitle" class="my-events-section-title">
+        <i class="fas fa-users" aria-hidden="true"></i>
+        <span>Я участвую</span>
+    </h2>
     <div id="participationsContainer" class="events-container"></div>
 </section>
 <section class="my-events-section" aria-labelledby="createdEventsTitle">
-    <h2 id="createdEventsTitle" class="my-events-section-title">Я организую</h2>
+    <h2 id="createdEventsTitle" class="my-events-section-title">
+        <i class="fas fa-calendar-plus" aria-hidden="true"></i>
+        <span>Я организую</span>
+    </h2>
     <div id="createdEventsContainer" class="events-container"></div>
 </section>
 <div class="create-hero">

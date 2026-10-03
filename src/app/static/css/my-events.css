@@ -15,6 +15,9 @@
 }
 
 .my-events-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: calc(100% - 40px);
     max-width: 800px;
     margin: 0 auto 14px;
@@ -25,6 +28,11 @@
     color: var(--text-primary);
     font-size: 16px;
     font-weight: 700;
+}
+
+.my-events-section-title i {
+    color: var(--accent);
+    font-size: 15px;
 }
 
 .my-events-section .events-container {
@@ -45,7 +53,7 @@
     color: var(--accent);
     cursor: pointer;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 400;
     list-style-position: inside;
 }
 
