@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalClose = document.getElementById('modalClose');
   const modalOverlay = document.getElementById('modalOverlay');
   const searchInput = document.getElementById('searchInput');
+  const selectedCategoryFilter = document.getElementById('selectedCategoryFilter');
+  const selectedCategoryName = document.getElementById('selectedCategoryName');
+  const clearCategoryFilter = document.getElementById('clearCategoryFilter');
   const eventsContainer = document.getElementById('eventsContainer');
   const eventDetailModal = document.getElementById('eventDetailModal');
   const eventDetailClose = document.getElementById('eventDetailClose');
@@ -16,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const eventDetailBody = document.getElementById('eventDetailBody');
 
   let selectedCategoryId = '';
+  let selectedCategoryLabel = '';
   let currentEvents = [];
   let eventDetail;
 
@@ -67,6 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
     categoriesModal.setAttribute('aria-hidden', 'true');
     categoriesTab.setAttribute('aria-expanded', 'false');
     categoriesTab.focus();
+  }
+
+  function renderSelectedCategory() {
+    selectedCategoryName.textContent = selectedCategoryLabel;
+    selectedCategoryFilter.hidden = !selectedCategoryId;
+    clearCategoryFilter.setAttribute(
+      'aria-label',
+      selectedCategoryId ? `Сбросить категорию: ${selectedCategoryLabel}` : 'Сбросить категорию'
+    );
   }
 
   eventDetail = initializeEventDetail({
@@ -122,9 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   });
 
+  clearCategoryFilter.addEventListener('click', () => {
+    selectedCategoryId = '';
+    selectedCategoryLabel = '';
+    renderSelectedCategory();
+    loadEvents(searchInput.value.trim());
+  });
+
   categoriesModal.querySelectorAll('.event-card').forEach(card => {
     card.addEventListener('click', () => {
       selectedCategoryId = card.dataset.categoryId;
+      selectedCategoryLabel = card.dataset.categoryName;
+      renderSelectedCategory();
       loadEvents(searchInput.value.trim(), selectedCategoryId);
       closeCategoriesModal();
     });
