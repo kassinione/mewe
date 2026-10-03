@@ -4,7 +4,7 @@ from sqlalchemy import exists, or_, select
 from sqlalchemy.orm import joinedload
 
 from ..extensions import db
-from ..models import Event
+from ..models import Event, Participant
 
 
 def get_event_by_id(event_id: int) -> Event | None:
@@ -33,6 +33,23 @@ def get_events_by_user(user_id: int) -> list[Event]:
     )
 
     return events
+
+
+def get_events_by_participant(user_id: int) -> list[Event]:
+    events = (
+        Event.query
+        .join(Participant, Participant.event_id == Event.id)
+        .options(
+            joinedload(Event.creator),  # pyright: ignore[reportArgumentType]
+            joinedload(Event.category),  # pyright: ignore[reportArgumentType]
+        )
+        .filter(Participant.user_id == user_id)
+        .order_by(Event.event_date.desc())
+        .all()
+    )
+
+    return events
+
 
 def find_public_events(search: str, category_id: int | None, page: int, per_page: int) -> tuple[list[Event], int]:
     query = Event.query.filter(Event.event_date >= datetime.utcnow())  # noqa: DTZ003

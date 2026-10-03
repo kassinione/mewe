@@ -3,7 +3,10 @@ from datetime import date
 from flask import Blueprint, jsonify, render_template
 
 from ..repositories.category_repository import get_all_categories
-from ..repositories.event_repository import get_events_by_user
+from ..repositories.event_repository import (
+    get_events_by_participant,
+    get_events_by_user,
+)
 from ..repositories.participant_repository import get_registered_counts
 from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
 from ..serializers.event_serializer import serialize_event
@@ -40,6 +43,22 @@ def get_my_events():
     }
 
     return jsonify(data), 200
+
+
+@my_events_bp.route("/api/users/me/participations")
+@login_required
+def get_my_participating_events():
+    events = get_events_by_participant(get_current_user_id())
+    registered_counts = get_registered_counts([event.id for event in events])
+    data = {
+        "events": [
+            serialize_event(event, registered_counts.get(event.id, 0))
+            for event in events
+        ]
+    }
+
+    return jsonify(data), 200
+
 
 @my_events_bp.route("/api/events/<int:event_id>", methods=["DELETE"])
 @login_required
