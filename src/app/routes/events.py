@@ -49,7 +49,6 @@ def get_events():
     return jsonify({"data": data}), 200
 
 
-
 @events_bp.route("/api/events/<int:event_id>/participants", methods=["POST"])
 @login_required
 def join_event(event_id: int):
@@ -61,6 +60,7 @@ def join_event(event_id: int):
     }
 
     return jsonify({"data": data}), 201
+
 
 @events_bp.route("/api/events/<int:event_id>/participants", methods=["DELETE"])
 @login_required
