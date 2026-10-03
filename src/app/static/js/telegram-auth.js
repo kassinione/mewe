@@ -15,7 +15,7 @@ async function authUser() {
         const result = await response.json();
 
         if(response.ok) {
-            console.log('Auth success:', result.data.user);
+            console.log('Auth success:', result.user);
         } else {
             console.error(result.error);
             showToast('Ошибка: ' + result.error, 'error');

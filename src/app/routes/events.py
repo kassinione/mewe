@@ -46,7 +46,7 @@ def get_events():
         }
     }
 
-    return jsonify({"data": data}), 200
+    return jsonify(data), 200
 
 
 @events_bp.route("/api/events/<int:event_id>/participants", methods=["POST"])
@@ -59,7 +59,7 @@ def join_event(event_id: int):
         "registered_count": registered_count
     }
 
-    return jsonify({"data": data}), 201
+    return jsonify(data), 201
 
 
 @events_bp.route("/api/events/<int:event_id>/participants", methods=["DELETE"])
@@ -71,4 +71,4 @@ def leave_event(event_id: int):
         "registered_count": registered_count
     }
 
-    return jsonify({"data": data}), 200
+    return jsonify(data), 200

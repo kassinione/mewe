@@ -34,12 +34,10 @@ def get_my_events():
     registered_counts = get_registered_counts([event.id for event in events])
 
     return jsonify({
-        "data": {
-            "events": [
-                serialize_event(event, registered_counts.get(event.id, 0))
-                for event in events
-            ]
-        }
+        "events": [
+            serialize_event(event, registered_counts.get(event.id, 0))
+            for event in events
+        ]
     }), 200
 
 
@@ -54,6 +52,4 @@ def create_event():
 
     event = create_event_service(user_id, payload)
 
-    return jsonify({
-        "data": serialize_event(event)
-    }), 201
+    return jsonify(serialize_event(event)), 201

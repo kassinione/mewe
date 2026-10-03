@@ -17,7 +17,5 @@ def auth_user_data():
     user = auth_or_create_user(payload)
 
     return jsonify({
-        "data": {
-            "user": serialize_private_user(user)
-        }
+        "user": serialize_private_user(user)
     }), 200

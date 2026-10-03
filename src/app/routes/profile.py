@@ -35,7 +35,5 @@ def update_about():
     about = change_about_user(user_id, payload)
 
     return jsonify({
-        "data": {
-            "about": about
-        }
+        "about": about
     }), 200

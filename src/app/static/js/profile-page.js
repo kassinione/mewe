@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
 
       if (response.ok) {
-        renderAbout(data.data.about);
+        renderAbout(data.about);
         setEditing(false);
         showToast('Профиль обновлён', 'success');
       } else {

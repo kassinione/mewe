@@ -22,5 +22,5 @@ export async function fetchEvents(url, search = '', categoryId = '') {
     throw new Error(data?.error || `HTTP error: ${response.status}`);
   }
 
-  return data.data;
+  return data;
 }
