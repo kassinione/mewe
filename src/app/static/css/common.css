@@ -520,7 +520,7 @@ html, body {
 }
 
 .event-detail-action-primary {
-  background: var(--accent);
+  background: var(--success);
 }
 
 .event-detail-action-secondary {

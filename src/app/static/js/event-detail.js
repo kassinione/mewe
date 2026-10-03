@@ -103,11 +103,10 @@ export function initializeEventDetail({
     updateRegisteredCount(activeEvent, status.registered_count);
 
     if (status.is_creator) {
-      const notice = document.createElement('p');
-      notice.className = 'event-detail-notice';
-      notice.textContent = 'Вы организатор этого мероприятия';
-      actionContainer.append(notice);
-      renderActionButton('Удалить мероприятие', 'event-detail-action-danger', removeEvent);
+      const eventTime = new Date(activeEvent.event_date).getTime();
+      if (Number.isFinite(eventTime) && eventTime > Date.now()) {
+        renderActionButton('Удалить мероприятие', 'event-detail-action-danger', removeEvent);
+      }
       return;
     }
 

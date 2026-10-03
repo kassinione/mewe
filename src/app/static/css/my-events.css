@@ -27,6 +27,25 @@
     padding-bottom: 20px;
 }
 
+.past-events {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+
+.past-events > summary {
+    width: fit-content;
+    margin: 4px 0 12px;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.past-events-container {
+    max-width: none;
+    padding: 0;
+}
+
 .form-overlay {
     position: fixed;
     inset: 0;

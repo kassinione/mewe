@@ -22,7 +22,31 @@ document.addEventListener('DOMContentLoaded', () => {
       container.append(message);
       return;
     }
-    events.forEach(event => container.append(createEventCard(event)));
+
+    const now = Date.now();
+    const upcomingEvents = [];
+    const pastEvents = [];
+    events.forEach(event => {
+      const eventTime = new Date(event.event_date).getTime();
+      (Number.isFinite(eventTime) && eventTime <= now ? pastEvents : upcomingEvents)
+        .push(event);
+    });
+
+    upcomingEvents.forEach(event => container.append(createEventCard(event)));
+    if (pastEvents.length) {
+      const details = document.createElement('details');
+      details.className = 'past-events';
+
+      const summary = document.createElement('summary');
+      summary.textContent = `Прошедшие мероприятия (${pastEvents.length})`;
+
+      const pastContainer = document.createElement('div');
+      pastContainer.className = 'events-container past-events-container';
+      pastEvents.forEach(event => pastContainer.append(createEventCard(event)));
+
+      details.append(summary, pastContainer);
+      container.append(details);
+    }
   }
 
   function renderCreatedEvents() {
