@@ -4,6 +4,8 @@ from typing import Any, TypedDict
 from ..exceptions import ValidationError
 
 MAX_EVENT_PARTICIPANTS = 100
+MIN_EVENT_DURATION_MINUTES = 15
+MAX_EVENT_DURATION_MINUTES = 1440
 
 
 class CreateEventData(TypedDict):
@@ -13,6 +15,7 @@ class CreateEventData(TypedDict):
     category_id: int
     max_participants: int
     event_date: datetime
+    duration_minutes: int
 
 
 def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
@@ -59,6 +62,18 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
     if event_date <= datetime.utcnow():  # noqa: DTZ003
         raise ValidationError("invalid event_date value")
 
+    duration_minutes = payload.get("duration_minutes")
+    if (
+        not isinstance(duration_minutes, int)
+        or isinstance(duration_minutes, bool)
+        or duration_minutes < MIN_EVENT_DURATION_MINUTES
+        or duration_minutes > MAX_EVENT_DURATION_MINUTES
+    ):
+        raise ValidationError(
+            f"duration_minutes must be between {MIN_EVENT_DURATION_MINUTES} "
+            f"and {MAX_EVENT_DURATION_MINUTES}"
+        )
+
     result: CreateEventData = {
         "title": title.strip(),
         "location": location.strip(),
@@ -66,6 +81,7 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
         "category_id": category_id,
         "max_participants": max_participants,
         "event_date": event_date,
+        "duration_minutes": duration_minutes,
     }
 
     return result

@@ -8,7 +8,7 @@ Student life is full of scattered activities — group runs, themed meetups, cul
 
 ## Features
 
-- 📅 **Event creation** — title, description, location, date and time, category, participant limit
+- 📅 **Event creation** — title, description, location, date and time, duration, category, participant limit
 - 🔍 **Search and filtering** — by title, description, location, and category, with live results
 - 🔐 **Telegram-native authentication** — users are identified via Telegram's signed `initData`, no separate login required
 - 🎨 **Telegram theme adaptation** — the UI automatically follows the client's light/dark theme

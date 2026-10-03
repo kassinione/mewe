@@ -21,6 +21,7 @@ class Event(db.Model):
     category_id = db.Column(db.ForeignKey("categories.id", ondelete="SET NULL"))
     max_participants = db.Column(db.Integer, default=2, nullable=False)
     event_date = db.Column(db.DateTime, nullable=False)
+    duration_minutes = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     creator = db.relationship("User", back_populates="events")
     category = db.relationship("Category", back_populates="events")

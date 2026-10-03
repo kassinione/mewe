@@ -40,6 +40,7 @@ def create_event(user_id: int, payload: dict[str, Any]) -> Event:
         category_id=data["category_id"],  # pyright: ignore[reportCallIssue]
         max_participants=data["max_participants"],  # pyright: ignore[reportCallIssue]
         event_date=data["event_date"],  # pyright: ignore[reportCallIssue]
+        duration_minutes=data["duration_minutes"],  # pyright: ignore[reportCallIssue]
     )
     user.last_event_create_at = now
 
@@ -64,6 +65,10 @@ def join_event(user_id: int, event_id: int) -> tuple[Participant, int, bool]:
 
     if event is None:
         raise NotFoundError("event not found")
+
+    event_end = event.event_date + timedelta(minutes=event.duration_minutes)
+    if event_end <= datetime.utcnow():  # noqa: DTZ003
+        raise ConflictError("event has already ended")
 
     participant = is_user_registered(user_id, event_id)
     if participant:

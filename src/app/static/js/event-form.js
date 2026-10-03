@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       description: form.description.value.trim(),
       category: Number(form.category.value),
       max_participants: Number(form.participants.value),
+      duration_minutes: Math.round(Number(form.duration.value) * 60),
       event_date: `${dateVal}T${timeVal}:00`
     };
 

@@ -20,6 +20,35 @@ export function createParticipantsCountMetaItem(event) {
   return item;
 }
 
+function pluralizeDuration(value, one, few, many) {
+  const remainder10 = value % 10;
+  const remainder100 = value % 100;
+  if (remainder10 === 1 && remainder100 !== 11) return one;
+  if (remainder10 >= 2 && remainder10 <= 4 && (remainder100 < 12 || remainder100 > 14)) {
+    return few;
+  }
+  return many;
+}
+
+export function formatEventDuration(durationMinutes) {
+  const hours = Math.floor(durationMinutes / 60);
+  const minutes = durationMinutes % 60;
+  const parts = [];
+
+  if (hours) {
+    parts.push(`${hours} ${pluralizeDuration(hours, 'час', 'часа', 'часов')}`);
+  }
+  if (minutes) {
+    parts.push(`${minutes} ${pluralizeDuration(minutes, 'минута', 'минуты', 'минут')}`);
+  }
+
+  return parts.join(' ');
+}
+
+export function createDurationMetaItem(event) {
+  return createMetaItem('fa-clock', formatEventDuration(event.duration_minutes));
+}
+
 export function createOrganizerMetaItem(event) {
   if (!event.creator_name && !event.creator_username) return null;
 
@@ -137,6 +166,7 @@ export function createEventCard(event) {
   meta.className = 'event-meta';
   meta.append(
     createMetaItem('fa-map-marker-alt', event.location),
+    createDurationMetaItem(event),
     createParticipantsItem(event)
   );
 

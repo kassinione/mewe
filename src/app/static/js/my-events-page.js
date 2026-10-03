@@ -3,6 +3,7 @@ import {
   createEventCard,
   createIcon,
   createMetaItem,
+  createDurationMetaItem,
   createParticipantsCountMetaItem,
   createOrganizerMetaItem
 } from './event-card.js';
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     meta.className = 'event-meta event-detail-meta';
     meta.append(
       createMetaItem('fa-map-marker-alt', event.location),
+      createDurationMetaItem(event),
       createParticipantsCountMetaItem(event)
     );
 
