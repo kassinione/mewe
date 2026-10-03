@@ -4,10 +4,10 @@ from ..exceptions import ValidationError
 from ..serializers.user_serializer import serialize_private_user
 from ..service.auth_service import auth_or_create_user
 
-auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
+auth_bp = Blueprint("auth", __name__, url_prefix="/api")
 
 
-@auth_bp.route("/telegram", methods=["POST"])
+@auth_bp.route("/sessions", methods=["POST"])
 def auth_user_data():
     payload = request.get_json(silent=True)
 

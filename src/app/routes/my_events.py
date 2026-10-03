@@ -1,15 +1,13 @@
 from datetime import date
 
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template
 
-from ..exceptions import ValidationError
 from ..repositories.category_repository import get_all_categories
 from ..repositories.event_repository import get_events_by_user
 from ..repositories.participant_repository import get_registered_counts
 from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
 from ..serializers.event_serializer import serialize_event
 from ..service.auth_service import get_current_user_id, login_required
-from ..service.event_service import create_event as create_event_service
 
 my_events_bp = Blueprint("my_events", __name__)
 
@@ -27,7 +25,7 @@ def render_my_event_page():
         today=date.today().isoformat()  # noqa: DTZ011
     )
 
-@my_events_bp.route("/api/my-events")
+@my_events_bp.route("/api/users/me/events")
 @login_required
 def get_my_events():
     events = get_events_by_user(get_current_user_id())
@@ -39,17 +37,3 @@ def get_my_events():
             for event in events
         ]
     }), 200
-
-
-@my_events_bp.route("/api/my-events", methods=["POST"])
-@login_required
-def create_event():
-    user_id = get_current_user_id()
-    payload = request.get_json(silent=True)
-
-    if not isinstance(payload, dict):
-        raise ValidationError("invalid JSON body")
-
-    event = create_event_service(user_id, payload)
-
-    return jsonify(serialize_event(event)), 201

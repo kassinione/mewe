@@ -10,9 +10,8 @@ def get_registered_count(event_id: int) -> int:
         .select_from(Participant)
         .where(Participant.event_id == event_id)
     )
-    registered_count = db.session.scalar(statement) or 0
 
-    return registered_count
+    return db.session.scalar(statement) or 0
 
 
 def get_registered_counts(event_ids: list[int]) -> dict[int, int]:
@@ -24,19 +23,20 @@ def get_registered_counts(event_ids: list[int]) -> dict[int, int]:
         .where(Participant.event_id.in_(event_ids))
         .group_by(Participant.event_id)
     )
+
     return {
         event_id: count
         for event_id, count in db.session.execute(statement)
     }
 
 
-def is_user_registered(user_id: int, event_id: int, ) -> bool:
+def is_user_registered(user_id: int, event_id: int, ) -> Participant | None:
     statement = (
-        select(Participant.id)
+        select(Participant)
         .where(
             Participant.user_id == user_id,
             Participant.event_id == event_id,
         )
-        .limit(1)
     )
-    return db.session.scalar(statement) is not None
+
+    return db.session.scalars(statement).one_or_none()

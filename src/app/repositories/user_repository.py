@@ -18,4 +18,4 @@ def get_user_for_update(user_id: int) -> User | None:
         .where(User.id == user_id)
         .with_for_update()
     )
-    return db.session.execute(statement).scalar_one_or_none()
+    return db.session.scalars(statement).one_or_none()

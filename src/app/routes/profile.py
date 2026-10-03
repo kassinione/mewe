@@ -23,7 +23,7 @@ def render_profile_page():
     )
 
 
-@profile_bp.route("/api/profile/about", methods=["POST"])
+@profile_bp.route("/api/users/me", methods=["PATCH"])
 @login_required
 def update_about():
     payload = request.get_json(silent=True)

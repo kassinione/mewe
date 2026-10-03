@@ -5,7 +5,7 @@ const tg = window.Telegram?.WebApp
 
 async function authUser() {
     try {
-        const response = await fetch("/api/auth/telegram", {
+        const response = await fetch("/api/sessions", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const response = await fetch(page.dataset.aboutUrl, {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ about: textarea.value.trim() })
       });

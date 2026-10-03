@@ -17,7 +17,7 @@ def get_event_for_update(event_id: int) -> Event | None:
         .where(Event.id == event_id)
         .with_for_update()
     )
-    return db.session.execute(statement).scalar_one_or_none()
+    return db.session.scalars(statement).one_or_none()
 
 
 def get_events_by_user(user_id: int) -> list[Event]:

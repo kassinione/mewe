@@ -19,7 +19,7 @@ class Event(db.Model):
     location = db.Column(db.String(255), nullable=False)
     creator_id = db.Column(db.ForeignKey("users.id", ondelete="SET NULL"))
     category_id = db.Column(db.ForeignKey("categories.id", ondelete="SET NULL"))
-    max_participants = db.Column(db.Integer, default=2)
+    max_participants = db.Column(db.Integer, default=2, nullable=False)
     event_date = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     creator = db.relationship("User", back_populates="events")

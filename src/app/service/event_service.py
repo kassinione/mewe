@@ -59,14 +59,15 @@ def get_public_events(search: str, category_id: int | None, page: int, per_page:
     return events, total
 
 
-def join_event(user_id: int, event_id: int) -> tuple[Participant, int]:
+def join_event(user_id: int, event_id: int) -> tuple[Participant, int, bool]:
     event = get_event_for_update(event_id)
 
     if event is None:
         raise NotFoundError("event not found")
 
-    if is_user_registered(user_id, event_id):
-        raise ConflictError("user is already registered")
+    participant = is_user_registered(user_id, event_id)
+    if participant:
+        return participant, get_registered_count(event_id), False
 
     if get_registered_count(event_id) >= event.max_participants:
         raise ConflictError("event is full")
@@ -81,7 +82,7 @@ def join_event(user_id: int, event_id: int) -> tuple[Participant, int]:
     registered_count = get_registered_count(event_id)
     db.session.commit()
 
-    return participant, registered_count
+    return participant, registered_count, True
 
 
 def leave_event(user_id: int, event_id: int) -> int:
@@ -97,7 +98,7 @@ def leave_event(user_id: int, event_id: int) -> int:
     )
 
     if participant is None:
-        raise ConflictError("user is not registered")
+        return get_registered_count(event_id)
 
     db.session.delete(participant)
     db.session.flush()

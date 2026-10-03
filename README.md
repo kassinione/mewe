@@ -55,7 +55,7 @@ Student life is full of scattered activities — group runs, themed meetups, cul
 
 MeWe runs exclusively as a Telegram Mini App, so it uses Telegram's own identity instead of a password-based login:
 
-1. The frontend reads the raw `initData` string via the Telegram Web App SDK and sends it to `POST /api/auth/telegram`.
+1. The frontend reads the raw `initData` string via the Telegram Web App SDK and sends it to `POST /api/sessions`.
 2. The backend verifies its HMAC-SHA256 signature against `BOT_TOKEN` and checks `auth_date` to reject stale/replayed data.
 3. On success, the user is found or created in the `users` table and a Flask session is issued.
 4. Routes that require a logged-in user are protected with a `login_required` decorator.

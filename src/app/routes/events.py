@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, render_template, request
 
+from ..exceptions import ValidationError
 from ..models import Category
 from ..repositories.participant_repository import get_registered_counts
 from ..serializers.event_serializer import serialize_event
 from ..serializers.participant_serializer import serialize_participant
 from ..service.auth_service import get_current_user_id, login_required
+from ..service.event_service import create_event as create_event_service
 from ..service.event_service import get_public_events
 from ..service.event_service import join_event as join_event_service
 from ..service.event_service import leave_event as leave_event_service
@@ -49,20 +51,33 @@ def get_events():
     return jsonify(data), 200
 
 
-@events_bp.route("/api/events/<int:event_id>/participants", methods=["POST"])
+@events_bp.route("/api/events", methods=["POST"])
+@login_required
+def create_event():
+    payload = request.get_json(silent=True)
+
+    if not isinstance(payload, dict):
+        raise ValidationError("invalid JSON body")
+
+    event = create_event_service(get_current_user_id(), payload)
+
+    return jsonify(serialize_event(event)), 201
+
+
+@events_bp.route("/api/events/<int:event_id>/participants/me", methods=["PUT"])
 @login_required
 def join_event(event_id: int):
     user_id = get_current_user_id()
-    participant, registered_count = join_event_service(user_id, event_id)
+    participant, registered_count, created = join_event_service(user_id, event_id)
     data = {
         "participant": serialize_participant(participant),
         "registered_count": registered_count
     }
 
-    return jsonify(data), 201
+    return jsonify(data), 201 if created else 200
 
 
-@events_bp.route("/api/events/<int:event_id>/participants", methods=["DELETE"])
+@events_bp.route("/api/events/<int:event_id>/participants/me", methods=["DELETE"])
 @login_required
 def leave_event(event_id: int):
     user_id = get_current_user_id()
