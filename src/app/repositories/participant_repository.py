@@ -1,4 +1,4 @@
-from sqlalchemy import func, select
+from sqlalchemy import exists, func, select
 
 from ..extensions import db
 from ..models import Participant
@@ -30,7 +30,7 @@ def get_registered_counts(event_ids: list[int]) -> dict[int, int]:
     }
 
 
-def is_user_registered(user_id: int, event_id: int, ) -> Participant | None:
+def get_participant(user_id: int, event_id: int, ) -> Participant | None:
     statement = (
         select(Participant)
         .where(
@@ -40,3 +40,14 @@ def is_user_registered(user_id: int, event_id: int, ) -> Participant | None:
     )
 
     return db.session.scalars(statement).one_or_none()
+
+
+def is_user_registered(user_id: int, event_id: int) -> bool:
+    statement = select(
+        exists().where(
+            Participant.user_id == user_id,
+            Participant.event_id == event_id,
+        )
+    )
+
+    return bool(db.session.scalar(statement))

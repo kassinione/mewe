@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import or_, select
+from sqlalchemy import exists, or_, select
 from sqlalchemy.orm import joinedload
 
 from ..extensions import db
@@ -64,3 +64,14 @@ def find_public_events(search: str, category_id: int | None, page: int, per_page
     )
 
     return events, total
+
+
+def is_user_creator(user_id: int, event_id: int) -> bool:
+    statement = select(
+        exists().where(
+            Event.id == event_id,
+            Event.creator_id == user_id,
+        )
+    )
+
+    return bool(db.session.scalar(statement))

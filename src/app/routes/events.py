@@ -2,12 +2,15 @@ from flask import Blueprint, jsonify, render_template, request
 
 from ..exceptions import ValidationError
 from ..models import Category
-from ..repositories.participant_repository import get_registered_counts
+from ..repositories.participant_repository import (
+    get_registered_count,
+    get_registered_counts,
+)
 from ..serializers.event_serializer import serialize_event
 from ..serializers.participant_serializer import serialize_participant
 from ..service.auth_service import get_current_user_id, login_required
 from ..service.event_service import create_event as create_event_service
-from ..service.event_service import get_public_events
+from ..service.event_service import get_participant_status_service, get_public_events
 from ..service.event_service import join_event as join_event_service
 from ..service.event_service import leave_event as leave_event_service
 
@@ -62,6 +65,20 @@ def create_event():
     event = create_event_service(get_current_user_id(), payload)
 
     return jsonify(serialize_event(event)), 201
+
+@events_bp.route("/api/events/<int:event_id>/participants/me", methods=["GET"])
+@login_required
+def get_participant_status(event_id: int):
+    user_id = get_current_user_id()
+
+    is_creator, is_registered = get_participant_status_service(user_id, event_id)
+    registered_count = get_registered_count(event_id)
+
+    return jsonify({
+        "is_creator": is_creator,
+        "is_registered": is_registered,
+        "registered_count": registered_count
+    })
 
 
 @events_bp.route("/api/events/<int:event_id>/participants/me", methods=["PUT"])

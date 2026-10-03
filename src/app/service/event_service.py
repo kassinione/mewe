@@ -6,9 +6,11 @@ from ..extensions import db
 from ..models import Event, Participant
 from ..repositories.event_repository import (
     find_public_events,
+    get_event_by_id,
     get_event_for_update,
 )
 from ..repositories.participant_repository import (
+    get_participant,
     get_registered_count,
     is_user_registered,
 )
@@ -49,6 +51,7 @@ def create_event(user_id: int, payload: dict[str, Any]) -> Event:
 
     return event
 
+
 def get_public_events(search: str, category_id: int | None, page: int, per_page: int) -> tuple[list[Event], int]:
     if page < 1:
         raise ValidationError("page must be >= 1")
@@ -60,17 +63,32 @@ def get_public_events(search: str, category_id: int | None, page: int, per_page:
     return events, total
 
 
+def get_participant_status_service(user_id: int, event_id: int) -> tuple[bool, bool]:
+    event = get_event_by_id(event_id)
+
+    if event is None:
+        raise NotFoundError("event not found")
+
+    is_creator = event.creator_id == user_id
+    is_registered = is_user_registered(user_id, event_id)
+
+    return is_creator, is_registered
+
+
 def join_event(user_id: int, event_id: int) -> tuple[Participant, int, bool]:
     event = get_event_for_update(event_id)
 
     if event is None:
         raise NotFoundError("event not found")
 
-    event_end = event.event_date + timedelta(minutes=event.duration_minutes)
-    if event_end <= datetime.utcnow():  # noqa: DTZ003
-        raise ConflictError("event has already ended")
+    if event.creator_id == user_id:
+        raise ConflictError("creator cannot join their own event")
 
-    participant = is_user_registered(user_id, event_id)
+    event_end = event.event_date
+    if event_end <= datetime.utcnow():  # noqa: DTZ003
+        raise ConflictError("event has already started")
+
+    participant = get_participant(user_id, event_id)
     if participant:
         return participant, get_registered_count(event_id), False
 
