@@ -8,6 +8,25 @@
     z-index: 2;
 }
 
+.my-events-section {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto 28px;
+}
+
+.my-events-section-title {
+    max-width: 840px;
+    margin: 0 auto 14px;
+    padding: 0 20px;
+    color: var(--text-primary);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.my-events-section .events-container {
+    padding-bottom: 20px;
+}
+
 .form-overlay {
     position: fixed;
     inset: 0;

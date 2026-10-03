@@ -3,10 +3,17 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div id="my-events-page" class="my-events-page" data-events-url="{{ url_for('my_events.get_my_events') }}">
-<div id="eventsContainer" class="events-container">
-    <!-- Здесь будут динамически появляться карточки мероприятий -->
-</div>
+<div id="my-events-page" class="my-events-page"
+     data-events-url="{{ url_for('my_events.get_my_events') }}"
+     data-participations-url="{{ url_for('my_events.get_my_participating_events') }}">
+<section class="my-events-section" aria-labelledby="createdEventsTitle">
+    <h2 id="createdEventsTitle" class="my-events-section-title">Я организую</h2>
+    <div id="createdEventsContainer" class="events-container"></div>
+</section>
+<section class="my-events-section" aria-labelledby="participationsTitle">
+    <h2 id="participationsTitle" class="my-events-section-title">Я участвую</h2>
+    <div id="participationsContainer" class="events-container"></div>
+</section>
 <div class="create-hero">
     <button class="new-event-btn" aria-label="Создать мероприятие">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">

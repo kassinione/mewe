@@ -1,164 +1,145 @@
 import { fetchEvents } from './events-api.js';
-import {
-  createEventCard,
-  createIcon,
-  createMetaItem,
-  createDurationMetaItem,
-  createParticipantsCountMetaItem,
-  createOrganizerMetaItem
-} from './event-card.js';
+import { createEventCard } from './event-card.js';
+import { initializeEventDetail } from './event-detail.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('my-events-page');
-  const eventsContainer = document.getElementById('eventsContainer');
+  const createdContainer = document.getElementById('createdEventsContainer');
+  const participationsContainer = document.getElementById('participationsContainer');
   const eventDetailModal = document.getElementById('eventDetailModal');
   const eventDetailClose = document.getElementById('eventDetailClose');
   const eventDetailOverlay = document.getElementById('eventDetailOverlay');
   const eventDetailBody = document.getElementById('eventDetailBody');
-  let currentEvents = [];
+  let createdEvents = [];
+  let participatingEvents = [];
 
-  function setModalState(modal, isOpen) {
-    modal.classList.toggle('active', isOpen);
-    modal.setAttribute('aria-hidden', String(!isOpen));
-  }
-
-  function renderEventDetail(event) {
-    eventDetailBody.replaceChildren();
-
-    const header = document.createElement('div');
-    header.className = 'event-detail-header';
-
-    const category = document.createElement('div');
-    category.className = 'event-category';
-    category.append(
-      createIcon(`fas ${event.category_icon}`),
-      document.createTextNode(event.category_name)
-    );
-
-    const date = document.createElement('div');
-    date.className = 'event-date';
-    date.textContent = event.formatted_date;
-    header.append(category, date);
-
-    const title = document.createElement('h2');
-    title.id = 'eventDetailTitle';
-    title.className = 'event-detail-title';
-    title.textContent = event.title;
-
-    const meta = document.createElement('div');
-    meta.className = 'event-meta event-detail-meta';
-    meta.append(
-      createMetaItem('fa-map-marker-alt', event.location),
-      createDurationMetaItem(event),
-      createParticipantsCountMetaItem(event)
-    );
-
-    const organizer = createOrganizerMetaItem(event);
-    if (organizer) meta.append(organizer);
-
-    const description = document.createElement('p');
-    description.className = 'event-detail-description';
-    description.textContent = event.description || 'Описание не указано';
-
-    eventDetailBody.append(header, title, meta, description);
-  }
-
-  function openEventDetail(event) {
-    renderEventDetail(event);
-    setModalState(eventDetailModal, true);
-  }
-
-  function closeEventDetail() {
-    setModalState(eventDetailModal, false);
-  }
-
-  function renderMyEvents(events) {
-    currentEvents = events;
-    eventsContainer.replaceChildren();
-
+  function renderSection(container, events, emptyMessage) {
+    container.replaceChildren();
     if (!events.length) {
       const message = document.createElement('p');
       message.className = 'no-events';
-      message.textContent = 'У вас пока нет мероприятий';
-      eventsContainer.append(message);
+      message.textContent = emptyMessage;
+      container.append(message);
       return;
     }
-
-    events.forEach(event => {
-      eventsContainer.append(createEventCard(event));
-    });
+    events.forEach(event => container.append(createEventCard(event)));
   }
 
-  eventsContainer.addEventListener('click', event => {
-    const card = event.target.closest('.event-card');
-    if (!card) return;
+  function renderCreatedEvents() {
+    renderSection(createdContainer, createdEvents, 'Вы пока не создали мероприятий');
+  }
 
-    const selectedEvent = currentEvents.find(
-      currentEvent => String(currentEvent.id) === card.dataset.eventId
-    );
-    if (selectedEvent) openEventDetail(selectedEvent);
-  });
+  function renderParticipations() {
+    renderSection(participationsContainer, participatingEvents, 'Вы пока не записались на мероприятия');
+  }
 
-  eventDetailClose.addEventListener('click', closeEventDetail);
-  eventDetailOverlay.addEventListener('click', closeEventDetail);
-  eventDetailModal.addEventListener('click', event => {
-    if (event.target === eventDetailModal) closeEventDetail();
-  });
-
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && eventDetailModal.classList.contains('active')) {
-      closeEventDetail();
-    }
-  });
-
-  async function loadMyEvents() {
+  async function loadCreatedEvents() {
     try {
       const data = await fetchEvents(page.dataset.eventsUrl);
-      renderMyEvents(data.events);
+      createdEvents = data.events;
+      renderCreatedEvents();
     } catch (error) {
+      createdContainer.replaceChildren();
       const message = document.createElement('p');
       message.className = 'error';
       message.textContent = `Ошибка загрузки мероприятий: ${error.message}`;
-      eventsContainer.replaceChildren(message);
+      createdContainer.append(message);
     }
   }
 
-  loadMyEvents();
+  async function loadParticipations() {
+    try {
+      const data = await fetchEvents(page.dataset.participationsUrl);
+      participatingEvents = data.events;
+      renderParticipations();
+    } catch (error) {
+      participationsContainer.replaceChildren();
+      const message = document.createElement('p');
+      message.className = 'error';
+      message.textContent = `Ошибка загрузки записей: ${error.message}`;
+      participationsContainer.append(message);
+    }
+  }
+
+  const eventDetail = initializeEventDetail({
+    modal: eventDetailModal,
+    closeButton: eventDetailClose,
+    overlay: eventDetailOverlay,
+    body: eventDetailBody,
+    onEventUpdated: updatedEvent => {
+      [createdEvents, participatingEvents].forEach(events => {
+        const matchingEvent = events.find(item => item.id === updatedEvent.id);
+        if (matchingEvent) matchingEvent.registered_count = updatedEvent.registered_count;
+      });
+      renderCreatedEvents();
+      renderParticipations();
+    },
+    onEventDeleted: deletedEvent => {
+      createdEvents = createdEvents.filter(item => item.id !== deletedEvent.id);
+      participatingEvents = participatingEvents.filter(item => item.id !== deletedEvent.id);
+      renderCreatedEvents();
+      renderParticipations();
+    },
+    onParticipationChanged: loadParticipations
+  });
+
+  function openSelectedEvent(event) {
+    const card = event.target.closest('.event-card');
+    if (!card) return;
+
+    const events = card.closest('#createdEventsContainer')
+      ? createdEvents
+      : participatingEvents;
+    const selectedEvent = events.find(item => String(item.id) === card.dataset.eventId);
+    if (selectedEvent) eventDetail.open(selectedEvent);
+  }
+
+  createdContainer.addEventListener('click', openSelectedEvent);
+  participationsContainer.addEventListener('click', openSelectedEvent);
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && eventDetailModal.classList.contains('active')) {
+      eventDetail.close();
+    }
+  });
+
+  loadCreatedEvents();
+  loadParticipations();
 });
 
-const myEventsPage = document.getElementById("my-events-page");
-const callCreateFormBtn = document.getElementsByClassName("new-event-btn")[0];
-const formOverlay = document.getElementById("form-overlay");
-const createHero = document.getElementsByClassName("create-hero")[0];
-const createForm = document.getElementsByClassName("create-form")[0];
-const closeCreateFormBtn = document.getElementsByClassName("close-btn")[0];
+const myEventsPage = document.getElementById('my-events-page');
+const callCreateFormBtn = document.getElementsByClassName('new-event-btn')[0];
+const formOverlay = document.getElementById('form-overlay');
+const createHero = document.getElementsByClassName('create-hero')[0];
+const createForm = document.getElementsByClassName('create-form')[0];
+const closeCreateFormBtn = document.getElementsByClassName('close-btn')[0];
 let closeFormTimeout;
 
-callCreateFormBtn.addEventListener("click", () => {
-    clearTimeout(closeFormTimeout);
-    myEventsPage.classList.add("form-open");
-    createForm.classList.remove("form-closing");
-    formOverlay.setAttribute("aria-hidden", "false");
-    formOverlay.classList.add("form-open");
-    createHero.style.display = "none";
-    createForm.style.display = "flex";
+callCreateFormBtn.addEventListener('click', () => {
+  clearTimeout(closeFormTimeout);
+  myEventsPage.classList.add('form-open');
+  createForm.classList.remove('form-closing');
+  formOverlay.setAttribute('aria-hidden', 'false');
+  formOverlay.classList.add('form-open');
+  createHero.style.display = 'none';
+  createForm.style.display = 'flex';
 });
 
 function closeCreateForm() {
-    if (!myEventsPage.classList.contains("form-open")) return;
-    createForm.classList.add("form-closing");
-    formOverlay.classList.remove("form-open");
-    formOverlay.setAttribute("aria-hidden", "true");
-    closeFormTimeout = setTimeout(() => {
-        myEventsPage.classList.remove("form-open");
-        createForm.classList.remove("form-closing");
-        createForm.style.display = "none";
-        createHero.style.display = "flex";
-    }, 300);
+  if (!myEventsPage.classList.contains('form-open')) return;
+  createForm.classList.add('form-closing');
+  formOverlay.classList.remove('form-open');
+  formOverlay.setAttribute('aria-hidden', 'true');
+  closeFormTimeout = setTimeout(() => {
+    myEventsPage.classList.remove('form-open');
+    createForm.classList.remove('form-closing');
+    createForm.style.display = 'none';
+    createHero.style.display = 'flex';
+  }, 300);
 }
 
-closeCreateFormBtn.addEventListener("click", closeCreateForm);
-formOverlay.addEventListener("click", event => {
-    if (event.target === formOverlay) closeCreateForm();
+closeCreateFormBtn.addEventListener('click', closeCreateForm);
+formOverlay.addEventListener('click', event => {
+  if (event.target === formOverlay) closeCreateForm();
 });
-document.addEventListener("close-create-form", closeCreateForm);
+document.addEventListener('close-create-form', closeCreateForm);

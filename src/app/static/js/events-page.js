@@ -1,12 +1,6 @@
 import { fetchEvents } from './events-api.js';
-import {
-  createEventCard,
-  createIcon,
-  createMetaItem,
-  createDurationMetaItem,
-  createParticipantsCountMetaItem,
-  createOrganizerMetaItem
-} from './event-card.js';
+import { createEventCard } from './event-card.js';
+import { initializeEventDetail } from './event-detail.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.getElementById('events-page');
@@ -23,73 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let selectedCategoryId = '';
   let currentEvents = [];
-
-  function setModalState(modal, isOpen) {
-    modal.classList.toggle('active', isOpen);
-    modal.setAttribute('aria-hidden', String(!isOpen));
-  }
-
-  function openCategoriesModal() {
-    setModalState(categoriesModal, true);
-    categoriesTab.setAttribute('aria-expanded', 'true');
-    categoriesModal.querySelector('.event-card')?.focus();
-  }
-
-  function closeCategoriesModal() {
-    setModalState(categoriesModal, false);
-    categoriesTab.setAttribute('aria-expanded', 'false');
-    categoriesTab.focus();
-  }
-
-  function renderEventDetail(event) {
-    eventDetailBody.replaceChildren();
-
-    const header = document.createElement('div');
-    header.className = 'event-detail-header';
-
-    const category = document.createElement('div');
-    category.className = 'event-category';
-    category.append(
-      createIcon(`fas ${event.category_icon}`),
-      document.createTextNode(event.category_name)
-    );
-
-    const date = document.createElement('div');
-    date.className = 'event-date';
-    date.textContent = event.formatted_date;
-    header.append(category, date);
-
-    const title = document.createElement('h2');
-    title.id = 'eventDetailTitle';
-    title.className = 'event-detail-title';
-    title.textContent = event.title;
-
-    const meta = document.createElement('div');
-    meta.className = 'event-meta event-detail-meta';
-    meta.append(
-      createMetaItem('fa-map-marker-alt', event.location),
-      createDurationMetaItem(event),
-      createParticipantsCountMetaItem(event)
-    );
-
-    const organizer = createOrganizerMetaItem(event);
-    if (organizer) meta.append(organizer);
-
-    const description = document.createElement('p');
-    description.className = 'event-detail-description';
-    description.textContent = event.description || 'Описание не указано';
-
-    eventDetailBody.append(header, title, meta, description);
-  }
-
-  function openEventDetail(event) {
-    renderEventDetail(event);
-    setModalState(eventDetailModal, true);
-  }
-
-  function closeEventDetail() {
-    setModalState(eventDetailModal, false);
-  }
+  let eventDetail;
 
   function renderEvents(events) {
     currentEvents = events;
@@ -127,6 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function openCategoriesModal() {
+    categoriesModal.classList.add('active');
+    categoriesModal.setAttribute('aria-hidden', 'false');
+    categoriesTab.setAttribute('aria-expanded', 'true');
+    categoriesModal.querySelector('.event-card')?.focus();
+  }
+
+  function closeCategoriesModal() {
+    categoriesModal.classList.remove('active');
+    categoriesModal.setAttribute('aria-hidden', 'true');
+    categoriesTab.setAttribute('aria-expanded', 'false');
+    categoriesTab.focus();
+  }
+
+  eventDetail = initializeEventDetail({
+    modal: eventDetailModal,
+    closeButton: eventDetailClose,
+    overlay: eventDetailOverlay,
+    body: eventDetailBody,
+    onEventUpdated: updatedEvent => {
+      const index = currentEvents.findIndex(item => item.id === updatedEvent.id);
+      if (index !== -1) currentEvents[index] = updatedEvent;
+      renderEvents(currentEvents);
+    },
+    onEventDeleted: deletedEvent => {
+      renderEvents(currentEvents.filter(item => item.id !== deletedEvent.id));
+    }
+  });
 
   categoriesTab.addEventListener('click', openCategoriesModal);
   categoriesTab.addEventListener('keydown', event => {
@@ -138,19 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   modalClose.addEventListener('click', closeCategoriesModal);
   modalOverlay.addEventListener('click', closeCategoriesModal);
-  eventDetailClose.addEventListener('click', closeEventDetail);
-  eventDetailOverlay.addEventListener('click', closeEventDetail);
   categoriesModal.addEventListener('click', event => {
     if (event.target === categoriesModal) closeCategoriesModal();
-  });
-  eventDetailModal.addEventListener('click', event => {
-    if (event.target === eventDetailModal) closeEventDetail();
   });
 
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
     if (categoriesModal.classList.contains('active')) closeCategoriesModal();
-    if (eventDetailModal.classList.contains('active')) closeEventDetail();
+    if (eventDetailModal.classList.contains('active')) eventDetail.close();
   });
 
   eventsContainer.addEventListener('click', event => {
@@ -159,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedEvent = currentEvents.find(
       currentEvent => String(currentEvent.id) === card.dataset.eventId
     );
-    if (selectedEvent) openEventDetail(selectedEvent);
+    if (selectedEvent) eventDetail.open(selectedEvent);
   });
 
   let debounceTimeout;
