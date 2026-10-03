@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any
 
-from ..exceptions import ConflictError, NotFoundError, ValidationError
+from ..exceptions import ConflictError, ForbiddenError, NotFoundError, ValidationError
 from ..extensions import db
 from ..models import Event, Participant
 from ..repositories.event_repository import (
@@ -108,7 +108,7 @@ def join_event(user_id: int, event_id: int) -> tuple[Participant, int, bool]:
     return participant, registered_count, True
 
 
-def leave_event(user_id: int, event_id: int) -> int:
+def leave_event(user_id: int, event_id: int) -> tuple[int, bool]:
     event = get_event_for_update(event_id)
 
     if event is None:
@@ -121,7 +121,7 @@ def leave_event(user_id: int, event_id: int) -> int:
     )
 
     if participant is None:
-        return get_registered_count(event_id)
+        return get_registered_count(event_id), False
 
     db.session.delete(participant)
     db.session.flush()
@@ -129,4 +129,20 @@ def leave_event(user_id: int, event_id: int) -> int:
     registered_count = get_registered_count(event_id)
     db.session.commit()
 
-    return registered_count
+    return registered_count, True
+
+
+def delete_event(user_id: int, event_id: int) -> None:
+    event = get_event_for_update(event_id)
+
+    if event is None:
+        raise NotFoundError("event not found")
+
+    if event.creator_id != user_id:
+        raise ForbiddenError("only the creator can delete the event")
+
+    if event.event_date <= datetime.utcnow():  # noqa: DTZ003
+        raise ConflictError("event has already started or finished")
+
+    db.session.delete(event)
+    db.session.commit()

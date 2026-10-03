@@ -15,7 +15,8 @@ def auth_user_data():
         raise ValidationError("invalid JSON body")
 
     user = auth_or_create_user(payload)
-
-    return jsonify({
+    data = {
         "user": serialize_private_user(user)
-    }), 200
+    }
+
+    return jsonify(data), 200

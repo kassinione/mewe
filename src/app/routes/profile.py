@@ -33,7 +33,8 @@ def update_about():
         raise ValidationError("invalid JSON body")
 
     about = change_about_user(user_id, payload)
-
-    return jsonify({
+    data = {
         "about": about
-    }), 200
+    }
+
+    return jsonify(data), 200

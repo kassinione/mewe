@@ -37,7 +37,6 @@ def get_events():
 
     events, total = get_public_events(search, category_id, page, per_page)
     registered_counts = get_registered_counts([event.id for event in events])
-
     data = {
         "events": [
             serialize_event(event, registered_counts.get(event.id, 0))
@@ -63,8 +62,10 @@ def create_event():
         raise ValidationError("invalid JSON body")
 
     event = create_event_service(get_current_user_id(), payload)
+    data = serialize_event(event)
 
-    return jsonify(serialize_event(event)), 201
+    return jsonify(data), 201
+
 
 @events_bp.route("/api/events/<int:event_id>/participants/me", methods=["GET"])
 @login_required
@@ -73,12 +74,13 @@ def get_participant_status(event_id: int):
 
     is_creator, is_registered = get_participant_status_service(user_id, event_id)
     registered_count = get_registered_count(event_id)
-
-    return jsonify({
+    data = {
         "is_creator": is_creator,
         "is_registered": is_registered,
         "registered_count": registered_count
-    })
+    }
+
+    return jsonify(data), 200
 
 
 @events_bp.route("/api/events/<int:event_id>/participants/me", methods=["PUT"])
@@ -98,9 +100,9 @@ def join_event(event_id: int):
 @login_required
 def leave_event(event_id: int):
     user_id = get_current_user_id()
-    registered_count = leave_event_service(user_id, event_id)
+    registered_count, deleted = leave_event_service(user_id, event_id)
     data = {
         "registered_count": registered_count
     }
 
-    return jsonify(data), 200
+    return jsonify(data), 204 if deleted else 200
