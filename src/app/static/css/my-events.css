@@ -13,6 +13,11 @@
     inset: 0;
     z-index: 1500;
     background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -50,44 +55,42 @@
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translate(-50%, calc(-50% + 20px));
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -50%);
+        transform: translateY(0);
     }
 }
 
 @keyframes fadeOut {
     from {
         opacity: 1;
-        transform: translate(-50%, -50%);
+        transform: translateY(0);
     }
     to {
         opacity: 0;
-        transform: translate(-50%, calc(-50% + 20px));
+        transform: translateY(20px);
     }
 }
 
 .create-form {
     display: none;
-    position: fixed;
-    top: calc(50% - 30px);
-    left: 50%;
+    position: relative;
     z-index: 1600;
     flex-direction: column;
+    flex: 0 1 400px;
+    margin: auto;
     padding: 30px;
     gap: 16px;
-    width: 100%;
-    max-width: 400px;
-    max-height: calc(100vh - 32px);
+    width: calc(100vw - 32px);
+    max-height: calc(var(--tg-viewport-height, 100vh) - 32px);
     overflow-y: auto;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 16px;
     animation: fadeIn 0.3s ease-out;
     box-sizing: border-box;
-    transform: translate(-50%, -50%);
 }
 
 .create-form.form-closing {
@@ -148,6 +151,26 @@
     resize: vertical;
     min-height: 80px;
     max-height: 200px;
+}
+
+.duration-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.duration-input input {
+    flex: 1;
+    min-width: 0;
+}
+
+.duration-input > span {
+    color: var(--text-secondary);
+    font-size: 18px;
+}
+
+.duration-input > .duration-unit {
+    font-size: 14px;
 }
 
 .create-form .compact-row {

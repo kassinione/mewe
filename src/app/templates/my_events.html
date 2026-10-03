@@ -14,6 +14,7 @@
         </svg>
     </button>
 </div>
+<div class="form-overlay" id="form-overlay" aria-hidden="true">
 <form class="create-form" id="event-form" method="POST" action="{{ url_for('events.create_event') }}">
     <button class="close-btn" id="close-form" type="button" aria-label="Закрыть">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -52,8 +53,13 @@
         </label>
     </div>
 
-    <label>Продолжительность (часы)
-        <input type="number" name="duration" min="0.25" max="24" step="0.25" value="1" required>
+    <label class="duration-field">Продолжительность
+        <span class="duration-input">
+            <input type="number" name="duration_hours" min="0" max="24" step="1" value="1" aria-label="Часы" required>
+            <span class="duration-unit">ч</span>
+            <input type="number" name="duration_minutes" min="0" max="59" step="1" value="0" aria-label="Минуты" required>
+            <span class="duration-unit">м</span>
+        </span>
     </label>
 
     <label>Описание
@@ -65,7 +71,6 @@
 </form>
 </div>
 
-<div class="form-overlay" id="form-overlay" aria-hidden="true"></div>
 <div class="categories-modal" id="eventDetailModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="eventDetailTitle">
     <div class="modal-overlay" id="eventDetailOverlay" tabindex="-1"></div>
     <div class="modal-content">

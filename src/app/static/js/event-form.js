@@ -33,13 +33,20 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const durationMinutes = Number(form.duration_hours.value) * 60
+      + Number(form.duration_minutes.value);
+    if (durationMinutes < 15 || durationMinutes > 1440) {
+      showToast('Продолжительность должна быть от 00:15 до 24:00', 'error');
+      return;
+    }
+
     const payload = {
       title: form.title.value.trim(),
       location: form.location.value.trim(),
       description: form.description.value.trim(),
       category: Number(form.category.value),
       max_participants: Number(form.participants.value),
-      duration_minutes: Math.round(Number(form.duration.value) * 60),
+      duration_minutes: durationMinutes,
       event_date: `${dateVal}T${timeVal}:00`
     };
 

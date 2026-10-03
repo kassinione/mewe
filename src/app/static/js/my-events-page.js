@@ -158,5 +158,7 @@ function closeCreateForm() {
 }
 
 closeCreateFormBtn.addEventListener("click", closeCreateForm);
-formOverlay.addEventListener("click", closeCreateForm);
+formOverlay.addEventListener("click", event => {
+    if (event.target === formOverlay) closeCreateForm();
+});
 document.addEventListener("close-create-form", closeCreateForm);
