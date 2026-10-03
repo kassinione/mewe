@@ -138,14 +138,13 @@ export function createParticipantsItem(event) {
 }
 
 export function createOrganizerLine(event) {
-  if (!event.creator_name && !event.creator_username) return null;
+  if (!event.creator_username && !event.creator_name) return null;
 
   const line = document.createElement('div');
   line.className = 'event-organizer';
-  line.textContent = [
-    event.creator_name,
-    event.creator_username && `@${event.creator_username}`
-  ].filter(Boolean).join(' ');
+  line.textContent = event.creator_username
+    ? `@${event.creator_username}`
+    : event.creator_name;
   return line;
 }
 

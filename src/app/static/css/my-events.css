@@ -11,7 +11,7 @@
 .my-events-section {
     position: relative;
     z-index: 2;
-    margin: 0 auto 28px;
+    margin: 0 auto 16px;
 }
 
 .my-events-section-title {
@@ -28,7 +28,7 @@
 }
 
 .my-events-section .events-container {
-    padding-bottom: 20px;
+    padding-bottom: 0;
 }
 
 .past-events {
