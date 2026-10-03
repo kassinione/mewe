@@ -173,6 +173,10 @@
     font-size: 14px;
 }
 
+.duration-input > .duration-hours-unit {
+    margin-right: 4px;
+}
+
 .create-form .compact-row {
     display: flex;
     gap: 10px;
