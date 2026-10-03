@@ -145,7 +145,7 @@ html, body {
 }
 
 .no-events,
-.error {
+.events-container > .error {
   grid-column: 1 / -1;
   text-align: center;
   padding: 48px 24px;
@@ -154,7 +154,7 @@ html, body {
   font-weight: 500;
 }
 
-.error {
+.events-container > .error {
   color: var(--danger);
 }
 
