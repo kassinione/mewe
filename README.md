@@ -1,99 +1,139 @@
 # MeWe
 
-A Telegram Mini App for discovering and organizing student activities at Far Eastern Federal University (FEFU). The platform lets students create events, find like-minded people, and manage participation — all without leaving Telegram.
-
-## The Idea
-
-Student life is full of scattered activities — group runs, themed meetups, cultural events — but finding out about them and gathering a crowd is often harder than it should be. MeWe solves this: any student can create an event in under a minute, and others can find it through search or category filters and join in.
+MeWe is a Telegram Mini App for discovering and organizing student activities at Far Eastern Federal University (FEFU). Students can find events, register for them, and manage events they organize without leaving Telegram.
 
 ## Features
 
-- 📅 **Event creation** — title, description, location, date and time, duration, category, participant limit
-- 🔍 **Search and filtering** — by title, description, location, and category, with live results
-- 🔐 **Telegram-native authentication** — users are identified via Telegram's signed `initData`, no separate login required
-- 🎨 **Telegram theme adaptation** — the UI automatically follows the client's light/dark theme
-- 🏛️ **FEFU brand identity** — visual design built on the university's official color palette
+- Create events with a category, location, date, duration, participant limit, and description
+- Search upcoming events by title, description, and location
+- Filter events by one or more categories
+- View event details and current registration counts
+- Register for events or cancel a registration
+- Delete an event as its organizer, before it starts
+- View created events and joined events separately on **My events**, with past events in collapsible lists
+- Authenticate through Telegram Web App `initData`; no separate password is needed
+- Edit the profile description
+- Adapt the interface to the Telegram client's light or dark theme
 
-## Tech Stack
+## Tech stack
 
-**Backend**
-- Python 3.12, [Flask](https://flask.palletsprojects.com/) with an Application Factory and Blueprints architecture
-- SQLAlchemy (ORM) + MySQL
-- [Alembic](https://alembic.sqlalchemy.org/) — versioned database schema migrations
-- [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) — the bot that launches the Mini App
-- HMAC-SHA256 validation of Telegram `initData`, session-based auth via Flask sessions
+- Python 3.12, Flask, and Jinja2
+- Flask-SQLAlchemy and MySQL 8.4
+- Alembic database migrations
+- `python-telegram-bot` for the Telegram bot
+- Vanilla JavaScript and CSS; the frontend has no build step
+- Docker Compose for the web app, bot, and database
+- `uv` for Python dependency management
 
-**Frontend**
-- Jinja2 templates with inheritance (`base.html`)
-- Vanilla JavaScript, no build tools or frameworks
-- CSS custom properties for theming and brand palette
+## Application layout
 
-**Infrastructure**
-- [uv](https://docs.astral.sh/uv/) — dependency and virtual environment management
-- Docker + Docker Compose — three services: `web`, `bot`, `db` (MySQL) with a healthcheck-based readiness check
-
-## Architecture
-
-```
-├── bot.py              # Telegram bot — /start command, Mini App launch button
-├── run.py              # Flask application entry point
-├── docker-compose.yml
-├── Dockerfile
-├── alembic.ini
-├── migrations/          # database schema migration history
+```text
+├── bot.py                 # Telegram /start command and Mini App menu button
+├── run.py                 # Flask web server entry point
+├── docker-compose.yml     # web, bot, and MySQL services
+├── migrations/            # Alembic migrations
 └── src/app/
-    ├── extensions.py    # SQLAlchemy initialization
-    ├── models.py        # ORM models: Category, Event, User
-    ├── errors.py        # centralized error handling (JSON responses)
-    ├── service/          # auth logic: initData validation, login_required decorator
-    ├── routes/          # Blueprints: auth, events, my_events, profile
-    ├── templates/        # Jinja2 templates inheriting from base.html
-    └── static/           # CSS, JS, icons, fonts
+    ├── models.py          # Category, Event, User, and Participant models
+    ├── routes/            # Authentication, events, participations, and profile
+    ├── service/           # Application and authentication logic
+    ├── repositories/      # Database queries
+    ├── serializers/       # API response serialization
+    ├── templates/         # Jinja2 pages
+    └── static/            # JavaScript, styles, and icons
 ```
 
-## Authentication
+## Configuration
 
-MeWe runs exclusively as a Telegram Mini App, so it uses Telegram's own identity instead of a password-based login:
+Create a `.env` file in the repository root. Do not commit it or share its secret values.
 
-1. The frontend reads the raw `initData` string via the Telegram Web App SDK and sends it to `POST /api/sessions`.
-2. The backend verifies its HMAC-SHA256 signature against `BOT_TOKEN` and checks `auth_date` to reject stale/replayed data.
-3. On success, the user is found or created in the `users` table and a Flask session is issued.
-4. Routes that require a logged-in user are protected with a `login_required` decorator.
+```dotenv
+# Required
+BOT_TOKEN=replace_with_telegram_bot_token
+WEBAPP_URL=https://your-public-host/
+APP_ORIGIN=https://your-public-host
+SECRET_KEY=replace_with_a_long_random_secret
+DB_PASSWORD=replace_with_database_user_password
+DB_ROOT_PASSWORD=replace_with_database_root_password
 
-## Getting Started
-
-Create a `.env` file in the project root:
+# Optional; defaults shown
+PORT=8000
+WEB_BIND=127.0.0.1
+FLASK_DEBUG=false
 ```
-SECRET_KEY=your_flask_secret_key
-BOT_TOKEN=your_botfather_token
-WEBAPP_URL=https://your-web-service-address
-DB_PASSWORD=database_user_password
-DB_ROOT_PASSWORD=database_root_password
+
+`WEBAPP_URL` is the public HTTPS URL opened by Telegram. `APP_ORIGIN` must be the exact origin of that page (scheme and host, with no path); the backend checks it for state-changing API requests. Flask session cookies are secure and partitioned, so the Mini App must be served over HTTPS.
+
+Docker Compose builds `DATABASE_URL` for the web and bot containers from `DB_PASSWORD` and the Compose database service. When running the app outside Docker, configure `DATABASE_URL` to point to a reachable MySQL database, for example:
+
+```text
+mysql+pymysql://mewe:password@localhost/mewe_app
 ```
 
-**With Docker Compose:**
+The database name and non-secret MySQL user are set by `docker-compose.yml`. `WEB_BIND` controls the host-side address to which the web port is published; keep the default loopback binding when a local reverse proxy provides public HTTPS.
+
+## Run with Docker Compose
+
+Requirements: Docker Engine with the Compose plugin, and a Telegram bot configured to use the same public Mini App URL.
+
 ```bash
-docker compose build                                 # rebuild images with the latest code (web, bot)
-docker compose run --rm web alembic upgrade head     # db starts automatically via depends_on; apply pending migrations
-docker compose up -d                                 # start all services using the freshly built images
+docker compose build
+docker compose run --rm web alembic upgrade head
+docker compose up -d
 ```
 
-**Locally, without Docker (requires MySQL, e.g. via XAMPP):**
+The web and bot services wait for MySQL's health check. The web app listens on the configured `PORT`; by default, Compose publishes it only on `127.0.0.1:8000`, ready for a local HTTPS reverse proxy. To inspect service output:
+
+```bash
+docker compose logs -f web bot
+```
+
+Stop the services with `docker compose down`. The MySQL data volume is preserved; add `-v` only if you intentionally want to remove the database data.
+
+## Run locally
+
+Requirements: Python 3.12, `uv`, a reachable MySQL database, and a publicly accessible HTTPS URL for Telegram Mini App authentication and cookies.
+
+Set the required variables in `.env` (including `DATABASE_URL`), then run:
+
 ```bash
 uv sync
 uv run alembic upgrade head
-uv run python run.py    # web server at http://localhost:8000
-uv run python bot.py    # telegram bot
+uv run python run.py
 ```
 
-## Project Status
+The web server defaults to `http://0.0.0.0:8000`; `PORT` changes the port. For Telegram end-to-end use, put it behind HTTPS at `WEBAPP_URL` and set `APP_ORIGIN` to that public origin. Run the bot in a separate terminal:
 
-The application is fully containerized and verified end-to-end: all three services (`web`, `bot`, `db`) run through Docker Compose, and the database schema is versioned via Alembic migrations. Telegram-native authentication (`initData` validation, user persistence, session-protected routes) is implemented.
+```bash
+uv run python bot.py
+```
 
-In progress:
-- Full event registration flow (`Registration` model)
-- Post-event rating system (`Rating` model)
-- HTTPS infrastructure for running the Mini App on real devices
+## Main pages and API
+
+HTML pages:
+
+- `/` — upcoming events, search, multi-category filters, and event details
+- `/my_events` — events the current user organizes and events they have joined
+- `/profile` — user profile and editable description
+
+The JSON API is under `/api`. Successful responses are unwrapped JSON objects unless the endpoint returns `204 No Content`; errors use `{"error": "message"}`. Protected endpoints use the Flask session cookie.
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/sessions` | Validate Telegram `initData` and create a session |
+| `GET` | `/api/events` | Search and filter upcoming events; repeat `category` for multiple IDs |
+| `POST` | `/api/events` | Create an event |
+| `GET` | `/api/events/{id}/participants/me` | Get the current user's participation status |
+| `PUT` / `DELETE` | `/api/events/{id}/participants/me` | Register for an event or cancel registration |
+| `DELETE` | `/api/events/{id}` | Delete an event as its organizer |
+| `GET` | `/api/users/me/events` | List events organized by the current user |
+| `GET` | `/api/users/me/participations` | List events joined by the current user, including past events |
+| `PATCH` | `/api/users/me` | Update the profile description |
+
+State-changing API requests must come from the configured `APP_ORIGIN`. The browser sends the same-origin session cookie automatically.
+
+## Database migrations
+
+Apply migrations with `alembic upgrade head`. In Docker, use `docker compose run --rm web alembic upgrade head`. Migration history is in `migrations/versions/`.
 
 ## Author
 
