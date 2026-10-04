@@ -46,7 +46,7 @@
   max-width: 220px;
   height: auto;
   object-fit: contain;
-  opacity: 0.2835;
+  opacity: 0.2268;
   pointer-events: none;
 }
 
@@ -516,7 +516,7 @@ html, body {
 }
 
 #eventDetailModal .modal-content {
-  max-width: 840px;
+  max-width: 480px;
   padding: 0;
   overflow: hidden;
 }
@@ -548,6 +548,7 @@ html, body {
 .event-detail-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
   padding: 0 20px 20px;
 }
