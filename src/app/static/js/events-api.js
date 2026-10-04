@@ -1,13 +1,14 @@
-export async function fetchEvents(url, search = '', categoryId = '') {
+export async function fetchEvents(url, search = '', categoryIds = []) {
   const requestUrl = new URL(url, window.location.origin);
 
   if (search) {
     requestUrl.searchParams.set('search', search);
   }
 
-  if (categoryId) {
-    requestUrl.searchParams.set('category', categoryId);
-  }
+  const selectedCategoryIds = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
+  selectedCategoryIds.filter(Boolean).forEach(categoryId => {
+    requestUrl.searchParams.append('category', categoryId);
+  });
 
   const response = await fetch(requestUrl, {
     headers: { Accept: 'application/json' }

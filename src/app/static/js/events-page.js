@@ -10,18 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalOverlay = document.getElementById('modalOverlay');
   const searchInput = document.getElementById('searchInput');
   const selectedCategoryFilter = document.getElementById('selectedCategoryFilter');
-  const selectedCategoryName = document.getElementById('selectedCategoryName');
-  const clearCategoryFilter = document.getElementById('clearCategoryFilter');
   const eventsContainer = document.getElementById('eventsContainer');
   const eventDetailModal = document.getElementById('eventDetailModal');
   const eventDetailClose = document.getElementById('eventDetailClose');
   const eventDetailOverlay = document.getElementById('eventDetailOverlay');
   const eventDetailBody = document.getElementById('eventDetailBody');
 
-  let selectedCategoryId = '';
-  let selectedCategoryLabel = '';
+  const selectedCategories = new Map();
   let currentEvents = [];
   let eventDetail;
+  let eventsRequestVersion = 0;
 
   function renderEvents(events) {
     currentEvents = events.filter(event => isEventUpcoming(event));
@@ -40,16 +38,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  async function loadEvents(search = '', categoryId = '') {
+  async function loadEvents(search = '') {
+    const requestVersion = ++eventsRequestVersion;
     try {
       const data = await fetchEvents(
         page.dataset.eventsUrl,
         search,
-        categoryId
+        [...selectedCategories.keys()]
       );
 
+      if (requestVersion !== eventsRequestVersion) return;
       renderEvents(data.events);
     } catch (error) {
+      if (requestVersion !== eventsRequestVersion) return;
       eventsContainer.replaceChildren();
 
       const message = document.createElement('p');
@@ -74,12 +75,45 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderSelectedCategory() {
-    selectedCategoryName.textContent = selectedCategoryLabel;
-    selectedCategoryFilter.hidden = !selectedCategoryId;
-    clearCategoryFilter.setAttribute(
-      'aria-label',
-      selectedCategoryId ? `Сбросить категорию: ${selectedCategoryLabel}` : 'Сбросить категорию'
-    );
+    selectedCategoryFilter.replaceChildren();
+    selectedCategoryFilter.hidden = selectedCategories.size === 0;
+    categoriesTab.classList.toggle('active', selectedCategories.size > 0);
+
+    selectedCategories.forEach((name, id) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'selected-category-chip';
+      chip.setAttribute('aria-label', `Убрать категорию: ${name}`);
+
+      const icon = document.createElement('i');
+      icon.className = 'fas fa-tag';
+      icon.setAttribute('aria-hidden', 'true');
+
+      const label = document.createElement('span');
+      label.textContent = name;
+
+      const removeIcon = document.createElement('i');
+      removeIcon.className = 'fas fa-times';
+      removeIcon.setAttribute('aria-hidden', 'true');
+
+      chip.append(icon, label, removeIcon);
+      chip.addEventListener('click', () => {
+        selectedCategories.delete(id);
+        updateCategorySelection();
+      });
+      selectedCategoryFilter.append(chip);
+    });
+
+    categoriesModal.querySelectorAll('[data-category-id]').forEach(card => {
+      const isSelected = selectedCategories.has(card.dataset.categoryId);
+      card.classList.toggle('category-selected', isSelected);
+      card.setAttribute('aria-pressed', String(isSelected));
+    });
+  }
+
+  function updateCategorySelection() {
+    renderSelectedCategory();
+    loadEvents(searchInput.value.trim());
   }
 
   eventDetail = initializeEventDetail({
@@ -130,27 +164,33 @@ document.addEventListener('DOMContentLoaded', () => {
   searchInput.addEventListener('input', () => {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(
-      () => loadEvents(searchInput.value.trim(), selectedCategoryId),
+      () => loadEvents(searchInput.value.trim()),
       300
     );
   });
 
-  clearCategoryFilter.addEventListener('click', () => {
-    selectedCategoryId = '';
-    selectedCategoryLabel = '';
-    renderSelectedCategory();
-    loadEvents(searchInput.value.trim());
-  });
+  function toggleCategory(card) {
+    const categoryId = card.dataset.categoryId;
+    if (selectedCategories.has(categoryId)) {
+      selectedCategories.delete(categoryId);
+    } else {
+      selectedCategories.set(categoryId, card.dataset.categoryName);
+    }
+    updateCategorySelection();
+  }
 
   categoriesModal.querySelectorAll('.event-card').forEach(card => {
-    card.addEventListener('click', () => {
-      selectedCategoryId = card.dataset.categoryId;
-      selectedCategoryLabel = card.dataset.categoryName;
-      renderSelectedCategory();
-      loadEvents(searchInput.value.trim(), selectedCategoryId);
-      closeCategoriesModal();
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    card.addEventListener('click', () => toggleCategory(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleCategory(card);
+      }
     });
   });
 
+  renderSelectedCategory();
   loadEvents();
 });

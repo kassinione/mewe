@@ -52,13 +52,13 @@ def create_event(user_id: int, payload: dict[str, Any]) -> Event:
     return event
 
 
-def get_public_events(search: str, category_id: int | None, page: int, per_page: int) -> tuple[list[Event], int]:
+def get_public_events(search: str, category_ids: list[int] | None, page: int, per_page: int) -> tuple[list[Event], int]:
     if page < 1:
         raise ValidationError("page must be >= 1")
     if per_page < 1 or per_page > 100:
         raise ValidationError("per_page must be between 1 and 100")
 
-    events, total = find_public_events(search, category_id, page, per_page)
+    events, total = find_public_events(search, category_ids, page, per_page)
 
     return events, total
 

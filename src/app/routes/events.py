@@ -31,11 +31,19 @@ def render_events_page():
 @events_bp.route("/api/events")
 def get_events():
     search = request.args.get("search", "").strip()
-    category_id = request.args.get("category", type=int)
+    category_values = request.args.getlist("category")
+    try:
+        category_ids = [int(value) for value in category_values]
+    except ValueError as error:
+        raise ValidationError("category must contain integer IDs") from error
+
+    if any(category_id <= 0 for category_id in category_ids):
+        raise ValidationError("category IDs must be positive integers")
+
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 15, type=int)
 
-    events, total = get_public_events(search, category_id, page, per_page)
+    events, total = get_public_events(search, category_ids or None, page, per_page)
     registered_counts = get_registered_counts([event.id for event in events])
     data = {
         "events": [

@@ -51,7 +51,7 @@ def get_events_by_participant(user_id: int) -> list[Event]:
     return events
 
 
-def find_public_events(search: str, category_id: int | None, page: int, per_page: int) -> tuple[list[Event], int]:
+def find_public_events(search: str, category_ids: list[int] | None, page: int, per_page: int) -> tuple[list[Event], int]:
     query = Event.query.filter(Event.event_date >= datetime.utcnow())  # noqa: DTZ003
 
     if search:
@@ -63,8 +63,8 @@ def find_public_events(search: str, category_id: int | None, page: int, per_page
             )
         )
 
-    if category_id is not None:
-        query = query.filter(Event.category_id == category_id)
+    if category_ids is not None:
+        query = query.filter(Event.category_id.in_(category_ids))
 
     total = query.count()
 
