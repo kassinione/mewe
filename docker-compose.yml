@@ -33,7 +33,7 @@ services:
     build: .
     container_name: web
     restart: unless-stopped
-    command: ["python3", "run.py"]
+    command: ["gunicorn", "--bind", "0.0.0.0:${PORT:-8000}", "--workers", "2", "run:app"]
     env_file:
       - .env
     environment:

@@ -18,6 +18,7 @@ MeWe is a Telegram Mini App for discovering and organizing student activities at
 ## Tech stack
 
 - Python 3.12, Flask, and Jinja2
+- Gunicorn WSGI server for the containerized web app
 - Flask-SQLAlchemy and MySQL 8.4
 - Alembic database migrations
 - `python-telegram-bot` for the Telegram bot
@@ -81,7 +82,7 @@ docker compose run --rm web alembic upgrade head
 docker compose up -d
 ```
 
-The web and bot services wait for MySQL's health check. The web app listens on the configured `PORT`; by default, Compose publishes it only on `127.0.0.1:8000`, ready for a local HTTPS reverse proxy. To inspect service output:
+The web and bot services wait for MySQL's health check. The web app runs under Gunicorn with two workers. `PORT` sets both the port Gunicorn listens on inside the container and the published host port. `WEB_BIND` sets the host address; by default, Compose publishes the app only on `127.0.0.1:8000`, ready for a local HTTPS reverse proxy. `FLASK_DEBUG` applies to the local `run.py` server and does not enable debug mode in the Gunicorn deployment. To inspect service output:
 
 ```bash
 docker compose logs -f web bot
