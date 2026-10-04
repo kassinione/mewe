@@ -46,7 +46,7 @@
   max-width: 220px;
   height: auto;
   object-fit: contain;
-  opacity: 0.18144;
+  opacity: 0.18;
   pointer-events: none;
 }
 
@@ -548,15 +548,17 @@ html, body {
 .event-detail-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 12px;
-  padding: 0 20px 20px;
+  padding: 12px 20px 20px;
 }
 
-.event-detail-action {
+.event-detail-actions .event-detail-action {
+  width: auto;
   margin-top: 0;
   min-height: 44px;
   height: auto;
+  padding: 0 20px;
 }
 
 .event-detail-action-primary {
