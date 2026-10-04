@@ -548,7 +548,7 @@ html, body {
 .event-detail-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
   padding: 12px 20px 20px;
 }
