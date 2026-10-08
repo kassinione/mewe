@@ -13,6 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
+    const textFieldsValid = [...form.querySelectorAll('input[maxlength], textarea[maxlength]')]
+      .every(field => {
+        const valid = field.value.length <= field.maxLength;
+        field.classList.toggle('invalid', !valid);
+        return valid;
+      });
+
+    if (!textFieldsValid) {
+      showToast('Превышена допустимая длина текстового поля', 'error');
+      return;
+    }
+
     const requiredFieldsValid = [...form.querySelectorAll('[required]')]
       .every(field => {
         const valid = Boolean(field.value);

@@ -2,6 +2,11 @@ from datetime import datetime
 from typing import Any, TypedDict
 
 from ..exceptions import ValidationError
+from ..field_limits import (
+    EVENT_DESCRIPTION_MAX_LENGTH,
+    EVENT_LOCATION_MAX_LENGTH,
+    EVENT_TITLE_MAX_LENGTH,
+)
 
 MAX_EVENT_PARTICIPANTS = 100
 MIN_EVENT_DURATION_MINUTES = 15
@@ -25,12 +30,27 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
 
     if not isinstance(title, str) or not title.strip():
         raise ValidationError("title is required")
+    title = title.strip()
+    if len(title) > EVENT_TITLE_MAX_LENGTH:
+        raise ValidationError(
+            f"title must be at most {EVENT_TITLE_MAX_LENGTH} characters"
+        )
 
     if not isinstance(location, str) or not location.strip():
         raise ValidationError("location is required")
+    location = location.strip()
+    if len(location) > EVENT_LOCATION_MAX_LENGTH:
+        raise ValidationError(
+            f"location must be at most {EVENT_LOCATION_MAX_LENGTH} characters"
+        )
 
     if not isinstance(description, str) or not description.strip():
         raise ValidationError("description is required")
+    description = description.strip()
+    if len(description) > EVENT_DESCRIPTION_MAX_LENGTH:
+        raise ValidationError(
+            f"description must be at most {EVENT_DESCRIPTION_MAX_LENGTH} characters"
+        )
 
     category_id = payload.get("category")
 
@@ -75,9 +95,9 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
         )
 
     result: CreateEventData = {
-        "title": title.strip(),
-        "location": location.strip(),
-        "description": description.strip(),
+        "title": title,
+        "location": location,
+        "description": description,
         "category_id": category_id,
         "max_participants": max_participants,
         "event_date": event_date,

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, render_template, request
 
 from ..exceptions import NotFoundError, ValidationError
+from ..field_limits import USER_ABOUT_MAX_LENGTH
 from ..repositories.user_repository import get_user_by_id
 from ..service.auth_service import get_current_user_id, login_required
 from ..service.profile_service import change_about_user
@@ -19,7 +20,8 @@ def render_profile_page():
     return render_template(
         "profile.html",
         title="MeWe",
-        user=user
+        user=user,
+        profile_about_max_length=USER_ABOUT_MAX_LENGTH,
     )
 
 

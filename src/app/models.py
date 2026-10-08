@@ -1,4 +1,10 @@
 from .extensions import db
+from .field_limits import (
+    EVENT_DESCRIPTION_MAX_LENGTH,
+    EVENT_LOCATION_MAX_LENGTH,
+    EVENT_TITLE_MAX_LENGTH,
+    USER_ABOUT_MAX_LENGTH,
+)
 
 
 class Category(db.Model):
@@ -14,9 +20,9 @@ class Event(db.Model):
     __tablename__ = "events"
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    location = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(EVENT_TITLE_MAX_LENGTH), nullable=False)
+    description = db.Column(db.String(EVENT_DESCRIPTION_MAX_LENGTH), nullable=False)
+    location = db.Column(db.String(EVENT_LOCATION_MAX_LENGTH), nullable=False)
     creator_id = db.Column(db.ForeignKey("users.id", ondelete="SET NULL"))
     category_id = db.Column(db.ForeignKey("categories.id", ondelete="SET NULL"))
     max_participants = db.Column(db.Integer, default=2, nullable=False)
@@ -36,7 +42,7 @@ class User(db.Model):
     last_name = db.Column(db.String(255))
     username = db.Column(db.String(255))
     photo_url = db.Column(db.String(2048))
-    about = db.Column(db.Text)
+    about = db.Column(db.String(USER_ABOUT_MAX_LENGTH))
     last_login_at = db.Column(db.DateTime)
     last_event_create_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, server_default=db.func.now())

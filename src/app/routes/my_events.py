@@ -2,6 +2,11 @@ from datetime import date
 
 from flask import Blueprint, jsonify, render_template
 
+from ..field_limits import (
+    EVENT_DESCRIPTION_MAX_LENGTH,
+    EVENT_LOCATION_MAX_LENGTH,
+    EVENT_TITLE_MAX_LENGTH,
+)
 from ..repositories.category_repository import get_all_categories
 from ..repositories.event_repository import (
     get_events_by_participant,
@@ -26,6 +31,9 @@ def render_my_event_page():
         title="MeWe",
         categories=categories,
         max_event_participants=MAX_EVENT_PARTICIPANTS,
+        max_event_title_length=EVENT_TITLE_MAX_LENGTH,
+        max_event_location_length=EVENT_LOCATION_MAX_LENGTH,
+        max_event_description_length=EVENT_DESCRIPTION_MAX_LENGTH,
         today=date.today().isoformat()  # noqa: DTZ011
     )
 

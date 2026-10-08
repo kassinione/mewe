@@ -2,9 +2,8 @@ from typing import Any
 
 from ..exceptions import NotFoundError, ValidationError
 from ..extensions import db
+from ..field_limits import USER_ABOUT_MAX_LENGTH
 from ..repositories.user_repository import get_user_by_id
-
-ABOUT_MAX_LENGTH = 500
 
 
 def change_about_user(user_id: int, payload: dict[str, Any]) -> str:
@@ -19,8 +18,10 @@ def change_about_user(user_id: int, payload: dict[str, Any]) -> str:
     if user is None:
         raise NotFoundError("user not found")
 
-    if len(about) > ABOUT_MAX_LENGTH:
-        raise ValidationError(f"max length {ABOUT_MAX_LENGTH} characters")
+    if len(about) > USER_ABOUT_MAX_LENGTH:
+        raise ValidationError(
+            f"about must be at most {USER_ABOUT_MAX_LENGTH} characters"
+        )
 
     user.about = about or None
 

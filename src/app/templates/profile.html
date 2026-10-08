@@ -57,7 +57,7 @@
             <p class="profile-about-text{% if not user.about %} is-empty{% endif %}" id="aboutText">{{ user.about or 'Расскажите о себе' }}</p>
 
             <form class="profile-about-form" id="about-form" hidden>
-                <textarea name="about" maxlength="500" placeholder="Расскажите о себе" aria-label="О себе">{{ user.about or '' }}</textarea>
+                <textarea name="about" maxlength="{{ profile_about_max_length }}" placeholder="Расскажите о себе" aria-label="О себе">{{ user.about or '' }}</textarea>
                 <div class="profile-form-actions">
                     <button class="profile-cancel-btn" id="aboutCancel" type="button">Отмена</button>
                     <button class="profile-save-btn" type="submit">Сохранить</button>
