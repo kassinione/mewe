@@ -577,7 +577,7 @@ html, body {
 
 #eventDetailModal .organizer-username {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--accent);
 }
 
 #eventDetailModal .event-organizer-meta {
@@ -585,12 +585,12 @@ html, body {
 }
 
 #eventDetailModal .event-organizer-profile-link {
-  color: var(--accent);
+  color: var(--text-secondary);
   text-decoration: none;
 }
 
 #eventDetailModal .event-organizer-profile-link:visited {
-  color: var(--accent);
+  color: var(--text-secondary);
 }
 
 #eventDetailModal .event-organizer-profile-link:focus-visible {

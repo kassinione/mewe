@@ -138,10 +138,9 @@
     z-index: 1600;
     flex-direction: column;
     flex: 0 1 400px;
-    --form-pad: 30px;
     margin: auto;
-    padding: var(--form-pad);
-    gap: 18px;
+    padding: 30px;
+    gap: 16px;
     width: calc(100vw - 32px);
     max-height: calc(var(--tg-viewport-height, 100vh) - 32px);
     overflow-y: auto;
@@ -164,7 +163,6 @@
 
 .create-form h1 {
     margin: 0;
-    padding-right: 40px;
     font-size: 22px;
     font-weight: 700;
     color: var(--text-primary);
@@ -175,10 +173,10 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--text-primary);
-    gap: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-secondary);
+    gap: 5px;
 }
 
 .create-form .label-row {
@@ -195,21 +193,16 @@
     font-variant-numeric: tabular-nums;
 }
 
-.char-counter.is-near {
-    color: var(--danger);
-}
-
 .create-form input,
 .create-form select,
 .create-form textarea {
     padding: 10px 12px;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--bg-page);
     color: var(--text-primary);
     outline: none;
-    /* 16px: меньше — iOS приближает страницу при фокусе на поле */
-    font-size: 16px;
+    font-size: 14px;
     font-family: var(--font-main);
     width: 100%;
     transition: border-color 0.2s ease;
@@ -228,9 +221,8 @@
 
 .create-form textarea {
     resize: vertical;
-    min-height: 120px;
-    max-height: 240px;
-    line-height: 1.5;
+    min-height: 80px;
+    max-height: 200px;
 }
 
 .duration-input {
@@ -272,60 +264,8 @@
 .create-form input[type="date"],
 .create-form input[type="time"],
 .create-form input[type="number"] {
-    height: 44px;
+    height: 40px;
     box-sizing: border-box;
-}
-
-.create-form select {
-    height: 44px;
-}
-
-.create-form .duration-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.duration-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.duration-presets {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.duration-chip {
-    min-height: 40px;
-    padding: 0 14px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--bg-page);
-    color: var(--text-secondary);
-    font-family: var(--font-main);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
-}
-
-.duration-chip.is-active {
-    border-color: var(--accent);
-    background: var(--bg-accent-soft);
-    color: var(--accent);
-}
-
-.create-form .form-footer {
-    position: sticky;
-    bottom: 0;
-    z-index: 5;
-    margin: 0 calc(var(--form-pad) * -1) calc(var(--form-pad) * -1);
-    padding: 12px var(--form-pad) calc(var(--form-pad) - 6px + env(safe-area-inset-bottom, 0px));
-    background: var(--bg-card);
-    border-top: 1px solid var(--border);
 }
 
 .create-form .input-with-icon {
@@ -358,16 +298,9 @@
     width: 100%;
     border-radius: 10px;
     border: none;
-    margin-top: 0;
-    min-height: 48px;
+    margin-top: 8px;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.s-btn:disabled {
-    opacity: 0.6;
-    cursor: default;
-    transform: none;
 }
 
 .s-btn:hover {
@@ -381,22 +314,17 @@
 }
 
 .required-note {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--text-secondary);
+    font-size: 12px;
+    color: var(--text-muted);
     margin-top: -6px;
-}
-
-.create-form label .required-note {
-    margin-top: 0;
 }
 
 .close-btn {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 40px;
-    height: 40px;
+    top: 18px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -426,7 +354,7 @@
 
 @media screen and (max-width: 400px) {
     .create-form {
-        --form-pad: 20px;
+        padding: 20px;
         width: calc(100% - 32px);
     }
 
