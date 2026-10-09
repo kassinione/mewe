@@ -11,6 +11,7 @@ from ..field_limits import (
 )
 from ..models import Category
 from ..repositories.category_repository import get_all_categories
+from ..repositories.participant_repository import get_participation_count
 from ..repositories.user_repository import get_user_by_id
 from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
 from ..service.auth_service import get_current_user_id, login_required
@@ -60,5 +61,7 @@ def render_profile_page():
         "profile.html",
         title="MeWe",
         user=user,
+        is_own=True,
+        participation_count=get_participation_count(user.id),
         profile_about_max_length=USER_ABOUT_MAX_LENGTH,
     )

@@ -9,8 +9,8 @@
             <div class="event-category">
                 <i class="fas fa-user"></i>Профиль
             </div>
-            {% if user.created_at %}
-            <div class="event-date">С нами с {{ user.created_at.strftime('%d.%m.%Y') }}</div>
+            {% if role_label %}
+            <div class="profile-role"><i class="fas fa-shield-halved"></i>{{ role_label }}</div>
             {% endif %}
         </div>
 
@@ -31,39 +31,54 @@
             <div class="profile-names">
                 <h2 class="profile-name">{{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}</h2>
                 {% if user.username %}
-                <div class="profile-username">@{{ user.username }}</div>
+                <a class="profile-username" href="https://t.me/{{ user.username }}" target="_blank" rel="noopener">@{{ user.username }}</a>
                 {% endif %}
             </div>
         </div>
 
-        <div class="event-meta">
-            <div class="meta-item">
-                <i class="fas fa-calendar-check icon"></i>Создано мероприятий: {{ user.events|length }}
+        <dl class="profile-stats">
+            <div class="profile-stat">
+                <dt><i class="fas fa-calendar-check icon"></i>Создано</dt>
+                <dd>{{ user.events|length }}</dd>
             </div>
-            {% if user.last_login_at %}
-            <div class="meta-item">
-                <i class="fas fa-clock icon"></i>Был(а) в сети {{ user.last_login_at.strftime('%d.%m.%Y %H:%M') }}
+            <div class="profile-stat">
+                <dt><i class="fas fa-ticket icon"></i>Участвует</dt>
+                <dd>{{ participation_count }}</dd>
             </div>
-            {% endif %}
-        </div>
+            <div class="profile-stat">
+                <dt><i class="fas fa-user-plus icon"></i>С нами с</dt>
+                <dd>{{ user.created_at.strftime('%d.%m.%Y') if user.created_at else '—' }}</dd>
+            </div>
+            <div class="profile-stat">
+                <dt><i class="fas fa-clock icon"></i>Был(а) в сети</dt>
+                <dd>{{ user.last_login_at.strftime('%d.%m.%Y') if user.last_login_at else '—' }}</dd>
+            </div>
+        </dl>
 
+        {% if is_own or user.about %}
         <div class="profile-about">
             <div class="profile-about-head">
                 <span class="profile-label">О себе</span>
+                {% if is_own %}
                 <button class="profile-edit-btn" id="aboutEdit" type="button" aria-label="Редактировать описание">
-                    <i class="fas fa-pen"></i>
+                    <i class="fas fa-pen"></i>Изменить
                 </button>
+                {% endif %}
             </div>
             <p class="profile-about-text{% if not user.about %} is-empty{% endif %}" id="aboutText">{{ user.about or 'Расскажите о себе' }}</p>
 
+            {% if is_own %}
             <form class="profile-about-form" id="about-form" hidden>
                 <textarea name="about" maxlength="{{ profile_about_max_length }}" placeholder="Расскажите о себе" aria-label="О себе">{{ user.about or '' }}</textarea>
+                <div class="profile-counter" id="aboutCounter" data-max="{{ profile_about_max_length }}"></div>
                 <div class="profile-form-actions">
                     <button class="profile-cancel-btn" id="aboutCancel" type="button">Отмена</button>
                     <button class="profile-save-btn" type="submit">Сохранить</button>
                 </div>
             </form>
+            {% endif %}
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

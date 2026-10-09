@@ -22,8 +22,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('about-form');
   const editBtn = document.getElementById('aboutEdit');
   const cancelBtn = document.getElementById('aboutCancel');
+
+  if (!form) {
+    return;
+  }
+
+  const counter = document.getElementById('aboutCounter');
   const textarea = form.elements.about;
   const submitBtn = form.querySelector('[type="submit"]');
+
+  function updateCounter() {
+    counter.textContent = `${textarea.value.length} / ${counter.dataset.max}`;
+  }
+
+  textarea.addEventListener('input', updateCounter);
+  updateCounter();
 
   function setEditing(editing) {
     form.hidden = !editing;
@@ -38,12 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
     text.textContent = about || EMPTY_TEXT;
     text.classList.toggle('is-empty', !about);
     textarea.value = about || '';
+    updateCounter();
   }
 
   editBtn.addEventListener('click', () => setEditing(true));
 
   cancelBtn.addEventListener('click', () => {
     textarea.value = text.classList.contains('is-empty') ? '' : text.textContent;
+    updateCounter();
     setEditing(false);
   });
 

@@ -14,6 +14,16 @@ def get_registered_count(event_id: int) -> int:
     return db.session.scalar(statement) or 0
 
 
+def get_participation_count(user_id: int) -> int:
+    statement = (
+        select(func.count())
+        .select_from(Participant)
+        .where(Participant.user_id == user_id)
+    )
+
+    return db.session.scalar(statement) or 0
+
+
 def get_registered_counts(event_ids: list[int]) -> dict[int, int]:
     if not event_ids:
         return {}
