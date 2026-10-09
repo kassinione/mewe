@@ -1,5 +1,363 @@
-/* Страница «Мои мероприятия»: вкладки, пустые состояния, кнопка создания.
-   Подключается после my-events.css и переопределяет его page-level правила. */
+/* Страница «Мои мероприятия»: форма создания, секции, вкладки, пустые состояния, кнопка создания.
+   Единый файл (раньше было два: my-events.css + my-events-page.css). */
+
+.create-hero {
+    height: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.my-events-section {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto 16px;
+}
+
+.my-events-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: calc(100% - 40px);
+    max-width: 800px;
+    margin: 0 auto 14px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.my-events-section-title i {
+    color: var(--accent);
+    font-size: 15px;
+}
+
+.my-events-section .events-container {
+    padding-bottom: 0;
+}
+
+.past-events {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+
+.past-events > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    margin: 4px 0 12px;
+    padding: 0 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    list-style: none;
+}
+
+.past-events > summary:hover {
+    border-color: var(--accent);
+}
+
+.past-events-container {
+    max-width: none;
+    padding: 0;
+}
+
+.form-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.form-overlay.form-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.create-form {
+    display: none;
+    position: relative;
+    z-index: 1600;
+    flex-direction: column;
+    flex: 0 1 400px;
+    margin: auto;
+    padding: 30px;
+    gap: 16px;
+    width: calc(100vw - 32px);
+    max-height: calc(var(--tg-viewport-height, 100vh) - 32px);
+    overflow-y: auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    animation: fadeIn 0.3s ease-out;
+    box-sizing: border-box;
+}
+
+.create-form.form-closing {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+.create-form *,
+.create-form *::before,
+.create-form *::after {
+    box-sizing: border-box;
+}
+
+.create-form h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+}
+
+.create-form label {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-secondary);
+    gap: 5px;
+}
+
+.create-form .label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.char-counter {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.create-form input,
+.create-form select,
+.create-form textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    outline: none;
+    font-size: 14px;
+    font-family: var(--font-main);
+    width: 100%;
+    transition: border-color 0.2s ease;
+}
+
+.create-form input:focus,
+.create-form select:focus,
+.create-form textarea:focus {
+    border-color: var(--accent);
+}
+
+.create-form input::placeholder,
+.create-form textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.create-form textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+}
+
+.duration-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.duration-input input {
+    flex: 1;
+    min-width: 0;
+}
+
+.duration-input > span {
+    color: var(--text-secondary);
+    font-size: 18px;
+}
+
+.duration-input > .duration-unit {
+    font-size: 14px;
+}
+
+.duration-input > .duration-hours-unit {
+    margin-right: 4px;
+}
+
+.create-form .compact-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.create-form .compact-row label {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.create-form input[type="date"],
+.create-form input[type="time"],
+.create-form input[type="number"] {
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.create-form .input-with-icon {
+    position: relative;
+}
+.create-form .input-with-icon input[type="number"] {
+    -moz-appearance: textfield; /* Firefox: убирает спиннеры */
+    appearance: textfield;      /* стандартное свойство, для совместимости вперёд */
+}
+
+.create-form .input-with-icon input[type="number"]::-webkit-outer-spin-button,
+.create-form .input-with-icon input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;   /* Chrome/Safari/Edge: убирает спиннеры */
+    margin: 0;
+}
+.create-form .input-with-icon input[type="number"]::-webkit-outer-spin-button,
+.create-form .input-with-icon input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.s-btn {
+    align-self: stretch;
+    background: var(--accent);
+    color: var(--text-on-accent);
+    font-weight: 700;
+    font-size: 16px;
+    font-family: var(--font-main);
+    padding: 14px;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.s-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.invalid {
+    border-color: var(--danger) !important;
+    background-color: rgba(188, 41, 64, 0.08) !important;
+}
+
+.required-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: -6px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s ease;
+}
+
+.close-btn svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+}
+
+.close-btn:hover {
+    color: var(--danger);
+}
+
+@media screen and (max-width: 400px) {
+    .create-form {
+        padding: 20px;
+        width: calc(100% - 32px);
+    }
+
+    .create-form h1 {
+        font-size: 20px;
+    }
+
+    .s-btn {
+        font-size: 15px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .my-events-section-title {
+        width: calc(100% - 32px);
+    }
+}
+
+/* ======================= Страница ======================= */
 
 .my-events-page {
     padding-bottom: 88px; /* место под кнопку «Создать», чтобы она не перекрывала последнюю карточку */
@@ -152,18 +510,6 @@
 
 /* ---------- Прошедшие мероприятия ---------- */
 
-.past-events > summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 48px;
-    padding: 0 16px;
-    color: var(--text-secondary);
-    font-size: 15px;
-    font-weight: 600;
-    list-style: none;
-}
-
 .past-events > summary::-webkit-details-marker {
     display: none;
 }
@@ -186,20 +532,31 @@
 /* ---------- Кнопка «Создать» ---------- */
 
 .new-event-btn {
+    position: fixed;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    right: 20px;
     z-index: 50;
-    width: auto;
-    height: 52px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 6px;
+    height: 52px;
     padding: 0 20px 0 14px;
+    border: none;
     border-radius: 26px;
+    background-color: var(--accent);
+    color: var(--text-on-accent);
+    cursor: pointer;
     font-family: var(--font-main);
     font-size: 16px;
     font-weight: 700;
+    box-shadow: 0 4px 12px rgba(59, 99, 171, 0.3);
 }
 
 .new-event-btn svg {
     width: 28px;
     height: 28px;
+    display: block;
 }
 
 @media (max-width: 768px) {
