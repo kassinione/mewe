@@ -65,3 +65,21 @@ def render_profile_page():
         participation_count=get_participation_count(user.id),
         profile_about_max_length=USER_ABOUT_MAX_LENGTH,
     )
+
+
+@profile_bp.route("/<int:user_id>/profile")
+@login_required
+def render_user_profile_page(user_id: int):
+    user = get_user_by_id(user_id)
+
+    if user is None:
+        raise NotFoundError("user not found")
+
+    return render_template(
+        "profile.html",
+        title="MeWe",
+        user=user,
+        is_own=user.id == get_current_user_id(),
+        participation_count=get_participation_count(user.id),
+        profile_about_max_length=USER_ABOUT_MAX_LENGTH,
+    )
