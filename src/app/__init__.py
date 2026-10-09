@@ -60,13 +60,15 @@ def create_app():
     from .routes.auth import auth_bp
     app.register_blueprint(auth_bp)
 
+    from .routes.pages import index_bp, my_events_bp, profile_bp
+    app.register_blueprint(index_bp)
+    app.register_blueprint(my_events_bp)
+    app.register_blueprint(profile_bp)
+
     from .routes.events import events_bp
     app.register_blueprint(events_bp)
 
-    from .routes.my_events import my_events_bp
-    app.register_blueprint(my_events_bp)
-
-    from .routes.profile import profile_bp
-    app.register_blueprint(profile_bp)
+    from .routes.users import users_bp
+    app.register_blueprint(users_bp)
 
     return app

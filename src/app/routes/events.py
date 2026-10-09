@@ -1,7 +1,6 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, request
 
 from ..exceptions import ValidationError
-from ..models import Category
 from ..repositories.participant_repository import (
     get_registered_count,
     get_registered_counts,
@@ -10,22 +9,15 @@ from ..serializers.event_serializer import serialize_event
 from ..serializers.participant_serializer import serialize_participant
 from ..service.auth_service import get_current_user_id, login_required
 from ..service.event_service import create_event as create_event_service
-from ..service.event_service import get_participant_status_service, get_public_events
+from ..service.event_service import (
+    delete_event,
+    get_participant_status_service,
+    get_public_events,
+)
 from ..service.event_service import join_event as join_event_service
 from ..service.event_service import leave_event as leave_event_service
 
 events_bp = Blueprint("events", __name__)
-
-
-@events_bp.route("/")
-def render_events_page():
-    categories = Category.query.with_entities(Category.id, Category.name, Category.icon).all()
-
-    return render_template(
-        "events.html",
-        title="MeWe",
-        categories=categories
-    )
 
 
 @events_bp.route("/api/events")
@@ -73,6 +65,14 @@ def create_event():
     data = serialize_event(event)
 
     return jsonify(data), 201
+
+
+@events_bp.route("/api/events/<int:event_id>", methods=["DELETE"])
+@login_required
+def delete_my_event(event_id: int):
+    delete_event(get_current_user_id(), event_id)
+
+    return jsonify(), 204
 
 
 @events_bp.route("/api/events/<int:event_id>/participants/me", methods=["GET"])

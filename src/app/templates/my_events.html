@@ -4,8 +4,8 @@
 
 {% block content %}
 <div id="my-events-page" class="my-events-page"
-     data-events-url="{{ url_for('my_events.get_my_events') }}"
-     data-participations-url="{{ url_for('my_events.get_my_participating_events') }}">
+     data-events-url="{{ url_for('users.get_my_events') }}"
+     data-participations-url="{{ url_for('users.get_my_participating_events') }}">
 <section class="my-events-section" aria-labelledby="participationsTitle">
     <h2 id="participationsTitle" class="my-events-section-title">
         <i class="fas fa-users" aria-hidden="true"></i>
