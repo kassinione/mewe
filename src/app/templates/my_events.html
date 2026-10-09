@@ -28,28 +28,26 @@
     </button>
 </div>
 <div class="form-overlay" id="form-overlay" aria-hidden="true">
-<form class="create-form" id="event-form" method="POST" action="{{ url_for('events.create_event') }}">
+<form class="create-form" id="event-form" method="POST" action="{{ url_for('events.create_event') }}" novalidate>
     <button class="close-btn" id="close-form" type="button" aria-label="Закрыть">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M6 6L18 18M18 6L6 18"></path>
         </svg>
     </button>
     <h1>Создание мероприятия</h1>
+    <div class="required-note">Все поля обязательны для заполнения</div>
+
+    <label>
+        <span class="label-row">Название <span class="char-counter" data-counter-for="title"></span></span>
+        <input type="text" name="title" maxlength="{{ max_event_title_length }}" autocomplete="off" required>
+    </label>
 
     <label>Категория
-        <select name="category">
+        <select name="category" required>
             {% for category in categories %}
             <option value="{{ category.id }}">{{ category.name }}</option>
             {% endfor %}
         </select>
-    </label>
-
-    <label>Место
-        <input type="text" name="location" maxlength="{{ max_event_location_length }}" required>
-    </label>
-
-    <label>Название
-        <input type="text" name="title" maxlength="{{ max_event_title_length }}" required>
     </label>
 
     <div class="compact-row">
@@ -59,29 +57,46 @@
         <label>Время
             <input type="time" name="time" id="event-time" required>
         </label>
-        <label>Кол-во чел.
-            <div class="input-with-icon">
-                <input type="number" name="participants" placeholder="" min="2" max="{{ max_event_participants }}" required>
-            </div>
-        </label>
     </div>
 
-    <label class="duration-field">Продолжительность
+    <label>
+        <span class="label-row">Место <span class="char-counter" data-counter-for="location"></span></span>
+        <input type="text" name="location" maxlength="{{ max_event_location_length }}" autocomplete="off" required>
+    </label>
+
+    <label>Количество участников
+        <div class="input-with-icon">
+            <input type="number" name="participants" inputmode="numeric" min="2" max="{{ max_event_participants }}" required>
+        </div>
+        <span class="required-note">от 2 до {{ max_event_participants }}, включая организатора</span>
+    </label>
+
+    <div class="duration-field" role="group" aria-labelledby="duration-label">
+        <span class="duration-label" id="duration-label">Продолжительность</span>
+        <div class="duration-presets">
+            <button class="duration-chip" type="button" data-minutes="30" aria-pressed="false">30 мин</button>
+            <button class="duration-chip" type="button" data-minutes="60" aria-pressed="false">1 ч</button>
+            <button class="duration-chip" type="button" data-minutes="90" aria-pressed="false">1,5 ч</button>
+            <button class="duration-chip" type="button" data-minutes="120" aria-pressed="false">2 ч</button>
+            <button class="duration-chip" type="button" data-minutes="180" aria-pressed="false">3 ч</button>
+        </div>
         <span class="duration-input">
-            <input type="number" name="duration_hours" min="0" max="24" step="1" value="1" aria-label="Часы" required>
+            <input type="number" name="duration_hours" inputmode="numeric" min="0" max="24" step="1" value="1" aria-label="Часы" required>
             <span class="duration-unit duration-hours-unit">ч</span>
-            <input type="number" name="duration_minutes" min="0" max="59" step="1" value="0" aria-label="Минуты" required>
+            <input type="number" name="duration_minutes" inputmode="numeric" min="0" max="59" step="1" value="0" aria-label="Минуты" required>
             <span class="duration-unit">мин</span>
         </span>
-    </label>
-    <div class="required-note">от 15 минут до 24 часов</div>
+        <div class="required-note">от 15 минут до 24 часов</div>
+    </div>
 
-    <label>Описание
+    <label>
+        <span class="label-row">Описание <span class="char-counter" data-counter-for="description"></span></span>
         <textarea name="description" maxlength="{{ max_event_description_length }}" required></textarea>
     </label>
-    <div class="required-note">все поля обязательны для заполнения</div>
 
-    <button class="btn s-btn" type="submit">СОЗДАТЬ</button>
+    <div class="form-footer">
+        <button class="btn s-btn" type="submit">Создать мероприятие</button>
+    </div>
 </form>
 </div>
 
