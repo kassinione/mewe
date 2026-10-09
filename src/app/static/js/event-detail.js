@@ -2,7 +2,6 @@ import {
   createDurationMetaItem,
   createIcon,
   createMetaItem,
-  createOrganizerMetaItem,
   createParticipantsCountMetaItem,
   isEventUpcoming
 } from './event-card.js';
@@ -13,6 +12,30 @@ import {
   leaveEvent
 } from './events-api.js';
 import { showToast } from './toast.js';
+
+function createOrganizerMetaItem(event) {
+  if (!event.creator_name && !event.creator_username) return null;
+
+  const organizerText = [
+    event.creator_name,
+    event.creator_username && `@${event.creator_username}`
+  ].filter(Boolean).join(' ');
+  const item = document.createElement('div');
+  item.className = 'meta-item event-organizer-meta';
+  item.append(createIcon('fas fa-user icon'));
+
+  if (event.creator_id !== null && event.creator_id !== undefined) {
+    const link = document.createElement('a');
+    link.className = 'event-organizer-profile-link';
+    link.href = `/${encodeURIComponent(String(event.creator_id))}/profile`;
+    link.textContent = organizerText;
+    item.append(link);
+  } else {
+    item.append(document.createTextNode(organizerText));
+  }
+
+  return item;
+}
 
 export function initializeEventDetail({
   modal,
