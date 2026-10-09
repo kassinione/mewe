@@ -1,8 +1,12 @@
-export async function fetchEvents(url, search = '', categoryIds = []) {
+export async function fetchEvents(url, search = '', categoryIds = [], page = 1) {
   const requestUrl = new URL(url, window.location.origin);
 
   if (search) {
     requestUrl.searchParams.set('search', search);
+  }
+
+  if (page > 1) {
+    requestUrl.searchParams.set('page', String(page));
   }
 
   const selectedCategoryIds = Array.isArray(categoryIds) ? categoryIds : [categoryIds];

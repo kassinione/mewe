@@ -3,21 +3,36 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div id="events-page" data-events-url="{{ url_for('events.get_events') }}">
+<div id="events-page" data-events-url="{{ url_for('events.get_events') }}"
+     data-create-url="{{ url_for('my_events.render_my_event_page') }}">
+<div class="events-toolbar">
 <div class="search-bar-container">
     <div class="search-icon-left">
         <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Поиск" />
     </div>
-    <input type="text" class="search-input" id="searchInput" placeholder="Поиск..." aria-label="Поиск мероприятий" />
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск по названию, месту, описанию" aria-label="Поиск мероприятий" enterkeyhint="search" autocomplete="off" />
+    <button class="search-clear" id="searchClear" type="button" aria-label="Очистить поиск" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6 6L18 18M18 6L6 18"></path>
+        </svg>
+    </button>
     <div class="categories-tab" id="categoriesTab" tabindex="0" role="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Выбор категории">
         <img src="{{ url_for('static', filename='icons/categories.png') }}" alt="Категории" class="categories-icon" />
         <span>Категории</span>
+        <span class="categories-count" id="categoriesCount" hidden></span>
     </div>
 </div>
 <div id="selectedCategoryFilter" class="selected-category-filter" hidden aria-label="Выбранные категории">
 </div>
-<div id="eventsContainer" class="events-container">
+</div>
+<div id="resultsBar" class="results-bar" hidden aria-live="polite">
+    <span id="resultsCount"></span>
+</div>
+<div id="eventsContainer" class="events-container" aria-live="polite">
     <!-- Здесь будут динамически появляться карточки мероприятий -->
+</div>
+<div id="loadMoreWrap" class="load-more-wrap" hidden>
+    <button class="btn load-more-btn" id="loadMoreBtn" type="button">Показать ещё</button>
 </div>
 
 <!-- -- -- Модальное окно категорий -->
@@ -48,6 +63,10 @@
             </div>
             {% endfor %}
         </div>
+        <div class="categories-footer">
+            <button class="btn categories-reset" id="categoriesReset" type="button" disabled>Сбросить</button>
+            <button class="btn categories-done" id="categoriesDone" type="button">Готово</button>
+        </div>
     </div>
 </div>
 
@@ -64,6 +83,10 @@
     </div>
 </div>
 </div>
+{% endblock %}
+
+{% block extra_head %}
+<link href="{{ url_for('static', filename='css/events-page.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block scripts %}
