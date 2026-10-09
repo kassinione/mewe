@@ -571,8 +571,14 @@ html, body {
   justify-content: center;
 }
 
+#eventDetailModal .event-organizer-profile-link {
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: var(--bg-accent-soft);
+}
+
 #eventDetailModal .organizer-name {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 #eventDetailModal .organizer-username {
