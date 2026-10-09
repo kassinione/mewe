@@ -5,19 +5,28 @@
 {% block content %}
 <div id="my-events-page" class="my-events-page"
      data-events-url="{{ url_for('users.get_my_events') }}"
-     data-participations-url="{{ url_for('users.get_my_participating_events') }}">
-<section class="my-events-section" aria-labelledby="participationsTitle">
-    <h2 id="participationsTitle" class="my-events-section-title">
-        <i class="fas fa-users" aria-hidden="true"></i>
-        <span>Я участвую</span>
-    </h2>
+     data-participations-url="{{ url_for('users.get_my_participating_events') }}"
+     data-search-url="{{ url_for('index.render_events_page') }}">
+<div class="my-events-tabs-bar">
+    <div class="my-events-tabs" role="tablist" aria-label="Мои мероприятия">
+        <button class="my-events-tab is-active" id="participationsTab" type="button" role="tab"
+                data-tab="participations" aria-controls="participationsSection" aria-selected="true">
+            <span>Я участвую</span>
+            <span class="my-events-tab-count" id="participationsCount" hidden></span>
+        </button>
+        <button class="my-events-tab" id="createdTab" type="button" role="tab" tabindex="-1"
+                data-tab="created" aria-controls="createdSection" aria-selected="false">
+            <span>Я организую</span>
+            <span class="my-events-tab-count" id="createdCount" hidden></span>
+        </button>
+    </div>
+</div>
+<section class="my-events-section" id="participationsSection" role="tabpanel" aria-labelledby="participationsTitle">
+    <h2 id="participationsTitle" class="my-events-section-title visually-hidden">Я участвую</h2>
     <div id="participationsContainer" class="events-container"></div>
 </section>
-<section class="my-events-section" aria-labelledby="createdEventsTitle">
-    <h2 id="createdEventsTitle" class="my-events-section-title">
-        <i class="fas fa-calendar-plus" aria-hidden="true"></i>
-        <span>Я организую</span>
-    </h2>
+<section class="my-events-section" id="createdSection" role="tabpanel" aria-labelledby="createdEventsTitle" hidden>
+    <h2 id="createdEventsTitle" class="my-events-section-title visually-hidden">Я организую</h2>
     <div id="createdEventsContainer" class="events-container"></div>
 </section>
 <div class="create-hero">
@@ -25,6 +34,7 @@
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17V13H17C17.5523 13 18 12.5523 18 12C18 11.4477 17.5523 11 17 11H13V7C13 6.44771 12.5523 6 12 6C11.4477 6 11 6.44771 11 7V11H7C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13H11V17Z" fill="currentColor"></path>
         </svg>
+        <span class="new-event-label">Создать</span>
     </button>
 </div>
 <div class="form-overlay" id="form-overlay" aria-hidden="true">
@@ -103,6 +113,7 @@
 
 {% block extra_head %}
 <link href="{{ url_for('static', filename='css/my-events.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/my-events-page.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block scripts %}

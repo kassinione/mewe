@@ -1,0 +1,209 @@
+/* Страница «Мои мероприятия»: вкладки, пустые состояния, кнопка создания.
+   Подключается после my-events.css и переопределяет его page-level правила. */
+
+.my-events-page {
+    padding-bottom: 88px; /* место под кнопку «Создать», чтобы она не перекрывала последнюю карточку */
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- Вкладки ---------- */
+
+.my-events-tabs-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 4px 0 12px;
+    background: var(--bg-page);
+}
+
+.my-events-tabs {
+    display: flex;
+    gap: 4px;
+    width: calc(100% - 40px);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.my-events-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 12px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.my-events-tab.is-active {
+    background: var(--accent);
+    color: var(--text-on-accent);
+}
+
+.my-events-tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.my-events-tab-count {
+    min-width: 22px;
+    padding: 1px 7px;
+    border-radius: 11px;
+    background: var(--bg-accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.my-events-tab-count[hidden] {
+    display: none;
+}
+
+.my-events-tab.is-active .my-events-tab-count {
+    background: rgba(255, 255, 255, 0.24);
+    color: var(--text-on-accent);
+}
+
+.my-events-section[hidden] {
+    display: none;
+}
+
+/* ---------- Карточки на этой странице ---------- */
+
+/* В «Я организую» организатор — сам пользователь, строка с ником только повторяется */
+#createdEventsContainer .event-organizer {
+    display: none;
+}
+
+/* ---------- Пустые состояния ---------- */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 32px 20px;
+    text-align: center;
+}
+
+.empty-state-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    border-radius: 50%;
+    background: var(--bg-accent-soft);
+    color: var(--accent);
+    font-size: 22px;
+}
+
+.empty-state-title {
+    color: var(--text-primary);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.empty-state-text {
+    max-width: 320px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.empty-state .empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12px;
+    height: 44px;
+    text-decoration: none;
+}
+
+/* ---------- Прошедшие мероприятия ---------- */
+
+.past-events > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0 16px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 600;
+    list-style: none;
+}
+
+.past-events > summary::-webkit-details-marker {
+    display: none;
+}
+
+.past-events > summary::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.past-events[open] > summary::after {
+    transform: rotate(-135deg);
+}
+
+/* ---------- Кнопка «Создать» ---------- */
+
+.new-event-btn {
+    z-index: 50;
+    width: auto;
+    height: 52px;
+    gap: 6px;
+    padding: 0 20px 0 14px;
+    border-radius: 26px;
+    font-family: var(--font-main);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.new-event-btn svg {
+    width: 28px;
+    height: 28px;
+}
+
+@media (max-width: 768px) {
+    .my-events-tabs {
+        width: calc(100% - 32px);
+    }
+}
