@@ -2,7 +2,8 @@ import {
   createDurationMetaItem,
   createIcon,
   createMetaItem,
-  createParticipantsCountMetaItem,
+  createParticipantsItem,
+  formatEventDate,
   isEventUpcoming
 } from './event-card.js';
 import {
@@ -13,13 +14,29 @@ import {
 } from './events-api.js';
 import { showToast } from './toast.js';
 
+function createOrganizerText(event) {
+  const fragment = document.createDocumentFragment();
+
+  if (event.creator_name) {
+    const name = document.createElement('span');
+    name.className = 'organizer-name';
+    name.textContent = event.creator_name;
+    fragment.append(name);
+  }
+
+  if (event.creator_username) {
+    const username = document.createElement('span');
+    username.className = 'organizer-username';
+    username.textContent = `@${event.creator_username}`;
+    fragment.append(username);
+  }
+
+  return fragment;
+}
+
 function createOrganizerMetaItem(event) {
   if (!event.creator_name && !event.creator_username) return null;
 
-  const organizerText = [
-    event.creator_name,
-    event.creator_username && `@${event.creator_username}`
-  ].filter(Boolean).join(' ');
   const item = document.createElement('div');
   item.className = 'meta-item event-organizer-meta';
   item.append(createIcon('fas fa-user icon'));
@@ -28,12 +45,23 @@ function createOrganizerMetaItem(event) {
     const link = document.createElement('a');
     link.className = 'event-organizer-profile-link';
     link.href = `/${encodeURIComponent(String(event.creator_id))}/profile`;
-    link.textContent = organizerText;
+    link.append(createOrganizerText(event));
     item.append(link);
   } else {
-    item.append(document.createTextNode(organizerText));
+    const text = document.createElement('span');
+    text.className = 'event-organizer-text';
+    text.append(createOrganizerText(event));
+    item.append(text);
   }
 
+  return item;
+}
+
+// Тот же блок участников, что и в карточке (счётчик, статус, полоса),
+// но с классом-хуком для обновления после записи/отмены.
+function createDetailParticipants(event) {
+  const item = createParticipantsItem(event);
+  item.classList.add('event-participants-count');
   return item;
 }
 
@@ -72,7 +100,7 @@ export function initializeEventDetail({
     const changed = event.registered_count !== count;
     event.registered_count = count;
     if (activeEvent === event) {
-      participantMeta?.replaceWith(createParticipantsCountMetaItem(event));
+      participantMeta?.replaceWith(createDetailParticipants(event));
       participantMeta = body.querySelector('.event-participants-count');
     }
     if (changed) onEventUpdated(event);
@@ -91,7 +119,7 @@ export function initializeEventDetail({
 
     const date = document.createElement('div');
     date.className = 'event-date';
-    date.textContent = event.formatted_date || '';
+    date.textContent = formatEventDate(event) || '';
     header.append(category, date);
 
     const title = document.createElement('h2');
@@ -104,20 +132,28 @@ export function initializeEventDetail({
     meta.append(
       createMetaItem('fa-map-marker-alt', event.location),
       createDurationMetaItem(event),
-      createParticipantsCountMetaItem(event)
+      createDetailParticipants(event)
     );
     const organizer = createOrganizerMetaItem(event);
     if (organizer) meta.append(organizer);
 
+    const about = document.createElement('div');
+    about.className = 'event-detail-about';
+
+    const aboutLabel = document.createElement('div');
+    aboutLabel.className = 'event-detail-section-label';
+    aboutLabel.textContent = 'Описание';
+
     const description = document.createElement('p');
     description.className = 'event-detail-description';
     description.textContent = event.description || 'Описание не указано';
+    about.append(aboutLabel, description);
 
     actionContainer = document.createElement('div');
     actionContainer.className = 'event-detail-actions';
     participantMeta = meta.querySelector('.event-participants-count');
 
-    body.append(header, title, meta, description, actionContainer);
+    body.append(header, title, meta, about, actionContainer);
     renderActionButton('Загрузка статуса…', 'event-detail-action-secondary', () => {}, true);
   }
 

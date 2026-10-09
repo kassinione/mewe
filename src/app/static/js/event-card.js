@@ -86,7 +86,17 @@ export function formatEventDate(event) {
       new Date(now.getFullYear(), now.getMonth(), now.getDate())) / DAY_MS
   );
 
-  const time = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  const timeFormat = { hour: '2-digit', minute: '2-digit' };
+  let time = d.toLocaleTimeString('ru-RU', timeFormat);
+
+  // Диапазон «18:00–19:30», если мероприятие заканчивается в тот же день
+  if (Number.isFinite(event.duration_minutes) && event.duration_minutes > 0) {
+    const end = new Date(d.getTime() + event.duration_minutes * 60000);
+    if (end.toDateString() === d.toDateString()) {
+      time = `${time}–${end.toLocaleTimeString('ru-RU', timeFormat)}`;
+    }
+  }
+
   if (dayDiff === 0) return `Сегодня, ${time}`;
   if (dayDiff === 1) return `Завтра, ${time}`;
 
@@ -108,6 +118,7 @@ export function createParticipantsItem(event) {
   const max = event.max_participants;
   const left = Math.max(max - registered, 0);
   const full = left === 0;
+  const past = isEventPast(event);
 
   const item = document.createElement('div');
   item.className = 'event-participants';
@@ -116,8 +127,8 @@ export function createParticipantsItem(event) {
   row.className = 'meta-item';
 
   const status = document.createElement('span');
-  status.className = 'participants-status' + (full ? ' full' : '');
-  status.textContent = full ? 'мест нет' : pluralSpots(left);
+  status.className = 'participants-status' + (past ? ' past' : full ? ' full' : '');
+  status.textContent = past ? 'завершено' : full ? 'мест нет' : pluralSpots(left);
 
   row.append(
     createIcon('fas fa-users icon'),
@@ -142,9 +153,13 @@ export function createOrganizerLine(event) {
 
   const line = document.createElement('div');
   line.className = 'event-organizer';
-  line.textContent = event.creator_username
+
+  const text = document.createElement('span');
+  text.textContent = event.creator_username
     ? `@${event.creator_username}`
     : event.creator_name;
+
+  line.append(createIcon('fas fa-user icon'), text);
   return line;
 }
 
