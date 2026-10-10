@@ -2,6 +2,7 @@ from datetime import date
 
 from flask import Blueprint, render_template
 
+from ..enums.user_role import UserRole
 from ..exceptions import NotFoundError
 from ..field_limits import (
     EVENT_DESCRIPTION_MAX_LENGTH,
@@ -14,11 +15,21 @@ from ..repositories.category_repository import get_all_categories
 from ..repositories.participant_repository import get_participation_count
 from ..repositories.user_repository import get_user_by_id
 from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
-from ..service.auth_service import get_current_user_id, login_required
+from ..service.auth_service import get_current_user_id, login_required, roles_required
 
 index_bp = Blueprint("index", __name__)
 my_events_bp = Blueprint("my_events", __name__)
 profile_bp = Blueprint("profile", __name__)
+events_reports_bp = Blueprint("reports", __name__)
+
+ROLE_LABELS = {
+    UserRole.MODERATOR: "Модератор",
+    UserRole.ADMIN: "Администратор",
+}
+
+
+def get_role_label(role: UserRole | str) -> str | None:
+    return ROLE_LABELS.get(UserRole(role))
 
 
 @index_bp.route("/")
@@ -62,10 +73,10 @@ def render_profile_page():
         title="MeWe",
         user=user,
         is_own=True,
+        role_label=get_role_label(user.role),
         participation_count=get_participation_count(user.id),
         profile_about_max_length=USER_ABOUT_MAX_LENGTH,
     )
-
 
 @profile_bp.route("/<int:user_id>/profile")
 @login_required
@@ -80,6 +91,16 @@ def render_user_profile_page(user_id: int):
         title="MeWe",
         user=user,
         is_own=user.id == get_current_user_id(),
+        role_label=get_role_label(user.role),
         participation_count=get_participation_count(user.id),
         profile_about_max_length=USER_ABOUT_MAX_LENGTH,
+    )
+
+
+@events_reports_bp.route("/reports")
+@roles_required(UserRole.MODERATOR, UserRole.ADMIN)
+def render_reports_page():
+    return render_template(
+        "reports.html",
+        title="MeWe",
     )

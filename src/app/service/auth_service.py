@@ -4,10 +4,16 @@ from typing import Any
 
 from flask import current_app, session
 
-from ..exceptions import UnauthorizedError, ValidationError
+from ..enums.user_role import UserRole
+from ..exceptions import (
+    ForbiddenError,
+    NotFoundError,
+    UnauthorizedError,
+    ValidationError,
+)
 from ..extensions import db
 from ..models import User
-from ..repositories.user_repository import get_user_by_telegram_id
+from ..repositories.user_repository import get_user_by_id, get_user_by_telegram_id
 from ..schemas.auth_schema import validate_init_data
 
 
@@ -28,6 +34,24 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+
+def roles_required(*allowed_roles: UserRole):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            user_id = get_current_user_id()
+            user = get_user_by_id(user_id)
+
+            if user is None:
+                raise NotFoundError("user not found")
+
+            if user.role not in allowed_roles:
+                raise ForbiddenError("insufficient permissions")
+
+            return func(*args, **kwargs)
+
+        return wrapper
+    return decorator
 
 def auth_or_create_user(payload: dict[str, Any]) -> User:
     bot_token = current_app.config["BOT_TOKEN"]

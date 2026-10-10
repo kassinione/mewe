@@ -114,3 +114,15 @@ def leave_event(event_id: int):
     }
 
     return jsonify(data), 204 if deleted else 200
+
+
+@events_bp.route("/api/events/<int:event_id>/reports/me", methods=["POST"])
+@login_required
+def report_event(event_id: int):
+    user_id = get_current_user_id()
+    report = report_event_service(user_id, event_id)
+    data = {
+        "report": serialize_report(report)
+    }
+
+    return jsonify(data), 201
