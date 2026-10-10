@@ -15,7 +15,8 @@ class TelegramUserData(TypedDict):
     username: NotRequired[str]
     photo_url: NotRequired[str]
 
-MAX_AGE_SECONDS = 86400  # 24 hours in seconds
+MAX_AGE_SECONDS = 86400
+MAX_CLOCK_SKEW_SECONDS = 60
 
 
 def validate_init_data(init_data: str, bot_token: str) -> TelegramUserData:
@@ -44,7 +45,7 @@ def validate_init_data(init_data: str, bot_token: str) -> TelegramUserData:
     current_time = time.time()
 
     if (
-        auth_date > current_time
+        auth_date > current_time + MAX_CLOCK_SKEW_SECONDS
         or current_time - auth_date > MAX_AGE_SECONDS
     ):
         raise reject("auth_date_out_of_range", age_seconds=round(current_time - auth_date, 1))

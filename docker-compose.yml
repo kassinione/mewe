@@ -25,6 +25,10 @@ services:
       - .env
     environment:
       DATABASE_URL: mysql+pymysql://mewe:${DB_PASSWORD}@db/mewe_app
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       db:
         condition: service_healthy
@@ -40,6 +44,10 @@ services:
       DATABASE_URL: mysql+pymysql://mewe:${DB_PASSWORD}@db/mewe_app
     ports:
       - "${WEB_BIND:-127.0.0.1}:${PORT:-8000}:${PORT:-8000}"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       db:
         condition: service_healthy
