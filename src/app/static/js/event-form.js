@@ -1,3 +1,4 @@
+import { authFetch } from "./telegram-auth.js";
 import { showToast } from "./toast.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const response = await fetch(form.action, {
+      const response = await authFetch(form.action, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

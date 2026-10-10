@@ -1,3 +1,5 @@
+import { authFetch } from './telegram-auth.js';
+
 export async function fetchEvents(url, search = '', categoryIds = [], page = 1) {
   const requestUrl = new URL(url, window.location.origin);
 
@@ -14,7 +16,7 @@ export async function fetchEvents(url, search = '', categoryIds = [], page = 1) 
     requestUrl.searchParams.append('category', categoryId);
   });
 
-  const response = await fetch(requestUrl, {
+  const response = await authFetch(requestUrl, {
     headers: { Accept: 'application/json' }
   });
 
@@ -31,7 +33,7 @@ export async function fetchEvents(url, search = '', categoryIds = [], page = 1) 
 }
 
 async function requestJson(url, options = {}) {
-  const response = await fetch(url, {
+  const response = await authFetch(url, {
     ...options,
     headers: {
       Accept: 'application/json',

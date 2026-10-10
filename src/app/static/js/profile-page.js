@@ -1,3 +1,4 @@
+import { authFetch } from "./telegram-auth.js";
 import { showToast } from "./toast.js";
 
 const EMPTY_TEXT = 'Расскажите о себе';
@@ -67,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
 
     try {
-      const response = await fetch(page.dataset.aboutUrl, {
+      const response = await authFetch(page.dataset.aboutUrl, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ about: textarea.value.trim() })
