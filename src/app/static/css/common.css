@@ -255,8 +255,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
   opacity: 0.6;
 }
 
