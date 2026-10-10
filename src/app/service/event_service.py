@@ -17,6 +17,10 @@ from ..repositories.participant_repository import (
 from ..repositories.user_repository import get_user_for_update
 from ..schemas.event_schema import validate_create_event_payload
 
+EVENT_CREATE_COOLDOWN_MINUTES = 5
+EVENTS_PER_PAGE_DEFAULT = 15
+EVENTS_PER_PAGE_MAX = 100
+
 
 def create_event(user_id: int, payload: dict[str, Any]) -> Event:
     user = get_user_for_update(user_id)
@@ -28,8 +32,10 @@ def create_event(user_id: int, payload: dict[str, Any]) -> Event:
 
     if user.last_event_create_at:
         elapsed = now - user.last_event_create_at
-        if elapsed < timedelta(minutes=5):
-            raise ConflictError("You can create a new event in 5 minutes")
+        if elapsed < timedelta(minutes=EVENT_CREATE_COOLDOWN_MINUTES):
+            raise ConflictError(
+                f"You can create a new event in {EVENT_CREATE_COOLDOWN_MINUTES} minutes"
+            )
 
 
     data = validate_create_event_payload(payload)
@@ -55,8 +61,8 @@ def create_event(user_id: int, payload: dict[str, Any]) -> Event:
 def get_public_events(search: str, category_ids: list[int] | None, page: int, per_page: int) -> tuple[list[Event], int]:
     if page < 1:
         raise ValidationError("page must be >= 1")
-    if per_page < 1 or per_page > 100:
-        raise ValidationError("per_page must be between 1 and 100")
+    if per_page < 1 or per_page > EVENTS_PER_PAGE_MAX:
+        raise ValidationError(f"per_page must be between 1 and {EVENTS_PER_PAGE_MAX}")
 
     events, total = find_public_events(search, category_ids, page, per_page)
 

@@ -8,12 +8,13 @@ from ..repositories.participant_repository import (
 from ..serializers.event_serializer import serialize_event
 from ..serializers.participant_serializer import serialize_participant
 from ..service.auth_service import get_current_user_id, login_required
-from ..service.event_service import create_event as create_event_service
 from ..service.event_service import (
+    EVENTS_PER_PAGE_DEFAULT,
     delete_event,
     get_participant_status_service,
     get_public_events,
 )
+from ..service.event_service import create_event as create_event_service
 from ..service.event_service import join_event as join_event_service
 from ..service.event_service import leave_event as leave_event_service
 
@@ -33,7 +34,7 @@ def get_events():
         raise ValidationError("category IDs must be positive integers")
 
     page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("per_page", 15, type=int)
+    per_page = request.args.get("per_page", EVENTS_PER_PAGE_DEFAULT, type=int)
 
     events, total = get_public_events(search, category_ids or None, page, per_page)
     registered_counts = get_registered_counts([event.id for event in events])
