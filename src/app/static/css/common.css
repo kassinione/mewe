@@ -260,10 +260,9 @@ html, body {
   opacity: 0.6;
 }
 
-.search-icon-left img {
+.search-icon-left svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
 }
 
 .categories-tab {
@@ -292,11 +291,7 @@ html, body {
 .categories-icon {
   width: 16px;
   height: 16px;
-}
-
-[data-theme="dark"] .search-icon-left img,
-[data-theme="dark"] .categories-icon {
-  filter: invert(1);
+  flex-shrink: 0;
 }
 
 .categories-modal {
