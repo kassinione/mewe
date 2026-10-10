@@ -6,6 +6,10 @@ from ..exceptions import NotFoundError
 from ..field_limits import (
     EVENT_DESCRIPTION_MAX_LENGTH,
     EVENT_LOCATION_MAX_LENGTH,
+    EVENT_MAX_DURATION_MINUTES,
+    EVENT_MAX_PARTICIPANTS,
+    EVENT_MIN_DURATION_MINUTES,
+    EVENT_MIN_PARTICIPANTS,
     EVENT_TITLE_MAX_LENGTH,
     USER_ABOUT_MAX_LENGTH,
 )
@@ -13,7 +17,6 @@ from ..models import Category
 from ..repositories.category_repository import get_all_categories
 from ..repositories.participant_repository import get_participation_count
 from ..repositories.user_repository import get_user_by_id
-from ..schemas.event_schema import MAX_EVENT_PARTICIPANTS
 from ..service.auth_service import get_current_user_id, login_required
 
 index_bp = Blueprint("index", __name__)
@@ -41,7 +44,10 @@ def render_my_event_page():
         "my_events.html",
         title="MeWe",
         categories=categories,
-        max_event_participants=MAX_EVENT_PARTICIPANTS,
+        min_event_participants=EVENT_MIN_PARTICIPANTS,
+        max_event_participants=EVENT_MAX_PARTICIPANTS,
+        min_event_duration_minutes=EVENT_MIN_DURATION_MINUTES,
+        max_event_duration_minutes=EVENT_MAX_DURATION_MINUTES,
         max_event_title_length=EVENT_TITLE_MAX_LENGTH,
         max_event_location_length=EVENT_LOCATION_MAX_LENGTH,
         max_event_description_length=EVENT_DESCRIPTION_MAX_LENGTH,

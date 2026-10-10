@@ -2,6 +2,7 @@ from .extensions import db
 from .field_limits import (
     EVENT_DESCRIPTION_MAX_LENGTH,
     EVENT_LOCATION_MAX_LENGTH,
+    EVENT_MIN_PARTICIPANTS,
     EVENT_TITLE_MAX_LENGTH,
     USER_ABOUT_MAX_LENGTH,
 )
@@ -25,7 +26,7 @@ class Event(db.Model):
     location = db.Column(db.String(EVENT_LOCATION_MAX_LENGTH), nullable=False)
     creator_id = db.Column(db.ForeignKey("users.id", ondelete="SET NULL"))
     category_id = db.Column(db.ForeignKey("categories.id", ondelete="SET NULL"))
-    max_participants = db.Column(db.Integer, default=2, nullable=False)
+    max_participants = db.Column(db.Integer, default=EVENT_MIN_PARTICIPANTS, nullable=False)
     event_date = db.Column(db.DateTime, nullable=False)
     duration_minutes = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())

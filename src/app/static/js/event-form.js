@@ -58,8 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const durationMinutes = Number(form.duration_hours.value) * 60
       + Number(form.duration_minutes.value);
-    if (durationMinutes < 15 || durationMinutes > 1440) {
-      showToast('Продолжительность должна быть от 00:15 до 24:00', 'error');
+    if (
+      durationMinutes < Number(form.dataset.minDuration)
+      || durationMinutes > Number(form.dataset.maxDuration)
+    ) {
+      const range = document.getElementById('duration-note').textContent;
+      showToast(`Продолжительность должна быть ${range}`, 'error');
       return;
     }
 

@@ -5,12 +5,12 @@ from ..exceptions import ValidationError
 from ..field_limits import (
     EVENT_DESCRIPTION_MAX_LENGTH,
     EVENT_LOCATION_MAX_LENGTH,
+    EVENT_MAX_DURATION_MINUTES,
+    EVENT_MAX_PARTICIPANTS,
+    EVENT_MIN_DURATION_MINUTES,
+    EVENT_MIN_PARTICIPANTS,
     EVENT_TITLE_MAX_LENGTH,
 )
-
-MAX_EVENT_PARTICIPANTS = 100
-MIN_EVENT_DURATION_MINUTES = 15
-MAX_EVENT_DURATION_MINUTES = 1440
 
 
 class CreateEventData(TypedDict):
@@ -62,11 +62,13 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
     except (ValueError, TypeError):
         raise ValidationError("max_participants must be a number")
 
-    if max_participants < 2:
-        raise ValidationError("max_participants must be greater than 1")
-    if max_participants > MAX_EVENT_PARTICIPANTS:
+    if max_participants < EVENT_MIN_PARTICIPANTS:
         raise ValidationError(
-            f"max_participants must be at most {MAX_EVENT_PARTICIPANTS}"
+            f"max_participants must be at least {EVENT_MIN_PARTICIPANTS}"
+        )
+    if max_participants > EVENT_MAX_PARTICIPANTS:
+        raise ValidationError(
+            f"max_participants must be at most {EVENT_MAX_PARTICIPANTS}"
         )
 
     event_date_value = payload.get("event_date")
@@ -86,12 +88,12 @@ def validate_create_event_payload(payload: dict[str, Any]) -> CreateEventData:
     if (
         not isinstance(duration_minutes, int)
         or isinstance(duration_minutes, bool)
-        or duration_minutes < MIN_EVENT_DURATION_MINUTES
-        or duration_minutes > MAX_EVENT_DURATION_MINUTES
+        or duration_minutes < EVENT_MIN_DURATION_MINUTES
+        or duration_minutes > EVENT_MAX_DURATION_MINUTES
     ):
         raise ValidationError(
-            f"duration_minutes must be between {MIN_EVENT_DURATION_MINUTES} "
-            f"and {MAX_EVENT_DURATION_MINUTES}"
+            f"duration_minutes must be between {EVENT_MIN_DURATION_MINUTES} "
+            f"and {EVENT_MAX_DURATION_MINUTES}"
         )
 
     result: CreateEventData = {

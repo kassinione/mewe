@@ -38,7 +38,9 @@
     </button>
 </div>
 <div class="form-overlay" id="form-overlay" aria-hidden="true">
-<form class="create-form" id="event-form" method="POST" action="{{ url_for('events.create_event') }}">
+<form class="create-form" id="event-form" method="POST" action="{{ url_for('events.create_event') }}"
+      data-min-duration="{{ min_event_duration_minutes }}"
+      data-max-duration="{{ max_event_duration_minutes }}">
     <button class="close-btn" id="close-form" type="button" aria-label="Закрыть">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M6 6L18 18M18 6L6 18"></path>
@@ -73,20 +75,20 @@
         </label>
         <label>Кол-во чел.
             <div class="input-with-icon">
-                <input type="number" name="participants" placeholder="" min="2" max="{{ max_event_participants }}" required>
+                <input type="number" name="participants" placeholder="" min="{{ min_event_participants }}" max="{{ max_event_participants }}" required>
             </div>
         </label>
     </div>
 
     <label class="duration-field">Продолжительность
         <span class="duration-input">
-            <input type="number" name="duration_hours" min="0" max="24" step="1" value="1" aria-label="Часы" required>
+            <input type="number" name="duration_hours" min="0" max="{{ max_event_duration_minutes // 60 }}" step="1" value="1" aria-label="Часы" required>
             <span class="duration-unit duration-hours-unit">ч</span>
             <input type="number" name="duration_minutes" min="0" max="59" step="1" value="0" aria-label="Минуты" required>
             <span class="duration-unit">мин</span>
         </span>
     </label>
-    <div class="required-note">от 15 минут до 24 часов</div>
+    <div class="required-note" id="duration-note">от {{ '%02d:%02d' % (min_event_duration_minutes // 60, min_event_duration_minutes % 60) }} до {{ '%02d:%02d' % (max_event_duration_minutes // 60, max_event_duration_minutes % 60) }}</div>
 
     <label>
         <span class="label-row">Описание <span class="char-counter" data-counter-for="description"></span></span>
