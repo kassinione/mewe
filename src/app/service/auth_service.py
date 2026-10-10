@@ -24,6 +24,7 @@ def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         get_current_user_id()
+
         return f(*args, **kwargs)
     return decorated
 
