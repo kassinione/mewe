@@ -17,6 +17,15 @@ class UnauthorizedError(AppError):
     message = "unauthorized"
 
 
+class InvalidInitDataError(UnauthorizedError):
+    message = "invalid initData"
+
+    def __init__(self, reason: str, message: str | None = None, **details):
+        super().__init__(message)
+        self.reason = reason
+        self.details = details
+
+
 class ForbiddenError(AppError):
     status_code = 403
     message = "forbidden"

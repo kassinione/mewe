@@ -4,7 +4,7 @@ from typing import Any
 
 from flask import current_app, session
 
-from ..exceptions import UnauthorizedError, ValidationError
+from ..exceptions import InvalidInitDataError, UnauthorizedError, ValidationError
 from ..extensions import db
 from ..models import User
 from ..repositories.user_repository import get_user_by_telegram_id
@@ -35,7 +35,18 @@ def auth_or_create_user(payload: dict[str, Any]) -> User:
     if not isinstance(init_data, str):
         raise ValidationError("initData is required")
 
-    user_data = validate_init_data(init_data, bot_token)
+    try:
+        user_data = validate_init_data(init_data, bot_token)
+    except InvalidInitDataError as error:
+        current_app.logger.warning(
+            "initData rejected: reason=%s length=%d platform=%r version=%r details=%s",
+            error.reason,
+            len(init_data),
+            str(payload.get("platform", ""))[:32],
+            str(payload.get("version", ""))[:16],
+            error.details,
+        )
+        raise
     user = get_user_by_telegram_id(user_data["id"])
 
     if user is None:

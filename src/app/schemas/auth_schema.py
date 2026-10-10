@@ -5,7 +5,7 @@ import time
 from typing import NotRequired, TypedDict
 from urllib.parse import parse_qsl, urlsplit
 
-from ..exceptions import UnauthorizedError
+from ..exceptions import InvalidInitDataError
 
 
 class TelegramUserData(TypedDict):
@@ -22,20 +22,24 @@ def validate_init_data(init_data: str, bot_token: str) -> TelegramUserData:
     data = dict(parse_qsl(init_data, keep_blank_values=True))
 
     received_hash = data.pop("hash", "")
+
+    def reject(reason: str, message: str | None = None, **details) -> InvalidInitDataError:
+        return InvalidInitDataError(reason, message, keys=sorted(data), **details)
+
     if not received_hash:
-        raise UnauthorizedError("invalid initData")
+        raise reject("missing_hash")
 
     data_check_string = "\n".join(f"{key}={data[key]}" for key in sorted(data))
     secret_key = hmac.new(b"WebAppData", bot_token.encode(), hashlib.sha256).digest()
     calculated_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
 
     if not hmac.compare_digest(calculated_hash, received_hash):
-        raise UnauthorizedError("invalid initData")
+        raise reject("hash_mismatch")
 
     try:
         auth_date = int(data.get("auth_date", "0"))
     except ValueError as error:
-        raise UnauthorizedError("invalid initData") from error
+        raise reject("bad_auth_date") from error
 
     current_time = time.time()
 
@@ -43,19 +47,19 @@ def validate_init_data(init_data: str, bot_token: str) -> TelegramUserData:
         auth_date > current_time
         or current_time - auth_date > MAX_AGE_SECONDS
     ):
-        raise UnauthorizedError("invalid initData")
+        raise reject("auth_date_out_of_range", age_seconds=round(current_time - auth_date, 1))
 
     user_json = data.get("user")
     if not user_json:
-        raise UnauthorizedError("invalid initData")
+        raise reject("missing_user")
 
     try:
         user_data = json.loads(user_json)
     except json.JSONDecodeError as error:
-        raise UnauthorizedError("invalid Telegram user data") from error
+        raise reject("user_not_json", "invalid Telegram user data") from error
 
     if not isinstance(user_data, dict):
-        raise UnauthorizedError("invalid Telegram user data")
+        raise reject("user_not_object", "invalid Telegram user data")
 
     user_id = user_data.get("id")
     first_name = user_data.get("first_name")
@@ -65,7 +69,7 @@ def validate_init_data(init_data: str, bot_token: str) -> TelegramUserData:
         or isinstance(user_id, bool)
         or not isinstance(first_name, str)
     ):
-        raise UnauthorizedError("invalid Telegram user data")
+        raise reject("user_missing_fields", "invalid Telegram user data")
 
     result: TelegramUserData = {
         "id": user_id,

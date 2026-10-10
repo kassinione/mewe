@@ -10,7 +10,11 @@ async function authUser() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ initData: tg?.initData || ""})
+            body: JSON.stringify({
+                initData: tg?.initData || "",
+                platform: tg?.platform || "",
+                version: tg?.version || ""
+            })
         });
         const result = await response.json();
 
